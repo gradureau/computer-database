@@ -31,26 +31,22 @@ public class ServiceCrudCDB implements ICrudCDB {
 
 	@Override
 	public Computer showComputerDetails(Computer computer) {
-		// TODO Auto-generated method stub
-		return null;
+		return computerDAO.find(computer.getId());
 	}
 
 	@Override
 	public Computer createComputer(Computer computer) {
-		// TODO Auto-generated method stub
-		return null;
+		return computerDAO.create(computer);
 	}
 
 	@Override
 	public Computer updateComputer(Computer computer) {
-		// TODO Auto-generated method stub
-		return null;
+		return computerDAO.update(computer);
 	}
 
 	@Override
 	public void deleteComputer(Computer computer) {
-		// TODO Auto-generated method stub
-
+		computerDAO.delete(computer);
 	}
 
 }
