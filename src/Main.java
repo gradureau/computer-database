@@ -1,5 +1,6 @@
 import java.util.Scanner;
 
+import com.excilys.gradureau.computer_database.persistance.ConnectionMysqlSingleton;
 import com.excilys.gradureau.computer_database.service.ICrudCDB;
 import com.excilys.gradureau.computer_database.service.ServiceCrudCDB;
 
@@ -21,7 +22,7 @@ public class Main {
 		System.out.println("Hello World !");
 		Scanner scan = new Scanner(System.in);
 		
-		ICrudCDB cdb = new ServiceCrudCDB();
+		ICrudCDB cdb = new ServiceCrudCDB(ConnectionMysqlSingleton.getInstance());
 		
 		MAIN_LOOP: while(true) {
 			listerActions();

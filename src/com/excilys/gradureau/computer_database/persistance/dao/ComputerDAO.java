@@ -1,6 +1,7 @@
 package com.excilys.gradureau.computer_database.persistance.dao;
 
 import java.sql.Connection;
+import java.util.List;
 
 import com.excilys.gradureau.computer_database.model.Computer;
 
@@ -31,6 +32,12 @@ public class ComputerDAO extends DAO<Computer> {
 	@Override
 	public void delete(Computer obj) {
 		// TODO Auto-generated method stub
+	}
+
+	@Override
+	public List<Computer> findAll() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

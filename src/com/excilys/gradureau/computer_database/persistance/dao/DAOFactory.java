@@ -31,6 +31,11 @@ public class DAOFactory {
 		if(DAOFactory.instance == null ) {
 			DAOFactory.instance = new DAOFactory(connection);
 		}
+		else {
+			if(!connection.equals(DAOFactory.instance.connection)) {
+				DAOFactory.instance.connection = connection;
+			}
+		}
 		return DAOFactory.instance;
 	}
 	public static DAOFactory getInstance() {
@@ -45,11 +50,11 @@ public class DAOFactory {
 		this.connection = connection;
 	}
 	
-	public static DAO<Company> getCompanyDAO() {
+	public DAO<Company> getCompanyDAO() {
 		return new CompanyDAO(DAOFactory.instance.connection);
 	}
 	
-	public static DAO<Computer> getComputerDAO() {
+	public DAO<Computer> getComputerDAO() {
 		return new ComputerDAO(DAOFactory.instance.connection);
 	}
 	
