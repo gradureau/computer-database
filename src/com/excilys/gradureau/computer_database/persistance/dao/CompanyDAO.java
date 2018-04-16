@@ -2,7 +2,7 @@ package com.excilys.gradureau.computer_database.persistance.dao;
 
 import com.excilys.gradureau.computer_database.model.Company;
 
-public class CompanyDao extends Dao<Company> {
+public class CompanyDAO extends DAO<Company> {
 
 	@Override
 	public Company find(long id) {

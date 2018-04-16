@@ -2,7 +2,7 @@ package com.excilys.gradureau.computer_database.persistance.dao;
 
 import com.excilys.gradureau.computer_database.model.Computer;
 
-public class ComputerDao extends Dao<Computer> {
+public class ComputerDAO extends DAO<Computer> {
 
 	@Override
 	public Computer find(long id) {
