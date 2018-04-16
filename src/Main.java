@@ -1,5 +1,6 @@
 import java.util.Scanner;
 
+import com.excilys.gradureau.computer_database.model.Computer;
 import com.excilys.gradureau.computer_database.persistance.ConnectionMysqlSingleton;
 import com.excilys.gradureau.computer_database.service.ICrudCDB;
 import com.excilys.gradureau.computer_database.service.ServiceCrudCDB;
@@ -30,8 +31,8 @@ public class Main {
 			default:
 			case 0: break MAIN_LOOP;
 			case 1:
-				cdb.listComputers()
-				.forEach(System.out::println);
+				for(Computer computer : cdb.listComputers())
+					System.out.println("Computer id = " + computer.getId() + " name = " + computer.getName());
 				break;
 			case 2:
 				cdb.listCompanies()
