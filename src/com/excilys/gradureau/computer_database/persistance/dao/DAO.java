@@ -5,7 +5,7 @@ import java.util.List;
 
 public abstract class DAO<T> {
 	@SuppressWarnings("unused")
-	private Connection connection;
+	protected Connection connection;
 	public DAO(Connection connection) {
 		this.connection = connection;
 	}

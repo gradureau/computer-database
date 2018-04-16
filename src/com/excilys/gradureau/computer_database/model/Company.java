@@ -5,6 +5,11 @@ public class Company {
 	private Long id;
 	private String name;
 	
+	@Override
+	public String toString() {
+		return "Company [id=" + id + ", name=" + name + "]";
+	}
+	
 	public Company() {
 	}
 	public Company(Long id, String name) {

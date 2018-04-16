@@ -1,18 +1,19 @@
 package com.excilys.gradureau.computer_database.model;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 
 public class Computer {
 	
 	private Long id;
 	private String name;
-	private Date introduced;
-	private Date discontinued;
+	private LocalDateTime introduced;
+	private LocalDateTime discontinued;
 	private Company company;
 	
 	public Computer() {
 	}
-	public Computer(Long id, String name, Date introduced, Date discontinued, Company company) {
+	public Computer(Long id, String name, LocalDateTime introduced, LocalDateTime discontinued, Company company) {
 		super();
 		this.id = id;
 		this.name = name;
@@ -32,16 +33,16 @@ public class Computer {
 	public void setName(String name) {
 		this.name = name;
 	}
-	public Date getIntroduced() {
+	public LocalDateTime getIntroduced() {
 		return introduced;
 	}
-	public void setIntroduced(Date introduced) {
+	public void setIntroduced(LocalDateTime introduced) {
 		this.introduced = introduced;
 	}
-	public Date getDiscontinued() {
+	public LocalDateTime getDiscontinued() {
 		return discontinued;
 	}
-	public void setDiscontinued(Date discontinued) {
+	public void setDiscontinued(LocalDateTime discontinued) {
 		this.discontinued = discontinued;
 	}
 	public Company getCompany() {

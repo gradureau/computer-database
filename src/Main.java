@@ -30,10 +30,12 @@ public class Main {
 			default:
 			case 0: break MAIN_LOOP;
 			case 1:
-				cdb.listComputers();
+				cdb.listComputers()
+				.forEach(System.out::println);
 				break;
 			case 2:
-				cdb.listCompanies();
+				cdb.listCompanies()
+				.forEach(System.out::println);
 				break;
 			case 3:
 				cdb.showComputerDetails(null);
