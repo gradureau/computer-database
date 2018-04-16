@@ -1,4 +1,4 @@
-package com.excilys.radureau.computer_database.model;
+package com.excilys.gradureau.computer_database.model;
 
 public class Company {
 	
