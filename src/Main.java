@@ -1,31 +1,56 @@
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.util.Scanner;
 
-import com.excilys.gradureau.computer_database.persistance.ConnectionMysqlSingleton;
+import com.excilys.gradureau.computer_database.service.ICrudCDB;
+import com.excilys.gradureau.computer_database.service.ServiceCrudCDB;
 
 public class Main {
+	
+	public static void listerActions() {
+		System.out.println(
+				"0   Quit\n" +
+				"1   List computers\n" + 
+				"2   List companies\n" + 
+				"3   Show computer details (the detailed information of only one computer)\n" + 
+				"4   Create a computer\n" + 
+				"5   Update a computer\n" + 
+				"6   Delete a computer\n"
+		);
+	}
 
 	public static void main(String[] args) {
-		System.out.println("Hello World!");
+		System.out.println("Hello World !");
+		Scanner scan = new Scanner(System.in);
 		
-		try {
-			Class.forName("com.mysql.jdbc.Driver");
-			Connection conn = ConnectionMysqlSingleton.getInstance();
-			String query = "SELECT name FROM company;";
-			Statement stmt = conn.createStatement();
-			ResultSet results = stmt.executeQuery(query);
-			
-			while(results.next()) {
-				String name = results.getString("name");
-				System.out.println(name);
+		ICrudCDB cdb = new ServiceCrudCDB();
+		
+		MAIN_LOOP: while(true) {
+			listerActions();
+			switch(scan.nextInt()) {
+			default:
+			case 0: break MAIN_LOOP;
+			case 1:
+				cdb.listComputers();
+				break;
+			case 2:
+				cdb.listCompanies();
+				break;
+			case 3:
+				cdb.showComputerDetails(null);
+				break;
+			case 4:
+				cdb.createComputer(null);
+				break;
+			case 5:
+				cdb.updateComputer(null);
+				break;
+			case 6:
+				cdb.deleteComputer(null);
+				break;
 			}
-			
-			conn.close();
-		} catch (SQLException | ClassNotFoundException e) {
-			e.printStackTrace();
 		}
+		
+		System.out.println("Thanks for using our service !");
+		scan.close();
 	}
 
 }

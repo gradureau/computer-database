@@ -11,5 +11,5 @@ public interface ICrudCDB {
 	void showComputerDetails(Computer computer);
 	void createComputer(Computer computer);
 	void updateComputer(Computer computer);
-	void deleteComuter(Computer computer);
+	void deleteComputer(Computer computer);
 }

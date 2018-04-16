@@ -38,7 +38,7 @@ public class ServiceCrudCDB implements ICrudCDB {
 	}
 
 	@Override
-	public void deleteComuter(Computer computer) {
+	public void deleteComputer(Computer computer) {
 		// TODO Auto-generated method stub
 
 	}
