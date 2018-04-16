@@ -29,9 +29,8 @@ public class CompanyDAO extends DAO<Company> {
 	}
 
 	@Override
-	public Company delete(Company obj) {
+	public void delete(Company obj) {
 		// TODO Auto-generated method stub
-		return null;
 	}
 
 }

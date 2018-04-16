@@ -29,9 +29,8 @@ public class ComputerDAO extends DAO<Computer> {
 	}
 
 	@Override
-	public Computer delete(Computer obj) {
+	public void delete(Computer obj) {
 		// TODO Auto-generated method stub
-		return null;
 	}
 
 }
