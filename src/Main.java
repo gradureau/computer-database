@@ -48,9 +48,12 @@ public class Main {
 				cdb.deleteComputer(null);
 				break;
 			}
+			scan.nextLine();
+			System.out.println("Press [ENTER] to continue.");
+			scan.nextLine();
 		}
 		
-		System.out.println("Thanks for using our service !");
+		System.out.println("Thank you for using our service !");
 		scan.close();
 	}
 
