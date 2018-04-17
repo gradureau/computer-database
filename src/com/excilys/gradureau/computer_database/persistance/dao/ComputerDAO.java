@@ -17,7 +17,7 @@ import com.excilys.gradureau.computer_database.model.Computer;
 
 public class ComputerDAO extends DAO<Computer> {
 	
-	private static final String QUERY_FIND_ALL = "SELECT pc.id as id, pc.name as name, introduced, discontinued, company_id, co.name as company.name "
+	private static final String QUERY_FIND_ALL = "SELECT pc.id as id, pc.name as name, introduced, discontinued, company_id, co.name as company_name "
 			+ "FROM computer AS pc LEFT JOIN company AS co on pc.company_id = co.id;";
 	private static final String QUERY_FIND = "SELECT id, name, introduced, discontinued, company_id FROM computer WHERE id = ?;";
 	private static final String QUERY_CREATE = "INSERT INTO computer (name,introduced,discontinued,company_id) VALUES (?,?,?,?);";
@@ -121,7 +121,7 @@ public class ComputerDAO extends DAO<Computer> {
 				if(res.getLong("company_id") != 0) {
 					company = new Company(
 							res.getLong("company_id"),
-							res.getString("company.name")
+							res.getString("company_name")
 							);
 				}
 				computers.add(
