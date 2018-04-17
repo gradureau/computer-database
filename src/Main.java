@@ -34,6 +34,7 @@ public class Main {
 			case 1:
 				cdb.listComputers()
 				.forEach(System.out::println);
+				break;
 			case 2:
 				cdb.listCompanies()
 				.forEach(System.out::println);
@@ -53,7 +54,10 @@ public class Main {
 				cdb.updateComputer(null);
 				break;
 			case 6:
-				cdb.deleteComputer(null);
+				computer = new Computer();
+				System.out.println("Enter a known computer id.");
+				computer.setId(scan.nextLong());
+				cdb.deleteComputer(computer);
 				break;
 			}
 			scan.nextLine();
