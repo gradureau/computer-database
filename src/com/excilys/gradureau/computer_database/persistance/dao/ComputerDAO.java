@@ -8,7 +8,7 @@ import java.sql.Statement;
 import java.sql.Timestamp;
 import java.time.Instant;
 import java.time.LocalDateTime;
-import java.util.LinkedList;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.TimeZone;
 
@@ -22,6 +22,7 @@ public class ComputerDAO extends DAO<Computer> {
 	private static final String QUERY_FIND = "SELECT id, name, introduced, discontinued, company_id FROM computer WHERE id = ?;";
 	private static final String QUERY_CREATE = "INSERT INTO computer (name,introduced,discontinued,company_id) VALUES (?,?,?,?);";
 	private static final String QUERY_UPDATE = "UPDATE computer SET name = ?, introduced = ?, discontinued = ?, company_id = ? WHERE id = ?;";
+	private static final String QUERY_DELETE = "DELETE FROM computer WHERE id = ?;";
 	
 	DAO<Company> companyDao;
 
@@ -99,13 +100,19 @@ public class ComputerDAO extends DAO<Computer> {
 	}
 
 	@Override
-	public void delete(Computer obj) {
-		// TODO Auto-generated method stub
+	public void delete(Computer computer) {
+		try {
+			PreparedStatement ps = connection.prepareStatement(QUERY_DELETE);
+			ps.setLong(1, computer.getId());
+			ps.executeUpdate();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
 	}
 
 	@Override
 	public List<Computer> findAll() {
-		List<Computer> computers = new LinkedList<Computer>();
+		List<Computer> computers = new ArrayList<Computer>();
 		try {
 			Statement stmt = connection.createStatement();
 			ResultSet res = stmt.executeQuery(QUERY_FIND_ALL);
