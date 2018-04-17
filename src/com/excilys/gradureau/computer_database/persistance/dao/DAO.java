@@ -4,7 +4,7 @@ import java.sql.Connection;
 import java.util.List;
 
 public abstract class DAO<T> {
-	@SuppressWarnings("unused")
+	
 	protected Connection connection;
 	public DAO(Connection connection) {
 		this.connection = connection;

@@ -27,19 +27,24 @@ public class Main {
 		
 		MAIN_LOOP: while(true) {
 			listerActions();
+			Computer computer;
 			switch(scan.nextInt()) {
 			default:
 			case 0: break MAIN_LOOP;
 			case 1:
-				for(Computer computer : cdb.listComputers())
-					System.out.println("Computer id = " + computer.getId() + " name = " + computer.getName());
-				break;
+				cdb.listComputers()
+				.forEach(System.out::println);
 			case 2:
 				cdb.listCompanies()
 				.forEach(System.out::println);
 				break;
 			case 3:
-				cdb.showComputerDetails(null);
+				computer = new Computer();
+				System.out.println("Enter a known computer id.");
+				computer.setId(scan.nextLong());
+				System.out.println(
+						cdb.showComputerDetails(computer)
+				);
 				break;
 			case 4:
 				cdb.createComputer(null);

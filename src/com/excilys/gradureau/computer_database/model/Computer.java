@@ -20,6 +20,13 @@ public class Computer {
 		this.discontinued = discontinued;
 		this.company = company;
 	}
+	
+	@Override
+	public String toString() {
+		return "Computer [id=" + id + ", name=" + name + ", introduced=" + introduced + ", discontinued=" + discontinued
+				+ ", company=" + company + "]";
+	}
+	
 	public Long getId() {
 		return id;
 	}

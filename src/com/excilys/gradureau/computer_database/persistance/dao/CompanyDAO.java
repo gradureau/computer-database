@@ -1,6 +1,7 @@
 package com.excilys.gradureau.computer_database.persistance.dao;
 
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -12,6 +13,7 @@ import com.excilys.gradureau.computer_database.model.Company;
 public class CompanyDAO extends DAO<Company> {
 	
 	private final String QUERY_FIND_ALL = "SELECT * FROM company;";
+	private final String QUERY_FIND = "SELECT * FROM company WHERE id = ?;";
 
 	public CompanyDAO(Connection connection) {
 		super(connection);
@@ -19,8 +21,21 @@ public class CompanyDAO extends DAO<Company> {
 
 	@Override
 	public Company find(long id) {
-		// TODO Auto-generated method stub
-		return null;
+		Company company = null;
+		try {
+			PreparedStatement ps = connection.prepareStatement(QUERY_FIND);
+			ps.setLong(1, id);
+			ResultSet res = ps.executeQuery();
+			if(res.first())
+				company = new Company(
+						id, 
+						res.getString("name")
+						);
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return company;
 	}
 
 	@Override

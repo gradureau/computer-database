@@ -1,6 +1,7 @@
 package com.excilys.gradureau.computer_database.persistance.dao;
 
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -16,16 +17,39 @@ import com.excilys.gradureau.computer_database.model.Computer;
 
 public class ComputerDAO extends DAO<Computer> {
 	
-	private final String QUERY_FIND_ALL = "SELECT * FROM computer;";
+	private static final String QUERY_FIND_ALL = "SELECT * FROM computer AS pc LEFT JOIN company AS co on pc.company_id = co.id;";
+	private static final String QUERY_FIND = "SELECT * FROM computer where id = ?;";
+	
+	DAO<Company> companyDao;
 
 	public ComputerDAO(Connection connection) {
 		super(connection);
+		companyDao = new CompanyDAO(connection);
 	}
 
 	@Override
 	public Computer find(long id) {
-		// TODO Auto-generated method stub
-		return null;
+		Computer computer = null;
+		try {
+			PreparedStatement ps = connection.prepareStatement(QUERY_FIND);
+			ps.setLong(1, id);
+			ResultSet res = ps.executeQuery();
+			if(res.first()) {
+				Company company = null;
+				if(res.getLong("company_id") != 0)
+					company = companyDao.find(id);
+				computer = new Computer(
+						res.getLong("id"),
+						res.getString("name"),
+						timestamp2LocalDateTime(res.getTimestamp("introduced")),
+						timestamp2LocalDateTime(res.getTimestamp("discontinued")),
+						company
+				);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return computer;
 	}
 
 	@Override
@@ -53,10 +77,16 @@ public class ComputerDAO extends DAO<Computer> {
 			ResultSet res = stmt.executeQuery(QUERY_FIND_ALL);
 			while(res.next()) {
 				Company company = null;
+				if(res.getLong("company_id") != 0) {
+					company = new Company(
+							res.getLong("co.id"),
+							res.getString("co.name")
+							);
+				}
 				computers.add(
 						new Computer(
-								res.getLong("id"),
-								res.getString("name"),
+								res.getLong("pc.id"),
+								res.getString("pc.name"),
 								timestamp2LocalDateTime(res.getTimestamp("introduced")),
 								timestamp2LocalDateTime(res.getTimestamp("discontinued")),
 								company
