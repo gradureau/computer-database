@@ -1,19 +1,24 @@
 package com.excilys.gradureau.computer_database.service;
 
-import java.util.List;
-
 import com.excilys.gradureau.computer_database.model.Company;
 import com.excilys.gradureau.computer_database.model.Computer;
+import com.excilys.gradureau.computer_database.util.Page;
 
 public interface ICrudCDB {
 	/**
 	 * @return fresh computer list from database
 	 */
-	List<Computer> listComputers();
+	default Page<Computer> listComputers() {
+		return listComputers(1, 20);
+	}
+	Page<Computer> listComputers(int start, int resultsNumber);
 	/**
 	 * @return fresh company list from database
 	 */
-	List<Company> listCompanies();
+	default Page<Company> listCompanies() {
+		return listCompanies(1, 20);
+	}
+	Page<Company> listCompanies(int start, int resultsCount);
 	/**
 	 * @param computer with a defined Long id
 	 * @return the computer object with updated values from database

@@ -5,15 +5,17 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.LinkedList;
+import java.util.ArrayList;
 import java.util.List;
 
 import com.excilys.gradureau.computer_database.model.Company;
+import com.excilys.gradureau.computer_database.util.Page;
 
 public class CompanyDAO extends DAO<Company> {
 	
-	private final String QUERY_FIND_ALL = "SELECT * FROM company;";
-	private final String QUERY_FIND = "SELECT * FROM company WHERE id = ?;";
+	private final String QUERY_FIND_ALL = "SELECT id, name FROM company;";
+	private final String QUERY_FIND = "SELECT id, name FROM company WHERE id = ?;";
+	private final String QUERY_LIMIT_ALL = "SELECT id, name FROM company LIMIT ?, ?;";
 
 	public CompanyDAO(Connection connection) {
 		super(connection);
@@ -57,7 +59,7 @@ public class CompanyDAO extends DAO<Company> {
 
 	@Override
 	public List<Company> findAll() {
-		List<Company> companies = new LinkedList<Company>();
+		List<Company> companies = new ArrayList<Company>();
 		try {
 			Statement stmt = connection.createStatement();
 			ResultSet res = stmt.executeQuery(QUERY_FIND_ALL);
@@ -75,6 +77,29 @@ public class CompanyDAO extends DAO<Company> {
 		}		
 		
 		return companies;
+	}
+	
+	@Override
+	public Page<Company> pagination(int start, int resultsCount) {
+		List<Company> companies = new ArrayList<Company>();
+		try {
+			PreparedStatement ps = connection.prepareStatement(QUERY_LIMIT_ALL);
+			ps.setInt(1, start);
+			ps.setInt(2, resultsCount);
+			ResultSet res = ps.executeQuery();
+			while(res.next()) {
+				companies.add(
+						new Company(
+								res.getLong("id"),
+								res.getString("name")
+						)
+				);
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return new Page<Company>(companies, start, resultsCount);
 	}
 
 }

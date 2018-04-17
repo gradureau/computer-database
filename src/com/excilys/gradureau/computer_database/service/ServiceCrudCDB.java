@@ -1,12 +1,12 @@
 package com.excilys.gradureau.computer_database.service;
 
 import java.sql.Connection;
-import java.util.List;
 
 import com.excilys.gradureau.computer_database.model.Company;
 import com.excilys.gradureau.computer_database.model.Computer;
 import com.excilys.gradureau.computer_database.persistance.dao.DAO;
 import com.excilys.gradureau.computer_database.persistance.dao.DAOFactory;
+import com.excilys.gradureau.computer_database.util.Page;
 
 public class ServiceCrudCDB implements ICrudCDB {
 	
@@ -20,13 +20,13 @@ public class ServiceCrudCDB implements ICrudCDB {
 	}
 
 	@Override
-	public List<Computer> listComputers() {
-		return computerDAO.findAll();
+	public Page<Computer> listComputers(int start, int resultsCount) {
+		return computerDAO.pagination(start, resultsCount);
 	}
 
 	@Override
-	public List<Company> listCompanies() {
-		return companyDAO.findAll();
+	public Page<Company> listCompanies(int start, int resultsCount) {
+		return companyDAO.pagination(start, resultsCount);
 	}
 
 	@Override
