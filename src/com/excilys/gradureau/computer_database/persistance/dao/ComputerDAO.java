@@ -6,23 +6,24 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Timestamp;
-import java.time.Instant;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.TimeZone;
 
 import com.excilys.gradureau.computer_database.model.Company;
 import com.excilys.gradureau.computer_database.model.Computer;
+import com.excilys.gradureau.computer_database.persistance.dao.mapper.ComputerMapper;
+import com.excilys.gradureau.computer_database.persistance.dao.mapper.TimeMapper;
+import com.excilys.gradureau.computer_database.util.Page;
 
 public class ComputerDAO extends DAO<Computer> {
 	
 	private static final String QUERY_FIND_ALL = "SELECT pc.id as id, pc.name as name, introduced, discontinued, company_id, co.name as company_name "
-			+ "FROM computer AS pc LEFT JOIN company AS co on pc.company_id = co.id;";
+			+ "FROM computer AS pc LEFT JOIN company AS co on pc.company_id = co.id";
 	private static final String QUERY_FIND = "SELECT id, name, introduced, discontinued, company_id FROM computer WHERE id = ?;";
 	private static final String QUERY_CREATE = "INSERT INTO computer (name,introduced,discontinued,company_id) VALUES (?,?,?,?);";
 	private static final String QUERY_UPDATE = "UPDATE computer SET name = ?, introduced = ?, discontinued = ?, company_id = ? WHERE id = ?;";
 	private static final String QUERY_DELETE = "DELETE FROM computer WHERE id = ?;";
+	private static final String QUERY_LIMIT_ALL = QUERY_FIND_ALL + " LIMIT ?, ?;";
 	
 	DAO<Company> companyDao;
 
@@ -45,8 +46,8 @@ public class ComputerDAO extends DAO<Computer> {
 				computer = new Computer(
 						res.getLong("id"),
 						res.getString("name"),
-						timestamp2LocalDateTime(res.getTimestamp("introduced")),
-						timestamp2LocalDateTime(res.getTimestamp("discontinued")),
+						TimeMapper.timestamp2LocalDateTime(res.getTimestamp("introduced")),
+						TimeMapper.timestamp2LocalDateTime(res.getTimestamp("discontinued")),
 						company
 				);
 			}
@@ -117,21 +118,8 @@ public class ComputerDAO extends DAO<Computer> {
 			Statement stmt = connection.createStatement();
 			ResultSet res = stmt.executeQuery(QUERY_FIND_ALL);
 			while(res.next()) {
-				Company company = null;
-				if(res.getLong("company_id") != 0) {
-					company = new Company(
-							res.getLong("company_id"),
-							res.getString("company_name")
-							);
-				}
 				computers.add(
-						new Computer(
-								res.getLong("id"),
-								res.getString("name"),
-								timestamp2LocalDateTime(res.getTimestamp("introduced")),
-								timestamp2LocalDateTime(res.getTimestamp("discontinued")),
-								company
-						)
+						ComputerMapper.valueOf(res)
 				);
 			}
 		} catch (SQLException e) {
@@ -142,15 +130,24 @@ public class ComputerDAO extends DAO<Computer> {
 		return computers;
 	}
 	
-	private LocalDateTime timestamp2LocalDateTime(Timestamp t) {
-		LocalDateTime res = null;
-		if(t!=null) {
-			LocalDateTime.ofInstant(
-					Instant.ofEpochMilli(t.getTime()),
-                    TimeZone.getDefault().toZoneId()
-            );
+	@Override
+	public Page<Computer> pagination(int start, int resultsCount) {
+		List<Computer> computers = new ArrayList<Computer>();
+		try {
+			PreparedStatement ps = connection.prepareStatement(QUERY_LIMIT_ALL);
+			ps.setInt(1, start);
+			ps.setInt(2, resultsCount);
+			ResultSet res = ps.executeQuery();
+			while(res.next()) {
+				computers.add(
+						ComputerMapper.valueOf(res)
+				);
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
-		return res;
+		return new Page<Computer>(computers, start, resultsCount);
 	}
 
 }

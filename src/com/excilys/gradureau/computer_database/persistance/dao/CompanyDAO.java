@@ -13,9 +13,9 @@ import com.excilys.gradureau.computer_database.util.Page;
 
 public class CompanyDAO extends DAO<Company> {
 	
-	private final String QUERY_FIND_ALL = "SELECT id, name FROM company;";
-	private final String QUERY_FIND = "SELECT id, name FROM company WHERE id = ?;";
-	private final String QUERY_LIMIT_ALL = "SELECT id, name FROM company LIMIT ?, ?;";
+	private static final String QUERY_FIND_ALL = "SELECT id, name FROM company;";
+	private static final String QUERY_FIND = "SELECT id, name FROM company WHERE id = ?;";
+	private static final String QUERY_LIMIT_ALL = "SELECT id, name FROM company LIMIT ?, ?;";
 
 	public CompanyDAO(Connection connection) {
 		super(connection);
