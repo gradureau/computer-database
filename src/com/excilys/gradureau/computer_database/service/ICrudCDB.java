@@ -30,6 +30,12 @@ public interface ICrudCDB {
 	 */
 	Computer createComputer(Computer computer);
 	/**
+	 * @param Computer computer without a defined Long id
+	 * @param Long companyId is the id of a Company object present in database
+	 * @return the computer object with a defined Long id used in database
+	 */
+	Computer createComputer(Computer computer, Long companyId);
+	/**
 	 * @param computer with a defined Long id
 	 * @return the computer after having updated database values
 	 */
