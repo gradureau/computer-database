@@ -4,7 +4,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.function.Supplier;
 
-public class Page<T> implements Iterable<T> {
+public class Page<T extends Object> implements Iterable<T> {
 	private List<T> content;
 	private boolean hasPreviousPage, hasNextPage;
 	private Supplier<Page<T>> previousPageProvider, nextPageProvider;
