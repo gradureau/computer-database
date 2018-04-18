@@ -68,6 +68,43 @@ public class CLI {
 				);	
 		return date == null ? null : date.atStartOfDay();
 	}
+	
+	private static Computer readUpdateComputerInfo(Scanner scan, Computer computer) {
+		
+		if(computer != null)
+			System.out.println("Known data : " + computer);
+		else {
+			computer = new Computer();
+		}
+		
+		System.out.println("Enter a name");
+		String name = scan.next();
+		computer.setName(name);
+		logger.debug("name = " + name);
+		
+		scan.nextLine(); // move the Scanner cursor to the right position
+		
+		LocalDateTime introducedDateTime = readDate(scan, "introduced");
+		computer.setIntroduced(introducedDateTime);
+		
+		LocalDateTime discontinuedDateTime = readDate(scan, "discontinued");
+		computer.setIntroduced(discontinuedDateTime);
+		
+		return computer;
+	}
+	
+	private static Long readId(Scanner scan, String type) {
+		System.out.println("Enter a known " + type + " id");
+		String longInput = scan.nextLine();
+		Long id = null;
+		try {
+			id = Long.valueOf(longInput);
+		}catch(NumberFormatException e) {
+			logger.debug("We could not get the " + type +" id.");
+		}
+		logger.debug(type + " id = " + id);
+		return id;
+	}
 
 	public static void interactive(ICrudCDB cdb) {
 		Scanner scan = new Scanner(System.in);
@@ -100,46 +137,45 @@ public class CLI {
 			case ACTION_SHOW_COMPUTER_DETAILS:
 				logger.info("show computer details");
 				{
-					Computer computer = new Computer();
-					System.out.println("Enter a known computer id.");
-					computer.setId(scan.nextLong());
-					System.out.println(
-							cdb.showComputerDetails(computer)
-							);
-					scan.nextLine(); // move the Scanner cursor to the right position
+					Long computerId = readId(scan,"computer");
+					if(computerId != null) {
+						Computer computer = new Computer();
+						computer.setId(computerId);
+						System.out.println(
+								cdb.showComputerDetails(computer)
+								);
+					}
 				}
 				break;
 			case ACTION_CREATE_COMPUTER:
+				logger.info("create computer");
 				{
-					System.out.println("Enter a name");
-					String name = scan.next();
-					logger.debug("name = " + name);
-					scan.nextLine(); // move the Scanner cursor to the right position
-					LocalDateTime introducedDateTime = readDate(scan, "introduced");
-					LocalDateTime discontinuedDateTime = readDate(scan, "discontinued");
-					System.out.println("Enter an eventual company id");
-					String longInput = scan.nextLine();
-					Long companyId = null;
-					try {
-						companyId = Long.valueOf(longInput);
-					}catch(NumberFormatException e) {
-						logger.debug("We could not get the company id.");
-					}
-					logger.debug("company id = " + companyId);
-					Computer newComputer = cdb.createComputer( new Computer(
-							null,
-							name,
-							introducedDateTime,
-							discontinuedDateTime,
-							null
-							),
-							companyId);
+					Computer newComputer = readUpdateComputerInfo(scan, new Computer());
+					Long companyId = readId(scan,"company");
+					newComputer = cdb.createComputer(newComputer, companyId);
 					logger.info("new Computer created :\n\t" + newComputer);
 				}
 				break;
 			case ACTION_UPDATE_COMPUTER:
-				logger.info("not implemented");
-				//cdb.updateComputer(null);
+				logger.info("update computer");
+				{
+					Long computerId = readId(scan,"computer");
+					if(computerId != null) {
+						Computer computer = new Computer();
+						computer.setId(computerId);
+						computer = cdb.showComputerDetails(computer);
+						if(computer != null) {
+							computer = readUpdateComputerInfo(scan, computer);
+							Long companyId = readId(scan,"company");
+							computer = cdb.createComputer(computer, companyId);
+							logger.info("new Computer created :\n\t" + computer);
+						}else {
+							logger.warn("could not find computer");
+						}
+					}else {
+						logger.warn("could not read computer id");
+					}
+				}
 				break;
 			case ACTION_DELETE_COMPUTER:
 				logger.info("delete computer");

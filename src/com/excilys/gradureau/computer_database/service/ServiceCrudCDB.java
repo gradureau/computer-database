@@ -52,6 +52,15 @@ public class ServiceCrudCDB implements ICrudCDB {
 	public Computer updateComputer(Computer computer) {
 		return computerDAO.update(computer);
 	}
+	
+	@Override
+	public Computer updateComputer(Computer computer, Long companyId) {
+		if(companyId != null) {
+			Company company = companyDAO.find(companyId);
+			computer.setCompany(company);
+		}
+		return computerDAO.update(computer);
+	}
 
 	@Override
 	public void deleteComputer(Computer computer) {

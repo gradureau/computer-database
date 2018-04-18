@@ -41,6 +41,12 @@ public interface ICrudCDB {
 	 */
 	Computer updateComputer(Computer computer);
 	/**
+	 * @param computer with a defined Long id
+	 * @param Long companyId is the id of a Company object present in database
+	 * @return the computer after having updated database values
+	 */
+	Computer updateComputer(Computer computer, Long companyId);
+	/**
 	 * @param computer to be deleted in database
 	 */
 	void deleteComputer(Computer computer);
