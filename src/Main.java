@@ -1,5 +1,8 @@
 import java.util.Scanner;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.excilys.gradureau.computer_database.model.Company;
 import com.excilys.gradureau.computer_database.model.Computer;
 import com.excilys.gradureau.computer_database.persistance.ConnectionMysqlSingleton;
@@ -8,6 +11,8 @@ import com.excilys.gradureau.computer_database.service.ServiceCrudCDB;
 import com.excilys.gradureau.computer_database.util.Page;
 
 public class Main {
+	
+	private static final Logger logger = LoggerFactory.getLogger(Main.class);
 	
 	public static final int
 	ACTION_QUIT = 0,
@@ -73,10 +78,12 @@ public class Main {
 				);
 				break;
 			case ACTION_CREATE_COMPUTER:
-				cdb.createComputer(null);
+				logger.info("not implemented");
+				//cdb.createComputer(null);
 				break;
 			case ACTION_UPDATE_COMPUTER:
-				cdb.updateComputer(null);
+				logger.info("not implemented");
+				//cdb.updateComputer(null);
 				break;
 			case ACTION_DELETE_COMPUTER:
 				computer = new Computer();
