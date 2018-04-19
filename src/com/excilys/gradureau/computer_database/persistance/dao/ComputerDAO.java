@@ -140,7 +140,6 @@ public class ComputerDAO extends DAO<Computer> {
 				);
 			}
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}		
 		
@@ -161,7 +160,6 @@ public class ComputerDAO extends DAO<Computer> {
 				);
 			}
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return new Page<Computer>(computers, start, resultsCount);

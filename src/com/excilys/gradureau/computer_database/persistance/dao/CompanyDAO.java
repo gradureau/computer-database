@@ -42,19 +42,16 @@ public class CompanyDAO extends DAO<Company> {
 
 	@Override
 	public Company create(Company obj) {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
 	public Company update(Company obj) {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
 	public void delete(Company obj) {
-		// TODO Auto-generated method stub
 	}
 
 	@Override
@@ -72,7 +69,6 @@ public class CompanyDAO extends DAO<Company> {
 				);
 			}
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}		
 		
@@ -96,7 +92,6 @@ public class CompanyDAO extends DAO<Company> {
 				);
 			}
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return new Page<Company>(companies, start, resultsCount);
