@@ -18,13 +18,13 @@ public class CLI {
 	
 	private static final Logger logger = LoggerFactory.getLogger(CLI.class);
 
-	public static final int ACTION_QUIT = 0;
-	public static final int ACTION_LIST_COMPUTERS = 1;
-	public static final int ACTION_LIST_COMPANIES = 2;
-	public static final int ACTION_SHOW_COMPUTER_DETAILS = 3;
-	public static final int ACTION_CREATE_COMPUTER = 4;
-	public static final int ACTION_UPDATE_COMPUTER = 5;
-	public static final int ACTION_DELETE_COMPUTER = 6;
+	private static final int ACTION_QUIT = 0;
+	private static final int ACTION_LIST_COMPUTERS = 1;
+	private static final int ACTION_LIST_COMPANIES = 2;
+	private static final int ACTION_SHOW_COMPUTER_DETAILS = 3;
+	private static final int ACTION_CREATE_COMPUTER = 4;
+	private static final int ACTION_UPDATE_COMPUTER = 5;
+	private static final int ACTION_DELETE_COMPUTER = 6;
 	
 	private static void listerActions() {
 		System.out.println(
