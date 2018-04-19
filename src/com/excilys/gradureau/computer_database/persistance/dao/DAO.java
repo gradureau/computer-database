@@ -35,6 +35,6 @@ public abstract class DAO<T> {
 	 */
 	public Page<T> pagination(int start, int resultsCount) {
 		List<T> list = findAll();
-		return new Page<T>(list, 0, list.size());
+		return new Page<>(list, 0, list.size());
 	}
 }

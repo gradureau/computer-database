@@ -3,10 +3,10 @@ package com.excilys.gradureau.computer_database.util;
 import java.util.Iterator;
 import java.util.List;
 
-public class Page<T extends Object> implements Iterable<T> {
+public class Page<T> implements Iterable<T> {
 	private List<T> content;
 	private boolean hasPreviousPage, hasNextPage;
-	private Pageable pageable;
+	private Pageable<T> pageable;
 
 	private int start, resultsCount;
 	
@@ -21,11 +21,11 @@ public class Page<T extends Object> implements Iterable<T> {
 		hasNextPage = ( content.size() == resultsCount );
 	}
 	
-	public Page<?> getNextPage() {
+	public Page<T> getNextPage() {
 		return pageable.pagination(start+resultsCount, resultsCount);
 	}
 	
-	public Page<?> getPreviousPage() {
+	public Page<T> getPreviousPage() {
 		int offset = start-resultsCount;
 		if(offset < 0)
 			offset = 0;
@@ -52,11 +52,11 @@ public class Page<T extends Object> implements Iterable<T> {
 		return resultsCount;
 	}
 	
-	public Pageable getPageable() {
+	public Pageable<T> getPageable() {
 		return pageable;
 	}
 
-	public void setPageable(Pageable pageable) {
+	public void setPageable(Pageable<T> pageable) {
 		this.pageable = pageable;
 	}
 

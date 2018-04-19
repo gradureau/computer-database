@@ -42,21 +42,22 @@ public class CompanyDAO extends DAO<Company> {
 
 	@Override
 	public Company create(Company obj) {
-		return null;
+		throw new UnsupportedOperationException();
 	}
 
 	@Override
 	public Company update(Company obj) {
-		return null;
+		throw new UnsupportedOperationException();
 	}
 
 	@Override
 	public void delete(Company obj) {
+		throw new UnsupportedOperationException();
 	}
 
 	@Override
 	public List<Company> findAll() {
-		List<Company> companies = new ArrayList<Company>();
+		List<Company> companies = new ArrayList<>();
 		try {
 			Statement stmt = connection.createStatement();
 			ResultSet res = stmt.executeQuery(QUERY_FIND_ALL);
@@ -77,7 +78,7 @@ public class CompanyDAO extends DAO<Company> {
 	
 	@Override
 	public Page<Company> pagination(int start, int resultsCount) {
-		List<Company> companies = new ArrayList<Company>();
+		List<Company> companies = new ArrayList<>();
 		try {
 			PreparedStatement ps = connection.prepareStatement(QUERY_LIMIT_ALL);
 			ps.setInt(1, start);
@@ -94,7 +95,7 @@ public class CompanyDAO extends DAO<Company> {
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
-		return new Page<Company>(companies, start, resultsCount);
+		return new Page<>(companies, start, resultsCount);
 	}
 
 }

@@ -130,7 +130,7 @@ public class ComputerDAO extends DAO<Computer> {
 
 	@Override
 	public List<Computer> findAll() {
-		List<Computer> computers = new ArrayList<Computer>();
+		List<Computer> computers = new ArrayList<>();
 		try {
 			Statement stmt = connection.createStatement();
 			ResultSet res = stmt.executeQuery(QUERY_FIND_ALL);
@@ -148,7 +148,7 @@ public class ComputerDAO extends DAO<Computer> {
 	
 	@Override
 	public Page<Computer> pagination(int start, int resultsCount) {
-		List<Computer> computers = new ArrayList<Computer>();
+		List<Computer> computers = new ArrayList<>();
 		try {
 			PreparedStatement ps = connection.prepareStatement(QUERY_LIMIT_ALL);
 			ps.setInt(1, start);
@@ -162,7 +162,7 @@ public class ComputerDAO extends DAO<Computer> {
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
-		return new Page<Computer>(computers, start, resultsCount);
+		return new Page<>(computers, start, resultsCount);
 	}
 
 }
