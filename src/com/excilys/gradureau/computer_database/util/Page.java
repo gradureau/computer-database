@@ -2,12 +2,12 @@ package com.excilys.gradureau.computer_database.util;
 
 import java.util.Iterator;
 import java.util.List;
-import java.util.function.Supplier;
 
 public class Page<T extends Object> implements Iterable<T> {
 	private List<T> content;
 	private boolean hasPreviousPage, hasNextPage;
-	private Supplier<Page<T>> previousPageProvider, nextPageProvider;
+	private Pageable pageable;
+
 	private int start, resultsCount;
 	
 	public Page(List<T> content, int start, int resultsCount) {
@@ -21,12 +21,15 @@ public class Page<T extends Object> implements Iterable<T> {
 		hasNextPage = ( content.size() == resultsCount );
 	}
 	
-	public Page<T> getNextPage() {
-		return nextPageProvider.get();
+	public Page<?> getNextPage() {
+		return pageable.pagination(start+resultsCount, resultsCount);
 	}
 	
-	public Page<T> getPreviousPage() {
-		return previousPageProvider.get();
+	public Page<?> getPreviousPage() {
+		int offset = start-resultsCount;
+		if(offset < 0)
+			offset = 0;
+		return pageable.pagination(0, resultsCount);
 	}
 
 	public List<T> getContent() {
@@ -47,6 +50,14 @@ public class Page<T extends Object> implements Iterable<T> {
 
 	public int getResultsCount() {
 		return resultsCount;
+	}
+	
+	public Pageable getPageable() {
+		return pageable;
+	}
+
+	public void setPageable(Pageable pageable) {
+		this.pageable = pageable;
 	}
 
 	@Override
