@@ -8,8 +8,11 @@ import com.excilys.gradureau.computer_database.persistance.dao.DAO;
 import com.excilys.gradureau.computer_database.persistance.dao.DAOFactory;
 import com.excilys.gradureau.computer_database.util.Page;
 
+import exception.WrongObjectStateException;
+import validator.ComputerValidator;
+
 public class ServiceCrudCDB implements ICrudCDB {
-	
+
 	private DAO<Company> companyDAO;
 	private DAO<Computer> computerDAO;
 
@@ -35,13 +38,17 @@ public class ServiceCrudCDB implements ICrudCDB {
 	}
 
 	@Override
-	public Computer createComputer(Computer computer) {
+	public Computer createComputer(Computer computer) throws WrongObjectStateException {
+		ComputerValidator.checkId(computer, false);
+		ComputerValidator.check(computer);
 		return computerDAO.create(computer);
 	}
-	
+
 	@Override
-	public Computer createComputer(Computer computer, Long companyId) {
-		if(companyId != null) {
+	public Computer createComputer(Computer computer, Long companyId) throws WrongObjectStateException {
+		ComputerValidator.checkId(computer, false);
+		ComputerValidator.check(computer);
+		if (companyId != null) {
 			Company company = companyDAO.find(companyId);
 			computer.setCompany(company);
 		}
@@ -49,13 +56,17 @@ public class ServiceCrudCDB implements ICrudCDB {
 	}
 
 	@Override
-	public Computer updateComputer(Computer computer) {
+	public Computer updateComputer(Computer computer) throws WrongObjectStateException {
+		ComputerValidator.checkId(computer);
+		ComputerValidator.check(computer);
 		return computerDAO.update(computer);
 	}
-	
+
 	@Override
-	public Computer updateComputer(Computer computer, Long companyId) {
-		if(companyId != null) {
+	public Computer updateComputer(Computer computer, Long companyId) throws WrongObjectStateException {
+		ComputerValidator.checkId(computer);
+		ComputerValidator.check(computer);
+		if (companyId != null) {
 			Company company = companyDAO.find(companyId);
 			computer.setCompany(company);
 		}
