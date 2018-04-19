@@ -18,7 +18,19 @@ public class Main {
 		
 		ICrudCDB cdb = new ServiceCrudCDB(ConnectionMysqlSingleton.getInstance());
 		
-		CLI.interactive(cdb);
+		boolean displayMenu = true;
+		
+		while(displayMenu) {
+			try {
+				displayMenu = false;
+				CLI.interactive(cdb);
+			}
+			catch(Exception e) {
+				e.printStackTrace();
+				logger.warn("An error occured, you are redirected to main menu.");
+				displayMenu = true;
+			}
+		}
 		
 		System.out.println("Thank you for using our service !");
 	}
