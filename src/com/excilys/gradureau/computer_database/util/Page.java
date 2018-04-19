@@ -29,7 +29,7 @@ public class Page<T extends Object> implements Iterable<T> {
 		int offset = start-resultsCount;
 		if(offset < 0)
 			offset = 0;
-		return pageable.pagination(0, resultsCount);
+		return pageable.pagination(offset, resultsCount);
 	}
 
 	public List<T> getContent() {
