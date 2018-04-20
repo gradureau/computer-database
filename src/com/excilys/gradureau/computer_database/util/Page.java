@@ -6,7 +6,7 @@ import java.util.List;
 public class Page<T> implements Iterable<T> {
 	private List<T> content;
 	private boolean hasPreviousPage, hasNextPage;
-	private Pageable<T> pageable;
+	private Pageable pageable;
 
 	private int start, resultsCount;
 	
@@ -21,11 +21,11 @@ public class Page<T> implements Iterable<T> {
 		hasNextPage = ( content.size() == resultsCount );
 	}
 	
-	public Page<T> getNextPage() {
+	public Page<?> getNextPage() {
 		return pageable.pagination(start+resultsCount, resultsCount);
 	}
 	
-	public Page<T> getPreviousPage() {
+	public Page<?> getPreviousPage() {
 		int offset = start-resultsCount;
 		if(offset < 0)
 			offset = 0;
@@ -52,11 +52,11 @@ public class Page<T> implements Iterable<T> {
 		return resultsCount;
 	}
 	
-	public Pageable<T> getPageable() {
+	public Pageable getPageable() {
 		return pageable;
 	}
 
-	public void setPageable(Pageable<T> pageable) {
+	public void setPageable(Pageable pageable) {
 		this.pageable = pageable;
 	}
 
