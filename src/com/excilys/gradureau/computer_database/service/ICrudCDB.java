@@ -1,10 +1,9 @@
 package com.excilys.gradureau.computer_database.service;
 
+import com.excilys.gradureau.computer_database.exception.WrongObjectStateException;
 import com.excilys.gradureau.computer_database.model.Company;
 import com.excilys.gradureau.computer_database.model.Computer;
 import com.excilys.gradureau.computer_database.util.Page;
-
-import exception.WrongObjectStateException;
 
 public interface ICrudCDB {
 	/**

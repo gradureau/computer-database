@@ -9,12 +9,11 @@ import java.util.Scanner;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.excilys.gradureau.computer_database.exception.WrongObjectStateException;
 import com.excilys.gradureau.computer_database.model.Computer;
 import com.excilys.gradureau.computer_database.service.ICrudCDB;
 import com.excilys.gradureau.computer_database.util.Page;
 import com.excilys.gradureau.computer_database.util.Pageable;
-
-import exception.WrongObjectStateException;
 
 public class CLI {
 

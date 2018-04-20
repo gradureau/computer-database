@@ -1,4 +1,4 @@
-package exception;
+package com.excilys.gradureau.computer_database.exception;
 
 public class WrongObjectStateException extends Exception {
 

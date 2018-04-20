@@ -1,13 +1,13 @@
-package validator;
+package com.excilys.gradureau.computer_database.validator;
 
 import java.time.LocalDateTime;
+
+import com.excilys.gradureau.computer_database.exception.WrongObjectStateException;
 
 //import org.slf4j.Logger;
 //import org.slf4j.LoggerFactory;
 
 import com.excilys.gradureau.computer_database.model.Computer;
-
-import exception.WrongObjectStateException;
 
 public class ComputerValidator {
 
