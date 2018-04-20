@@ -6,17 +6,11 @@ import java.sql.SQLException;
 
 public class ConnectionMysqlSingleton {
 	
-	private static final String DB_URL = "jdbc:mysql://127.0.0.1:3306/computer-database-db";
-	
-	private static final String DB_USER = "admincdb";
-	
-	private static final String DB_PASSWORD = "qwerty1234";
-	
 	private static Connection connection;
 	
 	private ConnectionMysqlSingleton() {}
 	
-	public static Connection getInstance() {
+	public static Connection getInstance(final String DB_URL, final String DB_USER, final String DB_PASSWORD) {
 		if(connection == null) {
 			try {
 				Class.forName("com.mysql.jdbc.Driver");

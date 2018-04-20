@@ -1,3 +1,5 @@
+import java.util.Properties;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -5,18 +7,27 @@ import com.excilys.gradureau.computer_database.persistance.ConnectionMysqlSingle
 import com.excilys.gradureau.computer_database.service.ICrudCDB;
 import com.excilys.gradureau.computer_database.service.ServiceCrudCDB;
 import com.excilys.gradureau.computer_database.ui.CLI;
+import com.excilys.gradureau.computer_database.util.PropertyFileUtility;
 
 public class Main {
 
-	private static final Logger logger = LoggerFactory.getLogger(Main.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(Main.class);
+	
+	private static final String DB_CONFIG_FILEPATH = "ressources/database.properties";
 
 	public static void main(String[] args) {
 
-		logger.warn("Application in Beta, no Validation implemented yet !");
+		LOGGER.warn("Application in Beta, no Validation implemented yet !");
 
 		System.out.println("Hello World !");
+		
+		final Properties databaseConnectionProperties = PropertyFileUtility.readPropertyFile(DB_CONFIG_FILEPATH);
 
-		ICrudCDB cdb = new ServiceCrudCDB(ConnectionMysqlSingleton.getInstance());
+		ICrudCDB cdb = new ServiceCrudCDB(ConnectionMysqlSingleton.getInstance(
+				databaseConnectionProperties.getProperty("DB_URL"),
+				databaseConnectionProperties.getProperty("DB_USER"),
+				databaseConnectionProperties.getProperty("DB_PASSWORD")
+				));
 
 		boolean displayMenu = true;
 
@@ -26,8 +37,8 @@ public class Main {
 				CLI.interactive(cdb);
 			} catch (Exception e) {
 				e.printStackTrace();
-				logger.warn(e.getMessage());
-				logger.warn("An error occured, you are redirected to main menu.");
+				LOGGER.warn(e.getMessage());
+				LOGGER.warn("An error occured, you are redirected to main menu.");
 				displayMenu = true;
 			}
 		}
