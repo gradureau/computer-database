@@ -15,7 +15,7 @@ public class ComputerValidator {
 	// LoggerFactory.getLogger(ComputerValidator.class);
 
 	public static void check(Computer computer) throws WrongObjectStateException {
-		hasName(computer);
+		checkName(computer);
 		LocalDateTime introduced = computer.getIntroduced();
 		LocalDateTime discontinued = computer.getDiscontinued();
 		if (introduced != null && discontinued != null) {
@@ -39,8 +39,8 @@ public class ComputerValidator {
 		checkId(computer, true);
 	}
 	
-	public static void hasName(Computer computer) throws WrongObjectStateException {
-		if(computer.getName() != null || computer.getName().length() == 0)
+	public static void checkName(Computer computer) throws WrongObjectStateException {
+		if(computer.getName() == null || computer.getName().length() == 0)
 			throw new WrongObjectStateException("missing name in Computer object");
 	}
 

@@ -12,15 +12,21 @@
   <properties>
   	<maven.compiler.source>1.8</maven.compiler.source>
   	<maven.compiler.target>1.8</maven.compiler.target>
+	<logback.version>1.2.3</logback.version>
   </properties>
+  
   <dependencies>
+  
     <!-- JDBC -->
+    
     <dependency>
   		<groupId>mysql</groupId>
   		<artifactId>mysql-connector-java</artifactId>
   		<version>5.1.46</version>
   	</dependency>
-    <!-- LOGGING -->
+  	
+    <!-- LOG -->
+    
   	<dependency>
   		<groupId>org.slf4j</groupId>
   		<artifactId>slf4j-api</artifactId>
@@ -29,12 +35,61 @@
   	<dependency>
   		<groupId>ch.qos.logback</groupId>
   		<artifactId>logback-classic</artifactId>
-  		<version>1.2.3</version>
+  		<version>${logback.version}</version>
   	</dependency>
   	<dependency>
   		<groupId>ch.qos.logback</groupId>
   		<artifactId>logback-core</artifactId>
-  		<version>1.2.3</version>
+  		<version>${logback.version}</version>
   	</dependency>
+  	
+  	<!-- TEST -->
+  	
+  	<!-- JUNIT -->
+	<dependency>
+	    <groupId>org.junit.jupiter</groupId>
+	    <artifactId>junit-jupiter-api</artifactId>
+	    <version>5.1.0</version>
+	    <scope>test</scope>
+	</dependency>
+	    <dependency>
+	    <groupId>org.junit.jupiter</groupId>
+	    <artifactId>junit-jupiter-engine</artifactId>
+	    <version>5.1.0</version>
+	    <scope>test</scope>
+	</dependency>
+	<dependency>
+	    <groupId>org.junit.vintage</groupId>
+	    <artifactId>junit-vintage-engine</artifactId>
+	    <version>5.1.0</version>
+	    <scope>test</scope>
+	    </dependency>
+	<dependency>
+	    <groupId>org.junit.platform</groupId>
+	    <artifactId>junit-platform-launcher</artifactId>
+	    <version>1.1.0</version>
+	    <scope>test</scope>
+	</dependency>
+	<dependency>
+	    <groupId>org.junit.platform</groupId>
+	    <artifactId>junit-platform-runner</artifactId>
+	    <version>1.1.0</version>
+	    <scope>test</scope>
+	</dependency>
+      <!-- MOCKITO -->
+      <dependency>
+          <groupId>org.mockito</groupId>
+          <artifactId>mockito-junit-jupiter</artifactId>
+          <version>2.18.0</version>
+          <scope>test</scope>
+      </dependency>
+      <dependency>
+          <groupId>org.mockito</groupId>
+          <artifactId>mockito-core</artifactId>
+          <version>2.11.0</version>
+          <scope>test</scope>
+      </dependency>
+	
   </dependencies>
+  
 </project>
