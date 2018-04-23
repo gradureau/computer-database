@@ -7,15 +7,12 @@ import java.util.TimeZone;
 
 public class TimeMapper {
 
-	public static LocalDateTime timestamp2LocalDateTime(Timestamp t) {
-		LocalDateTime res = null;
-		if(t!=null) {
-			LocalDateTime.ofInstant(
-					Instant.ofEpochMilli(t.getTime()),
-	                TimeZone.getDefault().toZoneId()
-	        );
-		}
-		return res;
-	}
+    public static LocalDateTime timestamp2LocalDateTime(Timestamp t) {
+        LocalDateTime res = null;
+        if (t != null) {
+            LocalDateTime.ofInstant(Instant.ofEpochMilli(t.getTime()), TimeZone.getDefault().toZoneId());
+        }
+        return res;
+    }
 
 }

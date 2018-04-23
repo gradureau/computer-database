@@ -12,69 +12,69 @@ import com.excilys.gradureau.computer_database.validator.ComputerValidator;
 
 public class ServiceCrudCDB implements ICrudCDB {
 
-	private DAO<Company> companyDAO;
-	private DAO<Computer> computerDAO;
+    private DAO<Company> companyDAO;
+    private DAO<Computer> computerDAO;
 
-	public ServiceCrudCDB(Connection connection) {
-		DAOFactory daoFactory = DAOFactory.getInstance(connection);
-		companyDAO = daoFactory.getCompanyDAO();
-		computerDAO = daoFactory.getComputerDAO();
-	}
+    public ServiceCrudCDB(Connection connection) {
+        DAOFactory daoFactory = DAOFactory.getInstance(connection);
+        companyDAO = daoFactory.getCompanyDAO();
+        computerDAO = daoFactory.getComputerDAO();
+    }
 
-	@Override
-	public Page<Computer> listComputers(int start, int resultsCount) {
-		return computerDAO.pagination(start, resultsCount);
-	}
+    @Override
+    public Page<Computer> listComputers(int start, int resultsCount) {
+        return computerDAO.pagination(start, resultsCount);
+    }
 
-	@Override
-	public Page<Company> listCompanies(int start, int resultsCount) {
-		return companyDAO.pagination(start, resultsCount);
-	}
+    @Override
+    public Page<Company> listCompanies(int start, int resultsCount) {
+        return companyDAO.pagination(start, resultsCount);
+    }
 
-	@Override
-	public Computer showComputerDetails(Computer computer) {
-		return computerDAO.find(computer.getId());
-	}
+    @Override
+    public Computer showComputerDetails(Computer computer) {
+        return computerDAO.find(computer.getId());
+    }
 
-	@Override
-	public Computer createComputer(Computer computer) throws WrongObjectStateException {
-		ComputerValidator.checkId(computer, false);
-		ComputerValidator.check(computer);
-		return computerDAO.create(computer);
-	}
+    @Override
+    public Computer createComputer(Computer computer) throws WrongObjectStateException {
+        ComputerValidator.checkId(computer, false);
+        ComputerValidator.check(computer);
+        return computerDAO.create(computer);
+    }
 
-	@Override
-	public Computer createComputer(Computer computer, Long companyId) throws WrongObjectStateException {
-		ComputerValidator.checkId(computer, false);
-		ComputerValidator.check(computer);
-		if (companyId != null) {
-			Company company = companyDAO.find(companyId);
-			computer.setCompany(company);
-		}
-		return computerDAO.create(computer);
-	}
+    @Override
+    public Computer createComputer(Computer computer, Long companyId) throws WrongObjectStateException {
+        ComputerValidator.checkId(computer, false);
+        ComputerValidator.check(computer);
+        if (companyId != null) {
+            Company company = companyDAO.find(companyId);
+            computer.setCompany(company);
+        }
+        return computerDAO.create(computer);
+    }
 
-	@Override
-	public Computer updateComputer(Computer computer) throws WrongObjectStateException {
-		ComputerValidator.checkId(computer);
-		ComputerValidator.check(computer);
-		return computerDAO.update(computer);
-	}
+    @Override
+    public Computer updateComputer(Computer computer) throws WrongObjectStateException {
+        ComputerValidator.checkId(computer);
+        ComputerValidator.check(computer);
+        return computerDAO.update(computer);
+    }
 
-	@Override
-	public Computer updateComputer(Computer computer, Long companyId) throws WrongObjectStateException {
-		ComputerValidator.checkId(computer);
-		ComputerValidator.check(computer);
-		if (companyId != null) {
-			Company company = companyDAO.find(companyId);
-			computer.setCompany(company);
-		}
-		return computerDAO.update(computer);
-	}
+    @Override
+    public Computer updateComputer(Computer computer, Long companyId) throws WrongObjectStateException {
+        ComputerValidator.checkId(computer);
+        ComputerValidator.check(computer);
+        if (companyId != null) {
+            Company company = companyDAO.find(companyId);
+            computer.setCompany(company);
+        }
+        return computerDAO.update(computer);
+    }
 
-	@Override
-	public void deleteComputer(Computer computer) {
-		computerDAO.delete(computer);
-	}
+    @Override
+    public void deleteComputer(Computer computer) {
+        computerDAO.delete(computer);
+    }
 
 }

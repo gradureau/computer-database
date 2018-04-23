@@ -11,39 +11,37 @@ import com.excilys.gradureau.computer_database.util.PropertyFileUtility;
 
 public class Main {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(Main.class);
-	
-	private static final String DB_CONFIG_FILEPATH = "database.properties";
+    private static final Logger LOGGER = LoggerFactory.getLogger(Main.class);
 
-	public static void main(String[] args) {
+    private static final String DB_CONFIG_FILEPATH = "database.properties";
 
-		LOGGER.warn("Application in Beta, no Validation implemented yet !");
+    public static void main(String[] args) {
 
-		System.out.println("Hello World !");
-		
-		final Properties databaseConnectionProperties = PropertyFileUtility.readPropertyFile(DB_CONFIG_FILEPATH);
+        LOGGER.warn("Application in Beta, no Validation implemented yet !");
 
-		ICrudCDB cdb = new ServiceCrudCDB(ConnectionMysqlSingleton.getInstance(
-				databaseConnectionProperties.getProperty("DB_URL"),
-				databaseConnectionProperties.getProperty("DB_USER"),
-				databaseConnectionProperties.getProperty("DB_PASSWORD")
-				));
+        System.out.println("Hello World !");
 
-		boolean displayMenu = true;
+        final Properties databaseConnectionProperties = PropertyFileUtility.readPropertyFile(DB_CONFIG_FILEPATH);
 
-		while (displayMenu) {
-			try {
-				displayMenu = false;
-				CLI.interactive(cdb);
-			} catch (Exception e) {
-				e.printStackTrace();
-				LOGGER.warn(e.getMessage());
-				LOGGER.warn("An error occured, you are redirected to main menu.");
-				displayMenu = true;
-			}
-		}
+        ICrudCDB cdb = new ServiceCrudCDB(ConnectionMysqlSingleton.getInstance(
+                databaseConnectionProperties.getProperty("DB_URL"), databaseConnectionProperties.getProperty("DB_USER"),
+                databaseConnectionProperties.getProperty("DB_PASSWORD")));
 
-		System.out.println("Thank you for using our service !");
-	}
+        boolean displayMenu = true;
+
+        while (displayMenu) {
+            try {
+                displayMenu = false;
+                CLI.interactive(cdb);
+            } catch (Exception e) {
+                e.printStackTrace();
+                LOGGER.warn(e.getMessage());
+                LOGGER.warn("An error occured, you are redirected to main menu.");
+                displayMenu = true;
+            }
+        }
+
+        System.out.println("Thank you for using our service !");
+    }
 
 }
