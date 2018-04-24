@@ -155,7 +155,7 @@ public class ServiceCrudCDBTest {
         assertSame(defaultPageSize, companiesPage.getContent().size());
         assertSame(1L + defaultOffset, companiesPage.getContent().get(0).getId());
     }
-    
+
     @Test
     public void listCompaniesOffset() {
         int offset = 3;
@@ -164,7 +164,7 @@ public class ServiceCrudCDBTest {
         assertSame(pageSize, companiesPage.getContent().size());
         assertSame(1L + offset, companiesPage.getContent().get(0).getId());
     }
-    
+
     @Test
     public void listComputersDefault() {
         int defaultOffset = 0;
@@ -173,7 +173,7 @@ public class ServiceCrudCDBTest {
         assertSame(defaultPageSize, computersPage.getContent().size());
         assertSame(1L + defaultOffset, computersPage.getContent().get(0).getId());
     }
-    
+
     @Test
     public void listComputersOffset() {
         int offset = 3;
