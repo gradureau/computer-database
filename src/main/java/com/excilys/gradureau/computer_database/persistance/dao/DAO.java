@@ -13,6 +13,13 @@ public abstract class DAO<T> {
         this.connection = connection;
     }
 
+    /**
+     * find entity in database.
+     *
+     * @param id
+     *            primary key
+     * @return null if not found
+     */
     public abstract T find(long id);
 
     public abstract List<T> findAll();
@@ -26,6 +33,7 @@ public abstract class DAO<T> {
     /**
      * This is a default implementation, it is inneficient as it is returning
      * everything. Inheriting subclasses should offer a correct
+     *
      * @param start
      *            >=0 is the offset
      * @param resultsCount

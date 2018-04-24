@@ -10,7 +10,7 @@ public interface ICrudCDB {
      * @return fresh computer list from database
      */
     default Page<Computer> listComputers() {
-        return listComputers(1, 20);
+        return listComputers(0, 20);
     }
 
     Page<Computer> listComputers(int start, int resultsNumber);
@@ -19,7 +19,7 @@ public interface ICrudCDB {
      * @return fresh company list from database
      */
     default Page<Company> listCompanies() {
-        return listCompanies(1, 20);
+        return listCompanies(0, 20);
     }
 
     Page<Company> listCompanies(int start, int resultsCount);

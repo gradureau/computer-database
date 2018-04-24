@@ -32,7 +32,8 @@ public class ServiceCrudCDB implements ICrudCDB {
     }
 
     @Override
-    public Computer showComputerDetails(Computer computer) {
+    public Computer showComputerDetails(Computer computer) throws WrongObjectStateException {
+        ComputerValidator.checkId(computer);
         return computerDAO.find(computer.getId());
     }
 
@@ -73,7 +74,8 @@ public class ServiceCrudCDB implements ICrudCDB {
     }
 
     @Override
-    public void deleteComputer(Computer computer) {
+    public void deleteComputer(Computer computer) throws WrongObjectStateException {
+        ComputerValidator.checkId(computer);
         computerDAO.delete(computer);
     }
 

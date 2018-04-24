@@ -36,7 +36,7 @@ public class CLI {
     }
 
     private static void readPage(int pageNumber, int pageSize, Pageable pageable) {
-        int start = (pageNumber - 1) * pageSize + 1;
+        int start = (pageNumber - 1) * pageSize;
         Page<?> page = pageable.pagination(start, pageSize);
         page.forEach(System.out::println);
         System.out.print("offset: " + page.getStart());
