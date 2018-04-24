@@ -24,6 +24,10 @@ public class Page<T> implements Iterable<T> {
         hasPreviousPage = (start > 0);
         hasNextPage = (content.size() == resultsCount);
     }
+    public Page(List<T> content, int start, int resultsCount, Pageable pageable) {
+        this(content, start, resultsCount);
+        this.pageable =  pageable;
+    }
 
     public Page<?> getNextPage() {
         return pageable.pagination(start + resultsCount, resultsCount);
