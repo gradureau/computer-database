@@ -12,6 +12,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.excilys.gradureau.computer_database.dto.DTOMapper;
 import com.excilys.gradureau.computer_database.persistance.ConnectionMysqlSingleton;
 import com.excilys.gradureau.computer_database.service.ICrudCDB;
 import com.excilys.gradureau.computer_database.service.ServiceCrudCDB;
@@ -75,7 +76,9 @@ public class MainServlet extends HttpServlet {
 	}
 	
 	private void dashboard(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-	    cdb.listComputers().forEach(c -> LOGGER.debug(c.toString()));
+	    cdb.listComputers().getContent().stream()
+	    .map(DTOMapper::toComputerDTO)
+	    .forEach(c -> LOGGER.debug(c.toString()));
 	    request.getRequestDispatcher(DASHBOARD_JSP).forward(request, response);  
 	}
 	

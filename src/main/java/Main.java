@@ -24,8 +24,10 @@ public class Main {
         final Properties databaseConnectionProperties = PropertyFileUtility.readPropertyFile(DB_CONFIG_FILEPATH);
 
         ICrudCDB cdb = new ServiceCrudCDB(ConnectionMysqlSingleton.getInstance(
-                databaseConnectionProperties.getProperty("DB_URL"), databaseConnectionProperties.getProperty("DB_USER"),
-                databaseConnectionProperties.getProperty("DB_PASSWORD")));
+                databaseConnectionProperties.getProperty("DB_URL"),
+                databaseConnectionProperties.getProperty("DB_USER"),
+                databaseConnectionProperties.getProperty("DB_PASSWORD")
+                ));
 
         boolean displayMenu = true;
 
