@@ -1,6 +1,7 @@
 package com.excilys.gradureau.computer_database.servlet;
 
 import java.io.IOException;
+import java.util.Properties;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -14,6 +15,7 @@ import org.slf4j.LoggerFactory;
 import com.excilys.gradureau.computer_database.persistance.ConnectionMysqlSingleton;
 import com.excilys.gradureau.computer_database.service.ICrudCDB;
 import com.excilys.gradureau.computer_database.service.ServiceCrudCDB;
+import com.excilys.gradureau.computer_database.util.PropertyFileUtility;
 
 /**
  * Servlet implementation class MainServlet
@@ -43,11 +45,11 @@ public class MainServlet extends HttpServlet {
        
     public MainServlet() {
         super();
-       // Properties databaseConnectionProperties = PropertyFileUtility.readPropertyFile(DB_CONFIG_FILEPATH);
+        Properties databaseConnectionProperties = PropertyFileUtility.readPropertyFile(DB_CONFIG_FILEPATH);
         cdb = new ServiceCrudCDB(ConnectionMysqlSingleton.getInstance(
-                "jdbc:mysql://127.0.0.1:3306/computer-database-db?autoReconnect=true&useSSL=false",
-                "admincdb",
-                "qwerty1234"
+                databaseConnectionProperties.getProperty("DB_URL"),
+                databaseConnectionProperties.getProperty("DB_USER"),
+                databaseConnectionProperties.getProperty("DB_PASSWORD")
                 ));
     }
 
