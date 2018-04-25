@@ -16,7 +16,7 @@ public final class PropertyFileUtility {
 
     public static Properties readPropertyFile(final String filepath) {
         final Properties databaseConnectionProperties = new Properties();
-        final InputStream path = ClassLoader.getSystemResourceAsStream(filepath);
+        final InputStream path = ClassLoader.getSystemClassLoader().getResourceAsStream(filepath);
         try {
             databaseConnectionProperties.load(path);
         } catch (IOException e) {

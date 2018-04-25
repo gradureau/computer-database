@@ -9,7 +9,7 @@ import java.sql.Connection;
 import java.time.LocalDateTime;
 import java.util.Properties;
 
-import org.junit.jupiter.api.BeforeAll;
+import org.junit.Before;
 import org.junit.jupiter.api.Test;
 import org.mockito.MockitoAnnotations;
 import org.mockito.Spy;
@@ -28,7 +28,7 @@ public class ServiceCrudCDBTest {
     @Spy
     static final ServiceCrudCDB CDB = new ServiceCrudCDB(connection);
 
-    @BeforeAll
+    @Before
     public void setUp() {
         MockitoAnnotations.initMocks(this);
     }
