@@ -2,6 +2,8 @@ package com.excilys.gradureau.computer_database.dto;
 
 import java.time.LocalDateTime;
 
+import com.excilys.gradureau.computer_database.model.Computer;
+
 public class ComputerDTO {
     private Long id;
     private String name;
@@ -18,6 +20,14 @@ public class ComputerDTO {
         this.introduced = introduced;
         this.discontinued = discontinued;
         this.companyName = companyName;
+    }
+    public ComputerDTO(Computer computer) {
+        id = computer.getId();
+        name = computer.getName();
+        introduced = computer.getIntroduced();
+        discontinued = computer.getDiscontinued();
+        companyName = computer.getCompany() == null ? null
+                : computer.getCompany().getName();
     }
     @Override
     public String toString() {

@@ -1,16 +1,11 @@
 package com.excilys.gradureau.computer_database.model;
 
-import static org.junit.Assert.assertTrue;
 
-import org.junit.Before;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import org.junit.jupiter.api.Test;
-import org.mockito.MockitoAnnotations;
 
 public class CompanyTest {
-    @Before
-    public void setUp() {
-        MockitoAnnotations.initMocks(this);
-    }
 
     @Test
     public void constructorsTest() {

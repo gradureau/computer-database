@@ -1,18 +1,18 @@
 package com.excilys.gradureau.computer_database.service;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.sql.Connection;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Properties;
 
-import org.junit.Before;
 import org.junit.jupiter.api.Test;
-import org.mockito.MockitoAnnotations;
-import org.mockito.Spy;
 
 import com.excilys.gradureau.computer_database.exception.WrongObjectStateException;
 import com.excilys.gradureau.computer_database.model.Company;
@@ -25,13 +25,8 @@ public class ServiceCrudCDBTest {
     static Properties databaseProperties = PropertyFileUtility.readPropertyFile("database.properties");
     static Connection connection = ConnectionMysqlSingleton.getInstance(databaseProperties.getProperty("DB_URL"),
             databaseProperties.getProperty("DB_USER"), databaseProperties.getProperty("DB_PASSWORD"));
-    @Spy
-    static final ServiceCrudCDB CDB = new ServiceCrudCDB(connection);
 
-    @Before
-    public void setUp() {
-        MockitoAnnotations.initMocks(this);
-    }
+    static final ServiceCrudCDB CDB = new ServiceCrudCDB(connection);
 
     @Test
     public void createComputerWithName() throws WrongObjectStateException {
@@ -86,6 +81,15 @@ public class ServiceCrudCDBTest {
         Computer computerFound = CDB.showComputerDetails(computerWithId);
         assertTrue(computerFound.getName().equals("MacBook Pro 15.4 inch"));
     }
+    
+    @Test
+    public void showComputerDetailsFindIntroducedDate() throws WrongObjectStateException {
+        Computer computerWithIntroducedDate = new Computer();
+        computerWithIntroducedDate.setId(43L);
+        Computer computerFound = CDB.showComputerDetails(computerWithIntroducedDate);
+        assertEquals(LocalDate.parse("1993-10-21", DateTimeFormatter.ISO_LOCAL_DATE).atStartOfDay(),
+                computerFound.getIntroduced());
+    }
 
     @Test
     public void showComputerDetailsFindCompanyData() throws WrongObjectStateException {
@@ -131,6 +135,13 @@ public class ServiceCrudCDBTest {
     public void updateComputerWithComputerId() throws WrongObjectStateException {
         Computer computerWithId = new Computer(3L, "updatedName", null, null, null);
         assertEquals("updatedName", CDB.updateComputer(computerWithId).getName());
+    }
+    
+    @Test
+    public void updateComputerIntroducedDate() throws WrongObjectStateException {
+        LocalDateTime date = LocalDateTime.now();
+        Computer computerWithNewIntroducedDate = new Computer(3L, "updatedName", date, null, null);
+        assertEquals(date, CDB.updateComputer(computerWithNewIntroducedDate).getIntroduced());
     }
 
     @Test

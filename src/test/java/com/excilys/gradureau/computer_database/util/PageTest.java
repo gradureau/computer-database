@@ -1,6 +1,6 @@
 package com.excilys.gradureau.computer_database.util;
 
-import static org.junit.Assert.assertSame;
+import static org.junit.jupiter.api.Assertions.assertSame;
 
 import java.util.Arrays;
 
