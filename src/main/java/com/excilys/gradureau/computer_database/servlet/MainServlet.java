@@ -1,7 +1,9 @@
 package com.excilys.gradureau.computer_database.servlet;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.Properties;
+import java.util.stream.Collectors;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -12,7 +14,9 @@ import javax.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.excilys.gradureau.computer_database.dto.DTOMapper;
+import com.excilys.gradureau.computer_database.dto.ComputerDTO;
+import com.excilys.gradureau.computer_database.exception.WrongObjectStateException;
+import com.excilys.gradureau.computer_database.model.Computer;
 import com.excilys.gradureau.computer_database.persistance.ConnectionMysqlSingleton;
 import com.excilys.gradureau.computer_database.service.ICrudCDB;
 import com.excilys.gradureau.computer_database.service.ServiceCrudCDB;
@@ -76,9 +80,10 @@ public class MainServlet extends HttpServlet {
 	}
 	
 	private void dashboard(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-	    cdb.listComputers().getContent().stream()
-	    .map(DTOMapper::toComputerDTO)
-	    .forEach(c -> LOGGER.debug(c.toString()));
+	    List<ComputerDTO> computers = cdb.listComputers().getContent().stream()
+	    .map(c -> new ComputerDTO(c))
+	    .collect(Collectors.toList());
+	    request.setAttribute("computers", computers);
 	    request.getRequestDispatcher(DASHBOARD_JSP).forward(request, response);  
 	}
 	
@@ -87,7 +92,17 @@ public class MainServlet extends HttpServlet {
     }
 	
 	private void editComputer(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        request.getRequestDispatcher(EDIT_COMPUTER_JSP).forward(request, response);  
+        Long computerId = Long.valueOf(
+                request.getParameter("pk"));
+        Computer computerData = new Computer();
+        computerData.setId(computerId);
+        try {
+            computerData = cdb.showComputerDetails(computerData);
+        } catch (WrongObjectStateException e) {
+            e.printStackTrace();
+        }
+        request.setAttribute("computer", computerData);
+        request.getRequestDispatcher(EDIT_COMPUTER_JSP).forward(request, response);
     }
 
 

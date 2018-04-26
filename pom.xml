@@ -18,22 +18,29 @@
 	</properties>
 
 	<dependencies>
-	
+
 		<!-- https://mvnrepository.com/artifact/javax.servlet/servlet-api -->
 		<dependency>
-		    <groupId>javax.servlet</groupId>
-		    <artifactId>javax.servlet-api</artifactId>
-		    <version>4.0.0</version>
-		    <scope>provided</scope>
+			<groupId>javax.servlet</groupId>
+			<artifactId>javax.servlet-api</artifactId>
+			<version>4.0.0</version>
+			<scope>provided</scope>
 		</dependency>
-		
+
 		<!-- https://mvnrepository.com/artifact/jstl/jstl -->
 		<dependency>
-		    <groupId>jstl</groupId>
-		    <artifactId>jstl</artifactId>
-		    <version>1.2</version>
+			<groupId>jstl</groupId>
+			<artifactId>jstl</artifactId>
+			<version>1.2</version>
 		</dependency>
 		
+		<!-- https://github.com/sargue/java-time-jsptags -->
+		<dependency>
+			<groupId>net.sargue</groupId>
+			<artifactId>java-time-jsptags</artifactId>
+			<version>1.1.4</version>
+		</dependency>
+
 
 		<!-- JDBC -->
 
@@ -64,36 +71,24 @@
 		<!-- TEST -->
 
 		<!-- JUNIT -->
-		<dependency>
-			<groupId>org.junit.jupiter</groupId>
-			<artifactId>junit-jupiter-api</artifactId>
-			<version>5.1.0</version>
-			<scope>test</scope>
-		</dependency>
+		<!-- <dependency> <groupId>org.junit.jupiter</groupId> <artifactId>junit-jupiter-api</artifactId> 
+			<version>5.1.0</version> <scope>test</scope> </dependency> -->
 		<dependency>
 			<groupId>org.junit.jupiter</groupId>
 			<artifactId>junit-jupiter-engine</artifactId>
-			<version>5.1.0</version>
+			<version>5.2.0-M1</version>
 			<scope>test</scope>
 		</dependency>
-		<dependency>
-			<groupId>org.junit.vintage</groupId>
-			<artifactId>junit-vintage-engine</artifactId>
-			<version>5.1.0</version>
-			<scope>test</scope>
-		</dependency>
+		<!-- <dependency> <groupId>org.junit.vintage</groupId> <artifactId>junit-vintage-engine</artifactId> 
+			<version>5.1.0</version> <scope>test</scope> </dependency> -->
 		<dependency>
 			<groupId>org.junit.platform</groupId>
 			<artifactId>junit-platform-launcher</artifactId>
-			<version>1.1.0</version>
+			<version>1.2.0-M1</version>
 			<scope>test</scope>
 		</dependency>
-		<dependency>
-			<groupId>org.junit.platform</groupId>
-			<artifactId>junit-platform-runner</artifactId>
-			<version>1.1.0</version>
-			<scope>test</scope>
-		</dependency>
+		<!-- <dependency> <groupId>org.junit.platform</groupId> <artifactId>junit-platform-runner</artifactId> 
+			<version>1.1.0</version> <scope>test</scope> </dependency> -->
 		<!-- MOCKITO -->
 		<dependency>
 			<groupId>org.mockito</groupId>
@@ -101,12 +96,8 @@
 			<version>2.18.3</version>
 			<scope>test</scope>
 		</dependency>
-		<dependency>
-			<groupId>org.mockito</groupId>
-			<artifactId>mockito-core</artifactId>
-			<version>2.11.0</version>
-			<scope>test</scope>
-		</dependency>
+		<!-- <dependency> <groupId>org.mockito</groupId> <artifactId>mockito-core</artifactId> 
+			<version>2.11.0</version> <scope>test</scope> </dependency> -->
 
 	</dependencies>
 
@@ -156,6 +147,7 @@
 				<!-- ( 4 ) phase, goal & SQL (command or file) -->
 				<executions>
 					<execution>
+						<?m2e execute onConfiguration?>
 						<id>create-table</id>
 						<phase>process-test-resources</phase>
 						<goals>
@@ -170,6 +162,7 @@
 					</execution>
 
 					<execution>
+						<?m2e execute onConfiguration?>
 						<id>insert-data</id>
 						<phase>process-test-resources</phase>
 						<goals>
@@ -214,4 +207,5 @@
 		</plugins>
 	</reporting>
 
+	<packaging>war</packaging>
 </project>
