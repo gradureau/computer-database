@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <html>
 <head>
 <title>Computer Database</title>
@@ -11,7 +12,7 @@
 <body>
     <header class="navbar navbar-inverse navbar-fixed-top">
         <div class="container">
-            <a class="navbar-brand" href="dashboard.html"> Application - Computer Database </a>
+            <a class="navbar-brand" href="dashboard"> Application - Computer Database </a>
         </div>
     </header>
 
@@ -48,6 +49,13 @@
                         </div>
                     </form>
                 </div>
+                <c:if test="${not empty warning}">
+    			<div class="col-xs-8 col-xs-offset-2 box">
+		            <div class="alert alert-warning alert-dismissible fade in">
+		                ${warning}
+		            </div>
+		        </div>
+				</c:if>
             </div>
         </div>
     </section>

@@ -33,23 +33,23 @@ import com.excilys.gradureau.computer_database.util.PropertyFileUtility;
         MainServlet.EDIT_COMPUTER_URL
 }, loadOnStartup = 0)
 public class MainServlet extends HttpServlet {
-	private static final long serialVersionUID = 1L;
-	private static final Logger LOGGER = LoggerFactory.getLogger(MainServlet.class);
+    private static final long serialVersionUID = 1L;
+    private static final Logger LOGGER = LoggerFactory.getLogger(MainServlet.class);
 
-	private ICrudCDB cdb;
-	
-	private static final String DB_CONFIG_FILEPATH = "database.properties";
-	
-	//URLS
-	public static final String DASHBOARD_URL = "/dashboard";
-	public static final String ADD_COMPUTER_URL = "/add-computer";
-	public static final String EDIT_COMPUTER_URL = "/edit-computer";
-	
-	//JSP FILES
-	public static final String DASHBOARD_JSP = "jsp/dashboard.jsp";
-	public static final String ADD_COMPUTER_JSP = "jsp/addComputer.jsp";
-	public static final String EDIT_COMPUTER_JSP = "jsp/editComputer.jsp";
-       
+    private ICrudCDB cdb;
+
+    private static final String DB_CONFIG_FILEPATH = "database.properties";
+
+    //URLS
+    public static final String DASHBOARD_URL = "/dashboard";
+    public static final String ADD_COMPUTER_URL = "/add-computer";
+    public static final String EDIT_COMPUTER_URL = "/edit-computer";
+
+    //JSP FILES
+    public static final String DASHBOARD_JSP = "jsp/dashboard.jsp";
+    public static final String ADD_COMPUTER_JSP = "jsp/addComputer.jsp";
+    public static final String EDIT_COMPUTER_JSP = "jsp/editComputer.jsp";
+
     public MainServlet() {
         super();
         Properties databaseConnectionProperties = PropertyFileUtility.readPropertyFile(DB_CONFIG_FILEPATH);
@@ -64,89 +64,132 @@ public class MainServlet extends HttpServlet {
         doGet(request, response);
     }
 
-	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		final String URL_PREFIX = request.getContextPath();
-		final String URL = request.getRequestURI().replaceFirst(URL_PREFIX, "");
-		switch(URL) {
-		default:
-		case DASHBOARD_URL:
-		    dashboard(request, response);
-		    break;
-		case ADD_COMPUTER_URL:
-		    addComputer(request, response);
-		    break;
-		case EDIT_COMPUTER_URL:
-		    editComputer(request, response);
-		    break;
-		}
-	}
-	
-	private void dashboard(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-	    List<ComputerDTO> computers = cdb.listComputers().getContent().stream()
-	    .map(c -> new ComputerDTO(c))
-	    .collect(Collectors.toList());
-	    request.setAttribute("computers", computers);
-	    request.getRequestDispatcher(DASHBOARD_JSP).forward(request, response);  
-	}
-	
-	private void addComputer(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-	    Computer computerData = null;
-	    LOGGER.debug(ADD_COMPUTER_URL, request.getParameterMap().toString());
-	    LOGGER.debug(ADD_COMPUTER_URL, request.getParameterNames());
-	    LOGGER.debug(ADD_COMPUTER_URL, request.getParameter("computerName"));
-	    //check if we got form data from request
-	    if(request.getParameter("computerName") != null
-	            && request.getParameter("computerName").length() != 0
-	            && request.getParameter("introduced") != null
-	            && request.getParameter("discontinued") != null) {	        
-	        computerData = new Computer(
-                null,
-                request.getParameter("computerName"),
-                request.getParameter("introduced").length() == 0 ? null
-                        : LocalDate.parse(request.getParameter("introduced"), DateTimeFormatter.ISO_LOCAL_DATE).atStartOfDay(),
-                request.getParameter("discontinued").length() == 0 ? null
-                        : LocalDate.parse(request.getParameter("discontinued"), DateTimeFormatter.ISO_LOCAL_DATE).atStartOfDay(),
-                null
-                );
-	    }
-	    //if we did not get form data we dispatch the add_computer jsp file.
-	    if(computerData == null) {	        
-	        request.getRequestDispatcher(ADD_COMPUTER_JSP).forward(request, response);
-	    } else {
-	        // read the company id from request
-	        Long companyId = null;
-	        if(request.getParameter("companyId") != null) {
-	            companyId = Long.valueOf(request.getParameter("companyId"));
-	        }
-	        // attempt to create computer, if we can't we redirect to ADD_COMPUTER_JSP, else to EDIT_COMPUTER_JSP
-	        Computer newComputer = null;
-	        try {
-               newComputer = cdb.createComputer(computerData, companyId);
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        final String URL_PREFIX = request.getContextPath();
+        final String URL = request.getRequestURI().replaceFirst(URL_PREFIX, "");
+        switch(URL) {
+        default:
+        case DASHBOARD_URL:
+            dashboard(request, response);
+            break;
+        case ADD_COMPUTER_URL:
+            addComputer(request, response);
+            break;
+        case EDIT_COMPUTER_URL:
+            editComputer(request, response);
+            break;
+        }
+    }
+
+    private void dashboard(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        List<ComputerDTO> computers = cdb.listComputers().getContent().stream()
+                .map(c -> new ComputerDTO(c))
+                .collect(Collectors.toList());
+        request.setAttribute("computers", computers);
+        request.getRequestDispatcher(DASHBOARD_JSP).forward(request, response);  
+    }
+
+    private void addComputer(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        LOGGER.debug(ADD_COMPUTER_URL);
+        Computer computerData = null;
+        //check if we got form data from request
+        if(request.getParameter("computerName") != null
+                && request.getParameter("computerName").length() != 0
+                && request.getParameter("introduced") != null
+                && request.getParameter("discontinued") != null) {	        
+            computerData = new Computer(
+                    null,
+                    request.getParameter("computerName"),
+                    request.getParameter("introduced").length() == 0 ? null
+                            : LocalDate.parse(request.getParameter("introduced"), DateTimeFormatter.ISO_LOCAL_DATE).atStartOfDay(),
+                            request.getParameter("discontinued").length() == 0 ? null
+                                    : LocalDate.parse(request.getParameter("discontinued"), DateTimeFormatter.ISO_LOCAL_DATE).atStartOfDay(),
+                                    null
+                    );
+        }
+        //if we did not get form data we dispatch the add_computer jsp file.
+        if(computerData == null) {	        
+            request.getRequestDispatcher(ADD_COMPUTER_JSP).forward(request, response);
+        } else {
+            // read the company id from request
+            Long companyId = null;
+            if(request.getParameter("companyId") != null) {
+                companyId = Long.valueOf(request.getParameter("companyId"));
+            }
+            // attempt to create computer, if we can't we redirect to ADD_COMPUTER_JSP, else to EDIT_COMPUTER_JSP
+            Computer newComputer = null;
+            try {
+                newComputer = cdb.createComputer(computerData, companyId);
             } catch (WrongObjectStateException e) {
                 LOGGER.debug(ADD_COMPUTER_URL,e);
+                request.setAttribute("warning", e.getMessage());
             } finally {
                 if(newComputer == null) {
                     // should maybe help prefill form
                     request.getRequestDispatcher(ADD_COMPUTER_JSP).forward(request, response);
                 } else {
+                    // redirect to edit page
                     response.sendRedirect(request.getContextPath() + EDIT_COMPUTER_URL + "?pk=" + newComputer.getId());
                 }
             }
-	    }
-    }
-	
-	private void editComputer(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        Long computerId = Long.valueOf(
-                request.getParameter("pk"));
-        Computer computerData = new Computer();
-        computerData.setId(computerId);
-        try {
-            computerData = cdb.showComputerDetails(computerData);
-        } catch (WrongObjectStateException e) {
-            e.printStackTrace();
         }
-        request.setAttribute("computer", computerData);
-        request.getRequestDispatcher(EDIT_COMPUTER_JSP).forward(request, response);
+    }
+
+    private void editComputer(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        LOGGER.debug(EDIT_COMPUTER_URL);
+        Computer computerData = null;
+        //check if we got form data from request
+        if(request.getParameter("id") != null
+                && request.getParameter("computerName") != null
+                && request.getParameter("computerName").length() != 0
+                && request.getParameter("introduced") != null
+                && request.getParameter("discontinued") != null) {          
+            computerData = new Computer(
+                    Long.valueOf(request.getParameter("id")),
+                    request.getParameter("computerName"),
+                    request.getParameter("introduced").length() == 0 ? null
+                            : LocalDate.parse(request.getParameter("introduced"), DateTimeFormatter.ISO_LOCAL_DATE).atStartOfDay(),
+                            request.getParameter("discontinued").length() == 0 ? null
+                                    : LocalDate.parse(request.getParameter("discontinued"), DateTimeFormatter.ISO_LOCAL_DATE).atStartOfDay(),
+                                    null
+                    );
+        }
+        //if we did not get form data we get the computer data frmo database
+        if(computerData == null) {
+            Long computerId = Long.valueOf(
+                    request.getParameter("pk"));
+            computerData = new Computer();
+            computerData.setId(computerId);
+            try {
+                computerData = cdb.showComputerDetails(computerData);
+            } catch (WrongObjectStateException e) {
+                e.printStackTrace();
+            }
+            request.setAttribute("computer", computerData);
+            request.getRequestDispatcher(EDIT_COMPUTER_JSP).forward(request, response);
+        } else { // if we got form data
+            // read the company id from request
+            Long companyId = null;
+            if(request.getParameter("companyId") != null) {
+                companyId = Long.valueOf(request.getParameter("companyId"));
+            }
+            Computer updatedComputer = null;
+            try { // update the computer info in the database
+                updatedComputer = cdb.updateComputer(computerData, companyId);
+                LOGGER.debug(updatedComputer.toString());
+            } catch (WrongObjectStateException e) {
+                LOGGER.debug(EDIT_COMPUTER_URL,e);
+                request.setAttribute("warning", e.getMessage());
+            } finally { // return to edit page
+                if(updatedComputer == null) {
+                    request.setAttribute("computer", computerData);
+                } else {
+                    request.setAttribute("computer", updatedComputer);
+                    request.setAttribute("updatedWithSuccess", true);
+                }
+                request.getRequestDispatcher(EDIT_COMPUTER_JSP).forward(request, response);
+            }
+        }
     }
 
 }
