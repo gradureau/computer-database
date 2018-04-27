@@ -3,6 +3,8 @@ package com.excilys.gradureau.computer_database.servlet;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
 import java.util.stream.Collectors;
@@ -30,7 +32,8 @@ import com.excilys.gradureau.computer_database.util.PropertyFileUtility;
 @WebServlet(urlPatterns = {
         MainServlet.DASHBOARD_URL,
         MainServlet.ADD_COMPUTER_URL,
-        MainServlet.EDIT_COMPUTER_URL
+        MainServlet.EDIT_COMPUTER_URL,
+        MainServlet.DELETE_COMPUTER_URL
 }, loadOnStartup = 0)
 public class MainServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
@@ -44,6 +47,7 @@ public class MainServlet extends HttpServlet {
     public static final String DASHBOARD_URL = "/dashboard";
     public static final String ADD_COMPUTER_URL = "/add-computer";
     public static final String EDIT_COMPUTER_URL = "/edit-computer";
+    public static final String DELETE_COMPUTER_URL = "/delete-computers";
 
     //JSP FILES
     public static final String DASHBOARD_JSP = "jsp/dashboard.jsp";
@@ -78,10 +82,31 @@ public class MainServlet extends HttpServlet {
         case EDIT_COMPUTER_URL:
             editComputer(request, response);
             break;
+        case DELETE_COMPUTER_URL:
+            deleteComputer(request, response);
+            break;
         }
     }
 
+    private void deleteComputer(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        LOGGER.debug(DELETE_COMPUTER_URL);
+        String[] computerIdsToDelete = request.getParameter("selection").split(",");
+        LOGGER.debug(DELETE_COMPUTER_URL, computerIdsToDelete.length);
+        LOGGER.debug(DELETE_COMPUTER_URL, Arrays.asList(computerIdsToDelete));
+        for(String computerId : computerIdsToDelete) {
+            Computer computerToDelete = new Computer();
+            try {
+                computerToDelete.setId(Long.valueOf(computerId));
+                cdb.deleteComputer(computerToDelete);
+            } catch (WrongObjectStateException | NumberFormatException e) {
+                LOGGER.debug(DELETE_COMPUTER_URL, e);
+            }
+        }
+        response.sendRedirect(request.getContextPath() + DASHBOARD_URL);
+    }
+
     private void dashboard(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        LOGGER.debug(DASHBOARD_URL);
         List<ComputerDTO> computers = cdb.listComputers().getContent().stream()
                 .map(c -> new ComputerDTO(c))
                 .collect(Collectors.toList());

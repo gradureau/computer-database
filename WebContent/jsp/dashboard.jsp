@@ -41,7 +41,7 @@
 			</div>
 		</div>
 
-		<form id="deleteForm" action="#" method="POST">
+		<form id="deleteForm" action="delete-computers" method="POST">
 			<input type="hidden" name="selection" value="">
 		</form>
 
@@ -73,7 +73,7 @@
 					<c:forEach var="computer" items="${computers}">
 						<tr>
 							<td class="editMode"><input type="checkbox"
-								name="deleteItem" class="cb" value="0"></td>
+								name="deleteItem" class="cb" value="${computer.id}"></td>
 							<td><a href="edit-computer?pk=${computer.id}" onclick="">${computer.name}</a>
 							</td>
 							<td><javatime:format value="${computer.introduced}"
