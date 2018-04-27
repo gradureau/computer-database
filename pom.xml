@@ -33,7 +33,7 @@
 			<artifactId>jstl</artifactId>
 			<version>1.2</version>
 		</dependency>
-		
+
 		<!-- https://github.com/sargue/java-time-jsptags -->
 		<dependency>
 			<groupId>net.sargue</groupId>
@@ -103,6 +103,14 @@
 
 	<build>
 		<plugins>
+
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-war-plugin</artifactId>
+				<configuration>
+					<webXml>WebContent/WEB-INF/web.xml</webXml>
+				</configuration>
+			</plugin>
 
 			<!-- Test -->
 			<plugin>
