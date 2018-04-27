@@ -15,7 +15,7 @@ public class CompanyDAO extends DAO<Company> {
 
     private static final String QUERY_FIND_ALL = "SELECT id, name FROM company;";
     private static final String QUERY_FIND = "SELECT id, name FROM company WHERE id = ?;";
-    private static final String QUERY_LIMIT_ALL = "SELECT id, name FROM company LIMIT ?, ?;";
+    private static final String QUERY_LIMIT_ALL = "SELECT id, name FROM company order by name LIMIT ?, ? ;";
 
     public CompanyDAO(Connection connection) {
         super(connection);

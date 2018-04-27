@@ -23,7 +23,7 @@ public class ComputerDAO extends DAO<Computer> {
     private static final String QUERY_CREATE = "INSERT INTO computer (name,introduced,discontinued,company_id) VALUES (?,?,?,?);";
     private static final String QUERY_UPDATE = "UPDATE computer SET name = ?, introduced = ?, discontinued = ?, company_id = ? WHERE id = ?;";
     private static final String QUERY_DELETE = "DELETE FROM computer WHERE id = ?;";
-    private static final String QUERY_LIMIT_ALL = QUERY_FIND_ALL + " LIMIT ?, ?;";
+    private static final String QUERY_LIMIT_ALL = QUERY_FIND_ALL + " order by introduced desc, id LIMIT ?, ?;";
 
     public ComputerDAO(Connection connection) {
         super(connection);

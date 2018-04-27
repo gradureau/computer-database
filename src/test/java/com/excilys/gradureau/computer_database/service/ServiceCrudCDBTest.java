@@ -36,7 +36,7 @@ public class ServiceCrudCDBTest {
 
     @Test
     public void createComputerWithNameAndNiceDates() throws WrongObjectStateException {
-        LocalDateTime now = LocalDateTime.now();
+        LocalDateTime now = LocalDateTime.now().minusYears(30L);
         LocalDateTime beforeNow = now.minusDays(1);
         Computer niceComputerWithDates = new Computer(null, "computerName", beforeNow, now, null);
         assertTrue(CDB.createComputer(niceComputerWithDates) instanceof Computer);
@@ -56,7 +56,7 @@ public class ServiceCrudCDBTest {
 
     @Test
     public void createComputerWithWrongCombinationOfDates() {
-        LocalDateTime now = LocalDateTime.now();
+        LocalDateTime now = LocalDateTime.now().minusYears(30L);
         LocalDateTime beforeNow = now.minusDays(1);
         Computer computerWithWrongCombinationOfDates = new Computer(null, "computerName", now, beforeNow, null);
         assertThrows(WrongObjectStateException.class, () -> CDB.createComputer(computerWithWrongCombinationOfDates));
@@ -139,7 +139,7 @@ public class ServiceCrudCDBTest {
     
     @Test
     public void updateComputerIntroducedDate() throws WrongObjectStateException {
-        LocalDateTime date = LocalDateTime.now();
+        LocalDateTime date = LocalDateTime.now().minusYears(30L);
         Computer computerWithNewIntroducedDate = new Computer(3L, "updatedName", date, null, null);
         assertEquals(date, CDB.updateComputer(computerWithNewIntroducedDate).getIntroduced());
     }
@@ -160,38 +160,40 @@ public class ServiceCrudCDBTest {
 
     @Test
     public void listCompaniesDefault() {
-        int defaultOffset = 0;
         int defaultPageSize = 20;
+        Long firstCompanyIdInAlphanumericOrder = 22L;
         Page<Company> companiesPage = CDB.listCompanies();
         assertSame(defaultPageSize, companiesPage.getContent().size());
-        assertSame(1L + defaultOffset, companiesPage.getContent().get(0).getId());
+        assertSame(firstCompanyIdInAlphanumericOrder, companiesPage.getContent().get(0).getId());
     }
 
     @Test
     public void listCompaniesOffset() {
         int offset = 3;
         int pageSize = 15;
+        Long expectedCompanyId = 38L;
         Page<Company> companiesPage = CDB.listCompanies(offset, pageSize);
         assertSame(pageSize, companiesPage.getContent().size());
-        assertSame(1L + offset, companiesPage.getContent().get(0).getId());
+        assertSame(expectedCompanyId, companiesPage.getContent().get(0).getId());
     }
 
     @Test
     public void listComputersDefault() {
-        int defaultOffset = 0;
         int defaultPageSize = 20;
+        Long firstComputerIdInAlphanumericOrder = 27L;
         Page<Computer> computersPage = CDB.listComputers();
         assertSame(defaultPageSize, computersPage.getContent().size());
-        assertSame(1L + defaultOffset, computersPage.getContent().get(0).getId());
+        assertSame(firstComputerIdInAlphanumericOrder, computersPage.getContent().get(0).getId());
     }
 
     @Test
     public void listComputersOffset() {
         int offset = 3;
         int pageSize = 15;
+        Long expectedComputerId = 25L;
         Page<Computer> computersPage = CDB.listComputers(offset, pageSize);
         assertSame(pageSize, computersPage.getContent().size());
-        assertSame(1L + offset, computersPage.getContent().get(0).getId());
+        assertSame(expectedComputerId, computersPage.getContent().get(0).getId());
     }
 
 }
