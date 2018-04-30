@@ -146,7 +146,23 @@ public class ComputerDAO extends DAO<Computer> {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        return new Page<>(computers, start, resultsCount);
+        Page<Computer> page = new Page<>(computers, start, resultsCount);
+        page.setPageable(this::pagination);
+        page.setTotalResultsCounter(this::countAll);
+        return  page;
+    }
+    
+    public Integer countAll() {
+        Integer count = null;
+        try {
+            ResultSet rs = connection.createStatement().executeQuery("SELECT Count(id) as total FROM computer");
+            if(rs.next()) {
+                count = rs.getInt("total");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return count;
     }
 
 }

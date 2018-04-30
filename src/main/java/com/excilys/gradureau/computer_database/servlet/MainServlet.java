@@ -3,7 +3,6 @@ package com.excilys.gradureau.computer_database.servlet;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
@@ -24,6 +23,7 @@ import com.excilys.gradureau.computer_database.model.Computer;
 import com.excilys.gradureau.computer_database.persistance.ConnectionMysqlSingleton;
 import com.excilys.gradureau.computer_database.service.ICrudCDB;
 import com.excilys.gradureau.computer_database.service.ServiceCrudCDB;
+import com.excilys.gradureau.computer_database.util.Page;
 import com.excilys.gradureau.computer_database.util.PropertyFileUtility;
 
 /**
@@ -39,7 +39,7 @@ public class MainServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
     private static final Logger LOGGER = LoggerFactory.getLogger(MainServlet.class);
 
-    private ICrudCDB cdb;
+    private ICrudCDB cdb; 
 
     private static final String DB_CONFIG_FILEPATH = "database.properties";
 
@@ -91,8 +91,6 @@ public class MainServlet extends HttpServlet {
     private void deleteComputer(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         LOGGER.debug(DELETE_COMPUTER_URL);
         String[] computerIdsToDelete = request.getParameter("selection").split(",");
-        LOGGER.debug(DELETE_COMPUTER_URL, computerIdsToDelete.length);
-        LOGGER.debug(DELETE_COMPUTER_URL, Arrays.asList(computerIdsToDelete));
         for(String computerId : computerIdsToDelete) {
             Computer computerToDelete = new Computer();
             try {
@@ -107,9 +105,23 @@ public class MainServlet extends HttpServlet {
 
     private void dashboard(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         LOGGER.debug(DASHBOARD_URL);
-        List<ComputerDTO> computers = cdb.listComputers().getContent().stream()
+        String pageNoParameter = request.getParameter("pageNo");
+        String resultsPerPageParameter = request.getParameter("resultsPerPage");
+        int requestedPage = Integer.parseInt(
+                pageNoParameter == null ? "1" : pageNoParameter);
+        int resultsPerPage = Integer.parseInt(
+                resultsPerPageParameter == null ? "10" : resultsPerPageParameter);
+        int offset = (requestedPage - 1) * resultsPerPage;
+        Page<Computer> page = cdb.listComputers(
+                offset,
+                resultsPerPage
+                );
+        List<ComputerDTO> computers = page.getContent().stream()
                 .map(c -> new ComputerDTO(c))
                 .collect(Collectors.toList());
+        request.setAttribute("resultsFound", page.getTotal(true));
+        request.setAttribute("uri", request.getRequestURI());
+        request.setAttribute("page", page);
         request.setAttribute("computers", computers);
         request.getRequestDispatcher(DASHBOARD_JSP).forward(request, response);  
     }

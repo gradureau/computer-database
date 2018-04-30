@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@ taglib uri="http://sargue.net/jsptags/time" prefix="javatime"%>
+<%@ taglib uri="cdb-tags" prefix="mylib" %>  
 <html>
 <head>
 <title>Computer Database</title>
@@ -22,7 +23,7 @@
 
 	<section id="main">
 		<div class="container">
-			<h1 id="homeTitle">121 Computers found</h1>
+			<h1 id="homeTitle">${requestScope.resultsFound} Computers found</h1>
 			<div id="actions" class="form-horizontal">
 				<div class="pull-left">
 					<form id="searchForm" action="#" method="GET" class="form-inline">
@@ -90,6 +91,9 @@
 
 	<footer class="navbar-fixed-bottom">
 		<div class="container text-center">
+			<div>
+				<mylib:pagination uri="${requestScope.uri}" page="${requestScope.page}" refreshCount="FALSE"/>
+			</div>
 			<ul class="pagination">
 				<li><a href="#" aria-label="Previous"> <span
 						aria-hidden="true">&laquo;</span>

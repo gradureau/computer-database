@@ -2,13 +2,23 @@ package com.excilys.gradureau.computer_database.util;
 
 import java.util.Iterator;
 import java.util.List;
+import java.util.function.Supplier;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class Page<T> implements Iterable<T> {
+    private static final Logger LOGGER = LoggerFactory.getLogger(Page.class);
+    
     private List<T> content;
     private boolean hasPreviousPage, hasNextPage;
     private Pageable pageable;
+    private Supplier<Integer> totalResultsCounter;
 
-    private int start, resultsCount;
+    // the start offset (!= page number), and the number of results per page (!= total)
+    private int start, resultsPerPageCount;
+    
+    private Integer total;
 
     public Page(List<T> content, int start, int resultsCount) {
         super();
@@ -20,7 +30,7 @@ public class Page<T> implements Iterable<T> {
         }
         this.content = content;
         this.start = start;
-        this.resultsCount = resultsCount;
+        this.resultsPerPageCount = resultsCount;
         hasPreviousPage = (start > 0);
         hasNextPage = (content.size() == resultsCount);
     }
@@ -30,26 +40,40 @@ public class Page<T> implements Iterable<T> {
     }
 
     public Page<?> getNextPage() {
-        return pageable.pagination(start + resultsCount, resultsCount);
+        Page<?> nextPage = pageable.pagination(start + resultsPerPageCount, resultsPerPageCount);
+        nextPage.setPageable(pageable);
+        nextPage.setTotalResultsCounter(totalResultsCounter);
+        return nextPage;
     }
 
     public Page<?> getPreviousPage() {
-        int offset = start - resultsCount;
+        int offset = start - resultsPerPageCount;
         if (offset < 0) {
             offset = 0;
         }
-        return pageable.pagination(offset, resultsCount);
+        Page<?> previousPage = pageable.pagination(offset, resultsPerPageCount);
+        previousPage.setPageable(pageable);
+        previousPage.setTotalResultsCounter(totalResultsCounter);
+        return previousPage;
+    }
+    
+    public Page<?> getPageFromPageNumber(int pageNumber) {
+        int offset = (pageNumber - 1) * resultsPerPageCount;
+        Page<?> requestedPage = pageable.pagination(offset, resultsPerPageCount);
+        requestedPage.setPageable(pageable);
+        requestedPage.setTotalResultsCounter(totalResultsCounter);
+        return requestedPage;
     }
 
     public List<T> getContent() {
         return content;
     }
 
-    public boolean isHasPreviousPage() {
+    public boolean hasPreviousPage() {
         return hasPreviousPage;
     }
 
-    public boolean isHasNextPage() {
+    public boolean hasNextPage() {
         return hasNextPage;
     }
 
@@ -57,8 +81,8 @@ public class Page<T> implements Iterable<T> {
         return start;
     }
 
-    public int getResultsCount() {
-        return resultsCount;
+    public int getResultsPerPageCount() {
+        return resultsPerPageCount;
     }
 
     public Pageable getPageable() {
@@ -68,10 +92,48 @@ public class Page<T> implements Iterable<T> {
     public void setPageable(Pageable pageable) {
         this.pageable = pageable;
     }
+    
+    public Supplier<Integer> getTotalResultsCounter() {
+        return totalResultsCounter;
+    }
+    
+    public void setTotalResultsCounter(Supplier<Integer> totalResultsCounter) {
+        this.totalResultsCounter = totalResultsCounter;
+    }
+    
+    public int getTotal() {
+        return total;
+    }
+    
+    public int getTotal(boolean refresh) {
+        if(refresh && totalResultsCounter != null) {
+            total = totalResultsCounter.get();
+            return total;
+        }
+        else {
+            LOGGER.warn("no result counter set, cannot update total");
+            return total;
+        }
+    }
+
+    public int getCurrentPageNumber() {
+        return start / resultsPerPageCount + 1;
+    }
+    
+    public int getLastPageNumber() {
+        return getLastPageNumber(false);
+    }
+    
+    public int getLastPageNumber(boolean refresh) {
+        int total = getTotal(refresh);
+        return total / resultsPerPageCount
+                + (total % resultsPerPageCount == 0 ? 0 : 1);
+    }
 
     @Override
     public Iterator<T> iterator() {
         return content.iterator();
     }
+
 
 }

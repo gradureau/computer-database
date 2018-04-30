@@ -3,17 +3,27 @@
 	xmlns="http://java.sun.com/xml/ns/javaee"
 	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd"
 	version="3.0">
+
 	<display-name>computer_database</display-name>
+
 	<welcome-file-list>
 		<welcome-file>dashboard</welcome-file>
 	</welcome-file-list>
+
+	<jsp-config>
+		<taglib>
+			<taglib-uri>cdb-tags</taglib-uri>
+			<taglib-location>/WEB-INF/cdb_tags.tld</taglib-location>
+		</taglib>
+	</jsp-config>
+
 	<error-page>
 		<error-code>500</error-code>
 		<location>/static/views/500.html</location>
 	</error-page>
 	<error-page>
-	  <exception-type>java.lang.NumberFormatException</exception-type>  
-	  <location>/static/views/404.html</location>  
+		<exception-type>java.lang.NumberFormatException</exception-type>
+		<location>/static/views/404.html</location>
 	</error-page>
 	<error-page>
 		<error-code>404</error-code>
@@ -23,4 +33,5 @@
 		<error-code>403</error-code>
 		<location>/static/views/403.html</location>
 	</error-page>
+
 </web-app>

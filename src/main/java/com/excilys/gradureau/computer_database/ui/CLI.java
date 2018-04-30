@@ -41,7 +41,7 @@ public class CLI {
         page.forEach(System.out::println);
         System.out.print("offset: " + page.getStart());
         System.out.print(" _ " + page.getContent().size());
-        System.out.println(" of " + page.getResultsCount() + " requested");
+        System.out.println(" of " + page.getResultsPerPageCount() + " requested");
     }
 
     private static LocalDateTime readDate(Scanner scan, String dateName) {

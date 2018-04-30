@@ -27,3 +27,8 @@ input[type='checkbox'] {
     border-radius: 5px;
     white-space: nowrap;
 }
+
+.pagination > li > a.active {
+	background: #337ab7;
+	color: white;
+}
