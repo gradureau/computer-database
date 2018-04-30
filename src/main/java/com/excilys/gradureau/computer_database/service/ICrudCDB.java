@@ -24,7 +24,7 @@ public interface ICrudCDB {
 
     Page<Company> listCompanies(int start, int resultsCount);
 
-    /**
+    /** 
      * @param computer
      *            with a defined Long id
      * @return the computer object with updated values from database
@@ -73,4 +73,13 @@ public interface ICrudCDB {
      * @throws WrongObjectStateException if Computer.id is not set.
      */
     void deleteComputer(Computer computer) throws WrongObjectStateException;
+    
+    /**
+     * @param nameFilter
+     * @return 
+     */
+    Page<Computer> filterByName(String nameFilter, int start, int resultsCount);
+    default Page<Computer> filterByName(String nameFilter) {
+        return filterByName(nameFilter, 0, 20);
+    }
 }

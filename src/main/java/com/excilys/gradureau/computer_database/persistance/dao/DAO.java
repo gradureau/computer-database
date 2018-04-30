@@ -2,6 +2,7 @@ package com.excilys.gradureau.computer_database.persistance.dao;
 
 import java.sql.Connection;
 import java.util.List;
+import java.util.Map;
 
 import com.excilys.gradureau.computer_database.util.Page;
 
@@ -44,4 +45,7 @@ public abstract class DAO<T> {
         List<T> list = findAll();
         return new Page<>(list, 0, list.size());
     }
+    
+    public abstract Page<T> filterBy(Map<String,String> criterias, int start, int resultsCount);
+    
 }

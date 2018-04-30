@@ -7,6 +7,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import com.excilys.gradureau.computer_database.model.Company;
 import com.excilys.gradureau.computer_database.util.Page;
@@ -84,6 +85,11 @@ public class CompanyDAO extends DAO<Company> {
             e.printStackTrace();
         }
         return new Page<>(companies, start, resultsCount);
+    }
+
+    @Override
+    public Page<Company> filterBy(Map<String, String> criterias, int start, int resultsCount) {
+        throw new UnsupportedOperationException();
     }
 
 }

@@ -3,6 +3,7 @@ package com.excilys.gradureau.computer_database.servlet;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
 import java.util.stream.Collectors;
@@ -107,6 +108,8 @@ public class MainServlet extends HttpServlet {
 
     private void dashboard(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         LOGGER.debug(DASHBOARD_URL);
+        
+        // pagination logic
         String pageNoParameter = request.getParameter("pageNo");
         String resultsPerPageParameter = request.getParameter("resultsPerPage");
         int requestedPage = Integer.parseInt(
@@ -114,15 +117,27 @@ public class MainServlet extends HttpServlet {
         int resultsPerPage = Integer.parseInt(
                 resultsPerPageParameter == null ? "10" : resultsPerPageParameter);
         int offset = (requestedPage - 1) * resultsPerPage;
-        Page<Computer> page = cdb.listComputers(
-                offset,
-                resultsPerPage
-                );
+        
+        Page<Computer> page;
+        
+        // search logic
+        String searchedKeyWords = request.getParameter("search");
+        if(searchedKeyWords != null) {
+            page = cdb.filterByName(searchedKeyWords, offset, resultsPerPage);
+            request.setAttribute("searchedKeyWords", searchedKeyWords);
+            request.setAttribute("uri", request.getRequestURI() + "?search=" + searchedKeyWords);
+        } else {
+            page = cdb.listComputers(
+                    offset,
+                    resultsPerPage
+                    );
+            request.setAttribute("uri", request.getRequestURI());
+        }
         List<ComputerDTO> computers = page.getContent().stream()
                 .map(c -> new ComputerDTO(c))
                 .collect(Collectors.toList());
+        
         request.setAttribute("resultsFound", page.getTotal(true));
-        request.setAttribute("uri", request.getRequestURI());
         request.setAttribute("page", page);
         request.setAttribute("computers", computers);
         request.getRequestDispatcher(DASHBOARD_JSP).forward(request, response);  

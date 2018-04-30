@@ -26,6 +26,10 @@
 		<location>/static/views/404.html</location>
 	</error-page>
 	<error-page>
+		<exception-type>java.lang.UnsupportedOperationException</exception-type>
+		<location>/static/views/coming_soon.html</location>
+	</error-page>
+	<error-page>
 		<error-code>404</error-code>
 		<location>/static/views/404.html</location>
 	</error-page>

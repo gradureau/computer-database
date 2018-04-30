@@ -1,6 +1,8 @@
 package com.excilys.gradureau.computer_database.service;
 
 import java.sql.Connection;
+import java.util.HashMap;
+import java.util.Map;
 
 import com.excilys.gradureau.computer_database.exception.WrongObjectStateException;
 import com.excilys.gradureau.computer_database.model.Company;
@@ -77,6 +79,14 @@ public class ServiceCrudCDB implements ICrudCDB {
     public void deleteComputer(Computer computer) throws WrongObjectStateException {
         ComputerValidator.checkId(computer);
         computerDAO.delete(computer);
+    }
+
+    @Override
+    public Page<Computer> filterByName(String nameFilter, int start, int resultsCount) {
+        String fieldName = "name";
+        Map<String,String> criterias = new HashMap<>();
+        criterias.put(fieldName, nameFilter);
+        return computerDAO.filterBy(criterias, start, resultsCount);
     }
 
 }

@@ -11,6 +11,7 @@ import com.excilys.gradureau.computer_database.util.Page;
 
 public class PaginationTag extends SimpleTagSupport {
     private String uri;
+    private boolean hasParameter;
     private Page<Object> page;
     private int maxLinks = 5;
     private boolean refreshCount = true;
@@ -25,6 +26,7 @@ public class PaginationTag extends SimpleTagSupport {
 
     public void setUri(String uri) {
         this.uri = uri;
+        hasParameter = uri.contains("?");
     }
 
     public void setMaxLinks(int maxLinks) {
@@ -119,7 +121,8 @@ public class PaginationTag extends SimpleTagSupport {
     
     private void addUri(StringBuilder writer, int page, int resultsPerPageCount) {
         writer.append(uri);
-        writer.append("?resultsPerPage=");
+        writer.append(hasParameter ? "&" : "?");
+        writer.append("resultsPerPage=");
         writer.append(resultsPerPageCount);
         writer.append("&pageNo=");
         writer.append(page);

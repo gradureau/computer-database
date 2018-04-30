@@ -106,14 +106,14 @@ public class Page<T> implements Iterable<T> {
     }
     
     public int getTotal(boolean refresh) {
-        if(refresh && totalResultsCounter != null) {
-            total = totalResultsCounter.get();
-            return total;
+        if(refresh) {
+            if(totalResultsCounter != null) {
+                total = totalResultsCounter.get();
+            } else {
+                LOGGER.warn("no result counter set, cannot update total");
+            }
         }
-        else {
-            LOGGER.warn("no result counter set, cannot update total");
-            return total;
-        }
+        return total;
     }
 
     public int getCurrentPageNumber() {
