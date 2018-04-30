@@ -47,6 +47,9 @@
                                 <select class="form-control" id="companyId" name="companyId">
                                     <option value="0">--</option>
                                     <option value="${computer.company.id}" selected>${computer.company.name}</option>
+                                    <c:forEach var="company" items="${requestScope.companies}">
+                                    <option value="${company.id}">${company.name}</option>
+                                    </c:forEach>
                                 </select>
                             </div>
                         </fieldset>

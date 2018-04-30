@@ -3,7 +3,6 @@ package com.excilys.gradureau.computer_database.servlet;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
 import java.util.stream.Collectors;
@@ -19,6 +18,7 @@ import org.slf4j.LoggerFactory;
 
 import com.excilys.gradureau.computer_database.dto.ComputerDTO;
 import com.excilys.gradureau.computer_database.exception.WrongObjectStateException;
+import com.excilys.gradureau.computer_database.model.Company;
 import com.excilys.gradureau.computer_database.model.Computer;
 import com.excilys.gradureau.computer_database.persistance.ConnectionMysqlSingleton;
 import com.excilys.gradureau.computer_database.service.ICrudCDB;
@@ -38,8 +38,9 @@ import com.excilys.gradureau.computer_database.util.PropertyFileUtility;
 public class MainServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
     private static final Logger LOGGER = LoggerFactory.getLogger(MainServlet.class);
-
-    private ICrudCDB cdb; 
+    private static final int COMPANIES_COUNT = 42;
+    private ICrudCDB cdb;
+    private final List<Company> COMPANIES;
 
     private static final String DB_CONFIG_FILEPATH = "database.properties";
 
@@ -62,6 +63,7 @@ public class MainServlet extends HttpServlet {
                 databaseConnectionProperties.getProperty("DB_USER"),
                 databaseConnectionProperties.getProperty("DB_PASSWORD")
                 ));
+        COMPANIES = cdb.listCompanies(0, COMPANIES_COUNT).getContent();
     }
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -145,7 +147,8 @@ public class MainServlet extends HttpServlet {
                     );
         }
         //if we did not get form data we dispatch the add_computer jsp file.
-        if(computerData == null) {	        
+        if(computerData == null) {
+            request.setAttribute("companies", COMPANIES);
             request.getRequestDispatcher(ADD_COMPUTER_JSP).forward(request, response);
         } else {
             // read the company id from request
@@ -163,6 +166,7 @@ public class MainServlet extends HttpServlet {
             } finally {
                 if(newComputer == null) {
                     // should maybe help prefill form
+                    request.setAttribute("companies", COMPANIES);
                     request.getRequestDispatcher(ADD_COMPUTER_JSP).forward(request, response);
                 } else {
                     // redirect to edit page
@@ -174,6 +178,8 @@ public class MainServlet extends HttpServlet {
 
     private void editComputer(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         LOGGER.debug(EDIT_COMPUTER_URL);
+        request.setAttribute("companies", COMPANIES);
+        
         Computer computerData = null;
         //check if we got form data from request
         if(request.getParameter("id") != null
