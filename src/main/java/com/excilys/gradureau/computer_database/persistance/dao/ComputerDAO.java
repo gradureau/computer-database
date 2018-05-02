@@ -8,8 +8,11 @@ import java.sql.Statement;
 import java.sql.Timestamp;
 import java.sql.Types;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import org.slf4j.Logger;
 
 import com.excilys.gradureau.computer_database.model.Computer;
 import com.excilys.gradureau.computer_database.persistance.dao.mapper.ComputerMapper;
@@ -174,11 +177,11 @@ public class ComputerDAO extends DAO<Computer> {
         
         int criteriasSize = criterias.size();
         int fieldIndex = 1;
+        Map<Integer,String> parametersToEscape = new HashMap<>(criteriasSize);
         for( String fieldName : criterias.keySet() ) {
             stringBuilder.append( fieldName );
-            stringBuilder.append( " LIKE '%");
-            stringBuilder.append(criterias.get(fieldName));
-            stringBuilder.append("%' ");
+            stringBuilder.append( " LIKE ?");
+            parametersToEscape.put(fieldIndex, criterias.get(fieldName));
             if( fieldIndex++ < criteriasSize ) {
                 stringBuilder.append("AND ");
             }
@@ -186,8 +189,11 @@ public class ComputerDAO extends DAO<Computer> {
         final String finalQuery = QUERY_FIND_ALL + stringBuilder.toString() + " order by introduced desc, id LIMIT ?, ?";
         try {
             PreparedStatement ps = connection.prepareStatement(finalQuery);
-            ps.setInt(1, start);
-            ps.setInt(2, resultsCount);
+            for(int i = 1; i <= criteriasSize; ++i) {
+                ps.setString(i, "%" + parametersToEscape.get(i) + "%");
+            }
+            ps.setInt(criteriasSize + 1, start);
+            ps.setInt(criteriasSize + 2, resultsCount);
             ResultSet res = ps.executeQuery();
             while (res.next()) {
                 filteredComputers.add(ComputerMapper.valueOf(res));
@@ -200,7 +206,11 @@ public class ComputerDAO extends DAO<Computer> {
         page.setTotalResultsCounter( () -> {
             Integer count = null;
             try {
-                ResultSet rs = connection.createStatement().executeQuery("SELECT Count(pc.id) as total FROM computer pc" + stringBuilder.toString());
+                PreparedStatement ps = connection.prepareStatement("SELECT Count(pc.id) as total FROM computer pc" + stringBuilder.toString());
+                for(int i = 1; i <= criteriasSize; ++i) {
+                    ps.setString(i, "%" + parametersToEscape.get(i) + "%");
+                }
+                ResultSet rs = ps.executeQuery();
                 if(rs.next()) {
                     count = rs.getInt("total");
                 }
