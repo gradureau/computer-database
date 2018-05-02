@@ -168,7 +168,48 @@ public class ComputerDAO extends DAO<Computer> {
 
     @Override
     public Page<Computer> filterBy(Map<String, String> criterias, int start, int resultsCount) {
-        throw new UnsupportedOperationException();
+        List<Computer> filteredComputers = new ArrayList<>();
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append( " WHERE " );
+        
+        int criteriasSize = criterias.size();
+        int fieldIndex = 1;
+        for( String fieldName : criterias.keySet() ) {
+            stringBuilder.append( fieldName );
+            stringBuilder.append( " LIKE '%");
+            stringBuilder.append(criterias.get(fieldName));
+            stringBuilder.append("%' ");
+            if( fieldIndex++ < criteriasSize ) {
+                stringBuilder.append("AND ");
+            }
+        }
+        final String finalQuery = QUERY_FIND_ALL + stringBuilder.toString() + " order by introduced desc, id LIMIT ?, ?";
+        try {
+            PreparedStatement ps = connection.prepareStatement(finalQuery);
+            ps.setInt(1, start);
+            ps.setInt(2, resultsCount);
+            ResultSet res = ps.executeQuery();
+            while (res.next()) {
+                filteredComputers.add(ComputerMapper.valueOf(res));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        Page<Computer> page = new Page<>(filteredComputers, start, resultsCount);
+        page.setPageable( (_start, _resultsCount) -> filterBy(criterias, _start, _resultsCount) );
+        page.setTotalResultsCounter( () -> {
+            Integer count = null;
+            try {
+                ResultSet rs = connection.createStatement().executeQuery("SELECT Count(pc.id) as total FROM computer pc" + stringBuilder.toString());
+                if(rs.next()) {
+                    count = rs.getInt("total");
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+            return count;
+        });
+        return  page;
     }
 
 }

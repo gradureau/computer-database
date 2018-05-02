@@ -83,7 +83,7 @@ public class ServiceCrudCDB implements ICrudCDB {
 
     @Override
     public Page<Computer> filterByName(String nameFilter, int start, int resultsCount) {
-        String fieldName = "name";
+        String fieldName = "pc.name";
         Map<String,String> criterias = new HashMap<>();
         criterias.put(fieldName, nameFilter);
         return computerDAO.filterBy(criterias, start, resultsCount);

@@ -3,7 +3,6 @@ package com.excilys.gradureau.computer_database.servlet;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
 import java.util.stream.Collectors;
@@ -201,7 +200,7 @@ public class MainServlet extends HttpServlet {
                 && request.getParameter("computerName") != null
                 && request.getParameter("computerName").length() != 0
                 && request.getParameter("introduced") != null
-                && request.getParameter("discontinued") != null) {          
+                && request.getParameter("discontinued") != null) {
             computerData = new Computer(
                     Long.valueOf(request.getParameter("id")),
                     request.getParameter("computerName"),
