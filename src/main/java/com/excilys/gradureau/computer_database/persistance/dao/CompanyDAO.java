@@ -8,6 +8,7 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import com.excilys.gradureau.computer_database.model.Company;
 import com.excilys.gradureau.computer_database.util.Page;
@@ -23,7 +24,7 @@ public class CompanyDAO extends DAO<Company> {
     }
 
     @Override
-    public Company find(long id) {
+    public Optional<Company> find(long id) {
         Company company = null;
         try {
             PreparedStatement ps = connection.prepareStatement(QUERY_FIND);
@@ -36,21 +37,21 @@ public class CompanyDAO extends DAO<Company> {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        return company;
+        return Optional.ofNullable(company);
     }
 
     @Override
-    public Company create(Company obj) {
+    public Optional<Company> create(Company obj) {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public Company update(Company obj) {
+    public Optional<Company> update(Company obj) {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public void delete(Company obj) {
+    public boolean delete(Company obj) {
         throw new UnsupportedOperationException();
     }
 

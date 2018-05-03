@@ -3,6 +3,7 @@ package com.excilys.gradureau.computer_database.persistance.dao;
 import java.sql.Connection;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import com.excilys.gradureau.computer_database.util.Page;
 
@@ -21,15 +22,15 @@ public abstract class DAO<T> {
      *            primary key
      * @return null if not found
      */
-    public abstract T find(long id);
+    public abstract Optional<T> find(long id);
 
     public abstract List<T> findAll();
 
-    public abstract T create(T obj);
+    public abstract Optional<T> create(T obj);
 
-    public abstract T update(T obj);
+    public abstract Optional<T> update(T obj);
 
-    public abstract void delete(T obj);
+    public abstract boolean delete(T obj);
 
     /**
      * This is a default implementation, it is inneficient as it is returning

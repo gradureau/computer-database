@@ -152,12 +152,12 @@ public class CLI {
         if (computerId != null) {
             Computer computer = new Computer();
             computer.setId(computerId);
-            computer = cdb.showComputerDetails(computer);
+            computer = cdb.showComputerDetails(computer).orElse(null);
             if (computer != null) {
                 computer = readUpdateComputerInfo(scan, computer);
                 Long companyId = readId(scan, "company");
                 LOGGER.debug("data = " + computer);
-                computer = cdb.updateComputer(computer, companyId);
+                computer = cdb.updateComputer(computer, companyId).orElse(null);
                 LOGGER.info("Computer updated :\n\t" + computer);
             } else {
                 LOGGER.warn("could not find computer");
@@ -170,7 +170,7 @@ public class CLI {
     private static void createComputer(ICrudCDB cdb, Scanner scan) throws WrongObjectStateException {
         Computer newComputer = readUpdateComputerInfo(scan, new Computer());
         Long companyId = readId(scan, "company");
-        newComputer = cdb.createComputer(newComputer, companyId);
+        newComputer = cdb.createComputer(newComputer, companyId).orElse(null);
         LOGGER.info("new Computer created :\n\t" + newComputer);
     }
 

@@ -1,5 +1,7 @@
 package com.excilys.gradureau.computer_database.service;
 
+import java.util.Optional;
+
 import com.excilys.gradureau.computer_database.exception.WrongObjectStateException;
 import com.excilys.gradureau.computer_database.model.Company;
 import com.excilys.gradureau.computer_database.model.Computer;
@@ -30,7 +32,7 @@ public interface ICrudCDB {
      * @return the computer object with updated values from database
      * @throws WrongObjectStateException if Computer.id not set
      */
-    Computer showComputerDetails(Computer computer) throws WrongObjectStateException;
+    Optional<Computer> showComputerDetails(Computer computer) throws WrongObjectStateException;
 
     /**
      * @param computer
@@ -39,7 +41,7 @@ public interface ICrudCDB {
      * @throws WrongObjectStateException if Computer.id is already set, does not have a name
      * or discontinued date is before introduced date
      */
-    Computer createComputer(Computer computer) throws WrongObjectStateException;
+    Optional<Computer> createComputer(Computer computer) throws WrongObjectStateException;
 
     /**
      * @param computer Computer without a defined Long id
@@ -48,7 +50,7 @@ public interface ICrudCDB {
      * @throws WrongObjectStateException if Computer.id is already set, does not have a name
      * or discontinued date is before introduced date
      */
-    Computer createComputer(Computer computer, Long companyId) throws WrongObjectStateException;
+    Optional<Computer> createComputer(Computer computer, Long companyId) throws WrongObjectStateException;
 
     /**
      * @param computer
@@ -57,7 +59,7 @@ public interface ICrudCDB {
      * @throws WrongObjectStateException if Computer.id is already set, does not have a name
      * or discontinued date is before introduced date
      */
-    Computer updateComputer(Computer computer) throws WrongObjectStateException;
+    Optional<Computer> updateComputer(Computer computer) throws WrongObjectStateException;
 
     /**
      * @param computer Computer with a defined Long id
@@ -66,13 +68,13 @@ public interface ICrudCDB {
      * @throws WrongObjectStateException if Computer.id is already set, does not have a name
      * or discontinued date is before introduced date
      */
-    Computer updateComputer(Computer computer, Long companyId) throws WrongObjectStateException;
+    Optional<Computer> updateComputer(Computer computer, Long companyId) throws WrongObjectStateException;
 
     /**
      * @param computer Computer to be deleted in database with a defined Long id
      * @throws WrongObjectStateException if Computer.id is not set.
      */
-    void deleteComputer(Computer computer) throws WrongObjectStateException;
+    boolean deleteComputer(Computer computer) throws WrongObjectStateException;
     
     /**
      * @param nameFilter

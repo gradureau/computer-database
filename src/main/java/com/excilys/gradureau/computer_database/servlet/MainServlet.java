@@ -154,20 +154,21 @@ public class MainServlet extends HttpServlet {
                 companyId = Long.valueOf(request.getParameter("companyId"));
             }
             // attempt to create computer, if we can't we redirect to ADD_COMPUTER_JSP, else to EDIT_COMPUTER_JSP
-            Computer newComputer = null;
+            Optional<Computer> optionalNewComputer = Optional.empty();
             try {
-                newComputer = cdb.createComputer(computerData, companyId);
+                optionalNewComputer = cdb.createComputer(computerData, companyId);
             } catch (WrongObjectStateException e) {
                 LOGGER.debug(ADD_COMPUTER_URL,e);
                 request.setAttribute("warning", e.getMessage());
             } finally {
-                if(newComputer == null) {
-                    // should maybe help prefill form
+                if(!optionalNewComputer.isPresent()) {
+                    // known issue : front end does not check introducedDate <= discontinuedDate
+                    LOGGER.error(ADD_COMPUTER_JSP + " FRONTEND VALIDATION SHOULD HAVE TAKEN CARE OF THIS");
                     request.setAttribute("companies", COMPANIES);
                     request.getRequestDispatcher(ADD_COMPUTER_JSP).forward(request, response);
                 } else {
                     // redirect to edit page
-                    response.sendRedirect(request.getContextPath() + EDIT_COMPUTER_URL + "?pk=" + newComputer.getId());
+                    response.sendRedirect(request.getContextPath() + EDIT_COMPUTER_URL + "?pk=" + optionalNewComputer.get().getId());
                 }
             }
         }
@@ -189,17 +190,17 @@ public class MainServlet extends HttpServlet {
                 companyId = Long.valueOf(request.getParameter("companyId"));
             }
             
-            Computer updatedComputer = null;
+            Optional<Computer> optionalUpdatedComputer = Optional.empty();
             try { // update the computer info in the database
-                updatedComputer = cdb.updateComputer(computerData, companyId);
+                optionalUpdatedComputer = cdb.updateComputer(computerData, companyId);
             } catch (WrongObjectStateException e) {
                 LOGGER.debug(EDIT_COMPUTER_URL,e);
                 request.setAttribute("warning", e.getMessage());
             } finally { // return to edit page
-                if(updatedComputer == null) {
+                if(!optionalUpdatedComputer.isPresent()) {
                     request.setAttribute("computer", computerData);
                 } else {
-                    request.setAttribute("computer", updatedComputer);
+                    request.setAttribute("computer", optionalUpdatedComputer.get());
                     request.setAttribute("updatedWithSuccess", true);
                 }
                 request.getRequestDispatcher(EDIT_COMPUTER_JSP).forward(request, response);
@@ -216,7 +217,7 @@ public class MainServlet extends HttpServlet {
         computerData = new Computer();
         computerData.setId(computerId);
         try {
-            computerData = cdb.showComputerDetails(computerData);
+            computerData = cdb.showComputerDetails(computerData).orElse(null);
         } catch (WrongObjectStateException e) {
             e.printStackTrace();
         }

@@ -3,6 +3,7 @@ package com.excilys.gradureau.computer_database.service;
 import java.sql.Connection;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 import com.excilys.gradureau.computer_database.exception.WrongObjectStateException;
 import com.excilys.gradureau.computer_database.model.Company;
@@ -34,51 +35,51 @@ public class ServiceCrudCDB implements ICrudCDB {
     }
 
     @Override
-    public Computer showComputerDetails(Computer computer) throws WrongObjectStateException {
+    public Optional<Computer> showComputerDetails(Computer computer) throws WrongObjectStateException {
         ComputerValidator.checkId(computer);
         return computerDAO.find(computer.getId());
     }
 
     @Override
-    public Computer createComputer(Computer computer) throws WrongObjectStateException {
+    public Optional<Computer> createComputer(Computer computer) throws WrongObjectStateException {
         ComputerValidator.checkId(computer, false);
         ComputerValidator.check(computer);
         return computerDAO.create(computer);
     }
 
     @Override
-    public Computer createComputer(Computer computer, Long companyId) throws WrongObjectStateException {
+    public Optional<Computer> createComputer(Computer computer, Long companyId) throws WrongObjectStateException {
         ComputerValidator.checkId(computer, false);
         ComputerValidator.check(computer);
         if (companyId != null) {
-            Company company = companyDAO.find(companyId);
-            computer.setCompany(company);
+            companyDAO.find(companyId)
+            .ifPresent(company -> computer.setCompany(company));
         }
         return computerDAO.create(computer);
     }
 
     @Override
-    public Computer updateComputer(Computer computer) throws WrongObjectStateException {
+    public Optional<Computer> updateComputer(Computer computer) throws WrongObjectStateException {
         ComputerValidator.checkId(computer);
         ComputerValidator.check(computer);
         return computerDAO.update(computer);
     }
 
     @Override
-    public Computer updateComputer(Computer computer, Long companyId) throws WrongObjectStateException {
+    public Optional<Computer> updateComputer(Computer computer, Long companyId) throws WrongObjectStateException {
         ComputerValidator.checkId(computer);
         ComputerValidator.check(computer);
         if (companyId != null) {
-            Company company = companyDAO.find(companyId);
-            computer.setCompany(company);
+            companyDAO.find(companyId)
+            .ifPresent(company -> computer.setCompany(company));
         }
         return computerDAO.update(computer);
     }
 
     @Override
-    public void deleteComputer(Computer computer) throws WrongObjectStateException {
+    public boolean deleteComputer(Computer computer) throws WrongObjectStateException {
         ComputerValidator.checkId(computer);
-        computerDAO.delete(computer);
+        return computerDAO.delete(computer);
     }
 
     @Override
