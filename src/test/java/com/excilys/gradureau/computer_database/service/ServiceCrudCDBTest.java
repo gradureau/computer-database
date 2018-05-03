@@ -10,6 +10,7 @@ import java.sql.Connection;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Optional;
 import java.util.Properties;
 
 import org.junit.jupiter.api.Test;
@@ -31,7 +32,7 @@ public class ServiceCrudCDBTest {
     @Test
     public void createComputerWithName() throws WrongObjectStateException {
         Computer niceComputer = new Computer(null, "computerName", null, null, null);
-        assertTrue(CDB.createComputer(niceComputer) instanceof Computer);
+        assertTrue(CDB.createComputer(niceComputer).orElse(null) instanceof Computer);
     }
 
     @Test
@@ -39,7 +40,7 @@ public class ServiceCrudCDBTest {
         LocalDateTime now = LocalDateTime.now().minusYears(30L);
         LocalDateTime beforeNow = now.minusDays(1);
         Computer niceComputerWithDates = new Computer(null, "computerName", beforeNow, now, null);
-        assertTrue(CDB.createComputer(niceComputerWithDates) instanceof Computer);
+        assertTrue(CDB.createComputer(niceComputerWithDates).orElse(null) instanceof Computer);
     }
 
     @Test
@@ -65,20 +66,20 @@ public class ServiceCrudCDBTest {
     @Test
     public void createComputerWithExistingCompanyId() throws WrongObjectStateException {
         Computer computerWithExistingCompanyId = new Computer(null, "computerName", null, null, null);
-        assertTrue(CDB.createComputer(computerWithExistingCompanyId, 1L).getCompany().getName().equals("Apple Inc."));
+        assertTrue(CDB.createComputer(computerWithExistingCompanyId, 1L).orElse(null).getCompany().getName().equals("Apple Inc."));
     }
 
     @Test
     public void createComputerWithNonExistingCompanyId() throws WrongObjectStateException {
         Computer computerWithNonExistingCompanyId = new Computer(null, "computerName", null, null, null);
-        assertTrue(CDB.createComputer(computerWithNonExistingCompanyId, Long.MAX_VALUE).getCompany() == null);
+        assertTrue(CDB.createComputer(computerWithNonExistingCompanyId, Long.MAX_VALUE).orElse(null).getCompany() == null);
     }
 
     @Test
     public void showComputerDetailsFindComputerData() throws WrongObjectStateException {
         Computer computerWithId = new Computer();
         computerWithId.setId(1L);
-        Computer computerFound = CDB.showComputerDetails(computerWithId);
+        Computer computerFound = CDB.showComputerDetails(computerWithId).orElse(null);
         assertTrue(computerFound.getName().equals("MacBook Pro 15.4 inch"));
     }
     
@@ -86,7 +87,7 @@ public class ServiceCrudCDBTest {
     public void showComputerDetailsFindIntroducedDate() throws WrongObjectStateException {
         Computer computerWithIntroducedDate = new Computer();
         computerWithIntroducedDate.setId(43L);
-        Computer computerFound = CDB.showComputerDetails(computerWithIntroducedDate);
+        Computer computerFound = CDB.showComputerDetails(computerWithIntroducedDate).orElse(null);
         assertEquals(LocalDate.parse("1993-10-21", DateTimeFormatter.ISO_LOCAL_DATE).atStartOfDay(),
                 computerFound.getIntroduced());
     }
@@ -95,7 +96,7 @@ public class ServiceCrudCDBTest {
     public void showComputerDetailsFindCompanyData() throws WrongObjectStateException {
         Computer computerWithId = new Computer();
         computerWithId.setId(1L);
-        Computer computerFound = CDB.showComputerDetails(computerWithId);
+        Computer computerFound = CDB.showComputerDetails(computerWithId).orElse(null);
         assertTrue(computerFound.getCompany().getName().equals("Apple Inc."));
     }
 
@@ -134,26 +135,26 @@ public class ServiceCrudCDBTest {
     @Test
     public void updateComputerWithComputerId() throws WrongObjectStateException {
         Computer computerWithId = new Computer(3L, "updatedName", null, null, null);
-        assertEquals("updatedName", CDB.updateComputer(computerWithId).getName());
+        assertEquals("updatedName", CDB.updateComputer(computerWithId).orElse(null).getName());
     }
     
     @Test
     public void updateComputerIntroducedDate() throws WrongObjectStateException {
         LocalDateTime date = LocalDateTime.now().minusYears(30L);
         Computer computerWithNewIntroducedDate = new Computer(3L, "updatedName", date, null, null);
-        assertEquals(date, CDB.updateComputer(computerWithNewIntroducedDate).getIntroduced());
+        assertEquals(date, CDB.updateComputer(computerWithNewIntroducedDate).orElse(null).getIntroduced());
     }
 
     @Test
     public void updateComputerWithNonExistingComputerId() throws WrongObjectStateException {
         Computer computerWithId = new Computer(Long.MAX_VALUE, "updatedName", null, null, null);
-        assertEquals(null, CDB.updateComputer(computerWithId));
+        assertEquals(Optional.empty(), CDB.updateComputer(computerWithId));
     }
 
     @Test
     public void updateComputerWithCompanyId() throws WrongObjectStateException {
         Computer computerWithExistingCompanyId = new Computer(4L, "updated computer name", null, null, null);
-        Computer result = CDB.updateComputer(computerWithExistingCompanyId, 1L);
+        Computer result = CDB.updateComputer(computerWithExistingCompanyId, 1L).orElse(null);
         assertEquals("updated computer name", result.getName());
         assertEquals("Apple Inc.", result.getCompany().getName());
     }
