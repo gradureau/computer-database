@@ -46,7 +46,9 @@
                                 <label for="companyId">Company</label>
                                 <select class="form-control" id="companyId" name="companyId">
                                     <option value="0">--</option>
+                                    <c:if test="${not empty computer.company}">
                                     <option value="${computer.company.id}" selected>${computer.company.name}</option>
+                                    </c:if>
                                     <c:forEach var="company" items="${requestScope.companies}">
                                     <option value="${company.id}">${company.name}</option>
                                     </c:forEach>
