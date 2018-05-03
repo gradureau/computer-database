@@ -4,7 +4,6 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -26,14 +25,13 @@ public class CompanyDAO extends DAO<Company> {
     @Override
     public Optional<Company> find(long id) {
         Company company = null;
-        try {
-            PreparedStatement ps = connection.prepareStatement(QUERY_FIND);
+        try(PreparedStatement ps = connection.prepareStatement(QUERY_FIND)) {
             ps.setLong(1, id);
-            ResultSet res = ps.executeQuery();
-            if (res.first()) {
-                company = new Company(id, res.getString("name"));
+            try(ResultSet res = ps.executeQuery()) {
+                if (res.first()) {
+                    company = new Company(id, res.getString("name"));
+                }
             }
-
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -58,9 +56,7 @@ public class CompanyDAO extends DAO<Company> {
     @Override
     public List<Company> findAll() {
         List<Company> companies = new ArrayList<>();
-        try {
-            Statement stmt = connection.createStatement();
-            ResultSet res = stmt.executeQuery(QUERY_FIND_ALL);
+        try(ResultSet res = connection.createStatement().executeQuery(QUERY_FIND_ALL)) {
             while (res.next()) {
                 companies.add(new Company(res.getLong("id"), res.getString("name")));
             }
@@ -74,13 +70,13 @@ public class CompanyDAO extends DAO<Company> {
     @Override
     public Page<Company> pagination(int start, int resultsCount) {
         List<Company> companies = new ArrayList<>();
-        try {
-            PreparedStatement ps = connection.prepareStatement(QUERY_LIMIT_ALL);
+        try(PreparedStatement ps = connection.prepareStatement(QUERY_LIMIT_ALL)) {
             ps.setInt(1, start);
             ps.setInt(2, resultsCount);
-            ResultSet res = ps.executeQuery();
-            while (res.next()) {
-                companies.add(new Company(res.getLong("id"), res.getString("name")));
+            try(ResultSet res = ps.executeQuery()) {
+                while (res.next()) {
+                    companies.add(new Company(res.getLong("id"), res.getString("name")));
+                }
             }
         } catch (SQLException e) {
             e.printStackTrace();
