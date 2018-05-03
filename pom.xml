@@ -79,38 +79,24 @@
 		<!-- TEST -->
 
 		<!-- JUNIT -->
-		<!-- <dependency> <groupId>org.junit.jupiter</groupId> <artifactId>junit-jupiter-api</artifactId> 
-			<version>5.1.0</version> <scope>test</scope> </dependency> -->
 		<dependency>
 			<groupId>org.junit.jupiter</groupId>
 			<artifactId>junit-jupiter-engine</artifactId>
 			<version>5.2.0-M1</version>
 			<scope>test</scope>
 		</dependency>
-		<!-- <dependency> <groupId>org.junit.vintage</groupId> <artifactId>junit-vintage-engine</artifactId> 
-			<version>5.1.0</version> <scope>test</scope> </dependency> -->
 		<dependency>
 			<groupId>org.junit.platform</groupId>
 			<artifactId>junit-platform-launcher</artifactId>
 			<version>1.2.0-M1</version>
 			<scope>test</scope>
 		</dependency>
-		<!-- <dependency> <groupId>org.junit.platform</groupId> <artifactId>junit-platform-runner</artifactId> 
-			<version>1.1.0</version> <scope>test</scope> </dependency> -->
 		<!-- MOCKITO -->
 		<dependency>
 			<groupId>org.mockito</groupId>
 			<artifactId>mockito-junit-jupiter</artifactId>
 			<version>2.18.3</version>
 			<scope>test</scope>
-		</dependency>
-		<!-- <dependency> <groupId>org.mockito</groupId> <artifactId>mockito-core</artifactId> 
-			<version>2.11.0</version> <scope>test</scope> </dependency> -->
-		<!-- SELENIUM -->
-		<dependency>
-			<groupId>org.seleniumhq.selenium</groupId>
-			<artifactId>selenium-java</artifactId>
-			<version>3.11.0</version>
 		</dependency>
 
 	</dependencies>
@@ -214,7 +200,6 @@
 				<version>3.0.0</version>
 				<configuration>
 					<configLocation>config/checkstyle/checkstyle.xml</configLocation>
-					<!-- <configLocation>config/checkstyle/suppressions.xml</configLocation> -->
 					<encoding>UTF-8</encoding>
 					<consoleOutput>true</consoleOutput>
 				</configuration>
