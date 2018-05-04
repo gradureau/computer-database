@@ -28,9 +28,17 @@
 		<org.apache.maven.plugins.maven-checkstyle-plugin.version>3.0.0</org.apache.maven.plugins.maven-checkstyle-plugin.version>
 		<maven-surefire-plugin.version>2.19.1</maven-surefire-plugin.version>
 		<org.junit.platform.junit-platform-surefire-provider>1.0.1</org.junit.platform.junit-platform-surefire-provider>
+		<com.zaxxer.HikariCP.version>3.1.0</com.zaxxer.HikariCP.version>
 	</properties>
 
 	<dependencies>
+		
+		<!-- HikariCP -->
+		<dependency>
+			<groupId>com.zaxxer</groupId>
+			<artifactId>HikariCP</artifactId>
+			<version>${com.zaxxer.HikariCP.version}</version>
+		</dependency>
 
 		<!-- https://mvnrepository.com/artifact/javax.servlet/servlet-api -->
 		<dependency>
@@ -124,7 +132,7 @@
 					<webXml>WebContent/WEB-INF/web.xml</webXml>
 				</configuration>
 			</plugin>
-			
+
 			<!-- Test -->
 			<plugin>
 				<artifactId>maven-surefire-plugin</artifactId>
@@ -142,7 +150,7 @@
 					</dependency>
 				</dependencies>
 			</plugin>
-			
+
 			<!-- SQL -->
 			<plugin>
 				<!-- ( 1 ) plugin info -->

@@ -6,28 +6,23 @@ import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import java.sql.Connection;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Optional;
-import java.util.Properties;
 
 import org.junit.jupiter.api.Test;
 
 import com.excilys.gradureau.computer_database.exception.WrongObjectStateException;
 import com.excilys.gradureau.computer_database.model.Company;
 import com.excilys.gradureau.computer_database.model.Computer;
-import com.excilys.gradureau.computer_database.persistance.ConnectionMysqlSingleton;
+import com.excilys.gradureau.computer_database.persistance.HikariBasedDataSource;
 import com.excilys.gradureau.computer_database.util.Page;
-import com.excilys.gradureau.computer_database.util.PropertyFileUtility;
 
 public class ServiceCrudCDBTest {
-    static Properties databaseProperties = PropertyFileUtility.readPropertyFile("database.properties");
-    static Connection connection = ConnectionMysqlSingleton.getInstance(databaseProperties.getProperty("DB_URL"),
-            databaseProperties.getProperty("DB_USER"), databaseProperties.getProperty("DB_PASSWORD"));
-
-    static final ServiceCrudCDB CDB = new ServiceCrudCDB(connection);
+    static final ServiceCrudCDB CDB = new ServiceCrudCDB(
+            HikariBasedDataSource.init("hikari.properties")
+            );
 
     @Test
     public void createComputerWithName() throws WrongObjectStateException {

@@ -3,7 +3,6 @@ package com.excilys.gradureau.computer_database.servlet;
 import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
-import java.util.Properties;
 import java.util.stream.Collectors;
 
 import javax.servlet.ServletException;
@@ -19,11 +18,10 @@ import com.excilys.gradureau.computer_database.dto.ComputerDTO;
 import com.excilys.gradureau.computer_database.exception.WrongObjectStateException;
 import com.excilys.gradureau.computer_database.model.Company;
 import com.excilys.gradureau.computer_database.model.Computer;
-import com.excilys.gradureau.computer_database.persistance.ConnectionMysqlSingleton;
+import com.excilys.gradureau.computer_database.persistance.HikariBasedDataSource;
 import com.excilys.gradureau.computer_database.service.ICrudCDB;
 import com.excilys.gradureau.computer_database.service.ServiceCrudCDB;
 import com.excilys.gradureau.computer_database.util.Page;
-import com.excilys.gradureau.computer_database.util.PropertyFileUtility;
 
 @WebServlet(urlPatterns = {
         MainServlet.DASHBOARD_URL,
@@ -38,7 +36,7 @@ public class MainServlet extends HttpServlet {
     private ICrudCDB cdb;
     private final List<Company> COMPANIES;
 
-    private static final String DB_CONFIG_FILEPATH = "database.properties";
+    private static final String HIKARI_CONFIG_FILEPATH = "hikari.properties";
 
     //URLS
     public static final String DASHBOARD_URL = "/dashboard";
@@ -53,12 +51,9 @@ public class MainServlet extends HttpServlet {
 
     public MainServlet() {
         super();
-        Properties databaseConnectionProperties = PropertyFileUtility.readPropertyFile(DB_CONFIG_FILEPATH);
-        cdb = new ServiceCrudCDB(ConnectionMysqlSingleton.getInstance(
-                databaseConnectionProperties.getProperty("DB_URL"),
-                databaseConnectionProperties.getProperty("DB_USER"),
-                databaseConnectionProperties.getProperty("DB_PASSWORD")
-                ));
+        cdb = new ServiceCrudCDB(
+                HikariBasedDataSource.init(HIKARI_CONFIG_FILEPATH)
+                );
         COMPANIES = cdb.listCompanies(0, COMPANIES_COUNT).getContent();
     }
 

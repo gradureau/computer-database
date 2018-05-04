@@ -1,19 +1,16 @@
-import java.util.Properties;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.excilys.gradureau.computer_database.persistance.ConnectionMysqlSingleton;
+import com.excilys.gradureau.computer_database.persistance.HikariBasedDataSource;
 import com.excilys.gradureau.computer_database.service.ICrudCDB;
 import com.excilys.gradureau.computer_database.service.ServiceCrudCDB;
 import com.excilys.gradureau.computer_database.ui.CLI;
-import com.excilys.gradureau.computer_database.util.PropertyFileUtility;
 
 public class Main {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(Main.class);
 
-    private static final String DB_CONFIG_FILEPATH = "database.properties";
+    private static final String HIKARI_CONFIG_FILEPATH = "hikari.properties";
 
     public static void main(String[] args) {
 
@@ -21,13 +18,9 @@ public class Main {
 
         System.out.println("Hello World !");
 
-        final Properties databaseConnectionProperties = PropertyFileUtility.readPropertyFile(DB_CONFIG_FILEPATH);
-
-        ICrudCDB cdb = new ServiceCrudCDB(ConnectionMysqlSingleton.getInstance(
-                databaseConnectionProperties.getProperty("DB_URL"),
-                databaseConnectionProperties.getProperty("DB_USER"),
-                databaseConnectionProperties.getProperty("DB_PASSWORD")
-                ));
+        ICrudCDB cdb = new ServiceCrudCDB(
+                HikariBasedDataSource.init(HIKARI_CONFIG_FILEPATH)
+                );
 
         boolean displayMenu = true;
 

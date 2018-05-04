@@ -12,8 +12,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-
-import org.slf4j.Logger;
+import java.util.function.Supplier;
 
 import com.excilys.gradureau.computer_database.model.Computer;
 import com.excilys.gradureau.computer_database.persistance.dao.mapper.ComputerMapper;
@@ -30,14 +29,14 @@ public class ComputerDAO extends DAO<Computer> {
     private static final String QUERY_DELETE = "DELETE FROM computer WHERE id = ?;";
     private static final String QUERY_LIMIT_ALL = QUERY_FIND_ALL + " order by introduced desc, id LIMIT ?, ?;";
 
-    public ComputerDAO(Connection connection) {
-        super(connection);
+    public ComputerDAO(Supplier<Optional<Connection>> connectionSupplier) {
+        super(connectionSupplier);
     }
 
     @Override
     public Optional<Computer> find(long id) {
         Computer computer = null;
-        try(PreparedStatement ps = connection.prepareStatement(QUERY_FIND)) {
+        try(PreparedStatement ps = connectionSupplier.get().get().prepareStatement(QUERY_FIND)) {
             ps.setLong(1, id);
             try(ResultSet res = ps.executeQuery()) {
                 if (res.first()) {
@@ -56,7 +55,7 @@ public class ComputerDAO extends DAO<Computer> {
          * Might as well return a boolean to inform about the outcome and set the Long
          * id of the Computer parameter object.
          */
-        try(PreparedStatement ps = connection.prepareStatement(QUERY_CREATE, Statement.RETURN_GENERATED_KEYS)) {
+        try(PreparedStatement ps = connectionSupplier.get().get().prepareStatement(QUERY_CREATE, Statement.RETURN_GENERATED_KEYS)) {
             ps.setString(1, computer.getName());
             ps.setTimestamp(2, computer.getIntroduced() == null ? null : Timestamp.valueOf(computer.getIntroduced()));
             ps.setTimestamp(3,
@@ -85,7 +84,7 @@ public class ComputerDAO extends DAO<Computer> {
     @Override
     public Optional<Computer> update(Computer computer) {
         boolean wasUpdated = false;
-        try(PreparedStatement ps = connection.prepareStatement(QUERY_UPDATE)) {
+        try(PreparedStatement ps = connectionSupplier.get().get().prepareStatement(QUERY_UPDATE)) {
             ps.setString(1, computer.getName());
             ps.setTimestamp(2, computer.getIntroduced() == null ? null : Timestamp.valueOf(computer.getIntroduced()));
             ps.setTimestamp(3,
@@ -112,7 +111,7 @@ public class ComputerDAO extends DAO<Computer> {
     @Override
     public boolean delete(Computer computer) {
         boolean wasDeleted = false;
-        try(PreparedStatement ps = connection.prepareStatement(QUERY_DELETE)) {
+        try(PreparedStatement ps = connectionSupplier.get().get().prepareStatement(QUERY_DELETE)) {
             ps.setLong(1, computer.getId());
             ps.executeUpdate();
             wasDeleted = ps.executeUpdate() == 1;
@@ -125,7 +124,7 @@ public class ComputerDAO extends DAO<Computer> {
     @Override
     public List<Computer> findAll() {
         List<Computer> computers = new ArrayList<>();
-        try(ResultSet res = connection.createStatement().executeQuery(QUERY_FIND_ALL)) {
+        try(ResultSet res = connectionSupplier.get().get().createStatement().executeQuery(QUERY_FIND_ALL)) {
             while (res.next()) {
                 computers.add(ComputerMapper.valueOf(res));
             }
@@ -139,7 +138,7 @@ public class ComputerDAO extends DAO<Computer> {
     @Override
     public Page<Computer> pagination(int start, int resultsCount) {
         List<Computer> computers = new ArrayList<>();
-        try(PreparedStatement ps = connection.prepareStatement(QUERY_LIMIT_ALL)) {
+        try(PreparedStatement ps = connectionSupplier.get().get().prepareStatement(QUERY_LIMIT_ALL)) {
             ps.setInt(1, start);
             ps.setInt(2, resultsCount);
             try(ResultSet res = ps.executeQuery()) {
@@ -158,7 +157,7 @@ public class ComputerDAO extends DAO<Computer> {
     
     public Integer countAll() {
         Integer count = null;
-        try(ResultSet rs = connection.createStatement().executeQuery("SELECT Count(id) as total FROM computer")) {
+        try(ResultSet rs = connectionSupplier.get().get().createStatement().executeQuery("SELECT Count(id) as total FROM computer")) {
             if(rs.next()) {
                 count = rs.getInt("total");
             }
@@ -186,7 +185,7 @@ public class ComputerDAO extends DAO<Computer> {
             }
         }
         final String finalQuery = QUERY_FIND_ALL + stringBuilder.toString() + " order by introduced desc, id LIMIT ?, ?";
-        try(PreparedStatement ps = connection.prepareStatement(finalQuery)) {
+        try(PreparedStatement ps = connectionSupplier.get().get().prepareStatement(finalQuery)) {
             for(int i = 1; i <= criteriasSize; ++i) {
                 ps.setString(i, "%" + parametersToEscape.get(i) + "%");
             }
@@ -204,7 +203,7 @@ public class ComputerDAO extends DAO<Computer> {
         page.setPageable( (_start, _resultsCount) -> filterBy(criterias, _start, _resultsCount) );
         page.setTotalResultsCounter( () -> {
             Integer count = null;
-            try(PreparedStatement ps = connection.prepareStatement("SELECT Count(pc.id) as total FROM computer pc" + stringBuilder.toString())) {
+            try(PreparedStatement ps = connectionSupplier.get().get().prepareStatement("SELECT Count(pc.id) as total FROM computer pc" + stringBuilder.toString())) {
                 for(int i = 1; i <= criteriasSize; ++i) {
                     ps.setString(i, "%" + parametersToEscape.get(i) + "%");
                 }

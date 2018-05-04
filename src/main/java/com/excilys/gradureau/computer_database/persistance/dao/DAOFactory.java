@@ -1,6 +1,8 @@
 package com.excilys.gradureau.computer_database.persistance.dao;
 
 import java.sql.Connection;
+import java.util.Optional;
+import java.util.function.Supplier;
 
 import com.excilys.gradureau.computer_database.model.Company;
 import com.excilys.gradureau.computer_database.model.Computer;
@@ -15,19 +17,19 @@ public class DAOFactory {
      * The connection reference is then shared by all DAO<T> requested.
      */
 
-    private Connection connection;
+    private Supplier<Optional<Connection>> connectionSupplier;
     private static DAOFactory instance;
 
-    private DAOFactory(Connection connection) {
-        this.connection = connection;
+    private DAOFactory(Supplier<Optional<Connection>> supplier) {
+        this.connectionSupplier = supplier;
     }
 
-    public static DAOFactory getInstance(Connection connection) {
+    public static DAOFactory getInstance(Supplier<Optional<Connection>> supplier) {
         if (DAOFactory.instance == null) {
-            DAOFactory.instance = new DAOFactory(connection);
+            DAOFactory.instance = new DAOFactory(supplier);
         } else {
-            if (!connection.equals(DAOFactory.instance.connection)) {
-                DAOFactory.instance.connection = connection;
+            if (!supplier.equals(DAOFactory.instance.connectionSupplier)) {
+                DAOFactory.instance.connectionSupplier = supplier;
             }
         }
         return DAOFactory.instance;
@@ -37,20 +39,20 @@ public class DAOFactory {
         return getInstance(null);
     }
 
-    public Connection getConnection() {
-        return connection;
+    public Supplier<Optional<Connection>> getConnectionSupplier() {
+        return connectionSupplier;
     }
 
-    public void setConnection(Connection connection) {
-        this.connection = connection;
+    public void setConnectionSupplier(Supplier<Optional<Connection>> connectionSupplier) {
+        this.connectionSupplier = connectionSupplier;
     }
 
     public DAO<Company> getCompanyDAO() {
-        return new CompanyDAO(DAOFactory.instance.connection);
+        return new CompanyDAO(DAOFactory.instance.connectionSupplier);
     }
 
     public DAO<Computer> getComputerDAO() {
-        return new ComputerDAO(DAOFactory.instance.connection);
+        return new ComputerDAO(DAOFactory.instance.connectionSupplier);
     }
 
 }

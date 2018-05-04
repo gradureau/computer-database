@@ -4,6 +4,7 @@ import java.sql.Connection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
+import java.util.function.Supplier;
 
 import com.excilys.gradureau.computer_database.exception.WrongObjectStateException;
 import com.excilys.gradureau.computer_database.model.Company;
@@ -18,8 +19,8 @@ public class ServiceCrudCDB implements ICrudCDB {
     private DAO<Company> companyDAO;
     private DAO<Computer> computerDAO;
 
-    public ServiceCrudCDB(Connection connection) {
-        DAOFactory daoFactory = DAOFactory.getInstance(connection);
+    public ServiceCrudCDB(Supplier<Optional<Connection>> supplier) {
+        DAOFactory daoFactory = DAOFactory.getInstance(supplier);
         companyDAO = daoFactory.getCompanyDAO();
         computerDAO = daoFactory.getComputerDAO();
     }

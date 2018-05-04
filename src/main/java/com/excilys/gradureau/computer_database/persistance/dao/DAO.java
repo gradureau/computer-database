@@ -4,15 +4,16 @@ import java.sql.Connection;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.function.Supplier;
 
 import com.excilys.gradureau.computer_database.util.Page;
 
 public abstract class DAO<T> {
 
-    protected Connection connection;
+    protected Supplier<Optional<Connection>> connectionSupplier;
 
-    public DAO(Connection connection) {
-        this.connection = connection;
+    public DAO(Supplier<Optional<Connection>> connectionSupplier) {
+        this.connectionSupplier = connectionSupplier;
     }
 
     /**
