@@ -10,9 +10,9 @@ import com.excilys.gradureau.computer_database.util.Page;
 
 public abstract class DAO<T> {
 
-    protected Supplier<Optional<Connection>> connectionSupplier;
+    protected Supplier<Connection> connectionSupplier;
 
-    public DAO(Supplier<Optional<Connection>> connectionSupplier) {
+    public DAO(Supplier<Connection> connectionSupplier) {
         this.connectionSupplier = connectionSupplier;
     }
 

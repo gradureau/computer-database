@@ -20,14 +20,14 @@ public class CompanyDAO extends DAO<Company> {
     private static final String QUERY_FIND = "SELECT id, name FROM company WHERE id = ?;";
     private static final String QUERY_LIMIT_ALL = "SELECT id, name FROM company order by name LIMIT ?, ? ;";
 
-    public CompanyDAO(Supplier<Optional<Connection>> connectionSupplier) {
+    public CompanyDAO(Supplier<Connection> connectionSupplier) {
         super(connectionSupplier);
     }
 
     @Override
     public Optional<Company> find(long id) {
         Company company = null;
-        try(Connection connection = connectionSupplier.get().get();
+        try(Connection connection = connectionSupplier.get();
                 PreparedStatement ps = connection.prepareStatement(QUERY_FIND)) {
             ps.setLong(1, id);
             try(ResultSet res = ps.executeQuery()) {
@@ -59,7 +59,7 @@ public class CompanyDAO extends DAO<Company> {
     @Override
     public List<Company> findAll() {
         List<Company> companies = new ArrayList<>();
-        try(Connection connection = connectionSupplier.get().get();
+        try(Connection connection = connectionSupplier.get();
                 Statement statement = connection.createStatement();
                 ResultSet res = statement.executeQuery(QUERY_FIND_ALL)) {
             while (res.next()) {
@@ -75,7 +75,7 @@ public class CompanyDAO extends DAO<Company> {
     @Override
     public Page<Company> pagination(int start, int resultsCount) {
         List<Company> companies = new ArrayList<>();
-        try(Connection connection = connectionSupplier.get().get();
+        try(Connection connection = connectionSupplier.get();
                 PreparedStatement ps = connection.prepareStatement(QUERY_LIMIT_ALL)) {
             ps.setInt(1, start);
             ps.setInt(2, resultsCount);

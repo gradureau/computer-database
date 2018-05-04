@@ -19,7 +19,7 @@ public class ServiceCrudCDB implements ICrudCDB {
     private DAO<Company> companyDAO;
     private DAO<Computer> computerDAO;
 
-    public ServiceCrudCDB(Supplier<Optional<Connection>> supplier) {
+    public ServiceCrudCDB(Supplier<Connection> supplier) {
         DAOFactory daoFactory = DAOFactory.getInstance(supplier);
         companyDAO = daoFactory.getCompanyDAO();
         computerDAO = daoFactory.getComputerDAO();

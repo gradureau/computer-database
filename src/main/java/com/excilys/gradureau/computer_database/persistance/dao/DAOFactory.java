@@ -1,7 +1,6 @@
 package com.excilys.gradureau.computer_database.persistance.dao;
 
 import java.sql.Connection;
-import java.util.Optional;
 import java.util.function.Supplier;
 
 import com.excilys.gradureau.computer_database.model.Company;
@@ -17,14 +16,14 @@ public class DAOFactory {
      * The connection reference is then shared by all DAO<T> requested.
      */
 
-    private Supplier<Optional<Connection>> connectionSupplier;
+    private Supplier<Connection> connectionSupplier;
     private static DAOFactory instance;
 
-    private DAOFactory(Supplier<Optional<Connection>> supplier) {
+    private DAOFactory(Supplier<Connection> supplier) {
         this.connectionSupplier = supplier;
     }
 
-    public static DAOFactory getInstance(Supplier<Optional<Connection>> supplier) {
+    public static DAOFactory getInstance(Supplier<Connection> supplier) {
         if (DAOFactory.instance == null) {
             DAOFactory.instance = new DAOFactory(supplier);
         } else {
@@ -39,11 +38,11 @@ public class DAOFactory {
         return getInstance(null);
     }
 
-    public Supplier<Optional<Connection>> getConnectionSupplier() {
+    public Supplier<Connection> getConnectionSupplier() {
         return connectionSupplier;
     }
 
-    public void setConnectionSupplier(Supplier<Optional<Connection>> connectionSupplier) {
+    public void setConnectionSupplier(Supplier<Connection> connectionSupplier) {
         this.connectionSupplier = connectionSupplier;
     }
 

@@ -20,7 +20,7 @@ public class HikariBasedDataSource {
     private static final String ERROR_MESSAGE_NO_DATASOURCE_SET = "No DataSource Set";
     private static final String WARNING_MESSAGE_COULD_NOT_GET_SQL_CONNECTION = "Could not get sql Connection";
 
-    public static Supplier<Optional<Connection>> init(final String HikariCPDatasourceProperties) {
+    public static Supplier<Connection> init(final String HikariCPDatasourceProperties) {
         optionalDataSource.ifPresent(dataSource -> dataSource.close());
         HikariConfig config = new HikariConfig(
                 ClassLoader.getSystemClassLoader().getResource(HikariCPDatasourceProperties).getFile()
@@ -29,16 +29,19 @@ public class HikariBasedDataSource {
         return () -> getConnection();
     }
 
-    public static Optional<Connection> getConnection() throws IllegalStateException {
-        Optional<Connection> optionalConnection = Optional.empty();
+    public static Connection getConnection() {
+        Connection connection = null;
         try {
-            optionalConnection = Optional.of(optionalDataSource.orElseThrow(() -> {
+            if(!optionalDataSource.isPresent()) {
                 LOGGER.error(ERROR_MESSAGE_NO_DATASOURCE_SET);
                 throw new IllegalStateException(ERROR_MESSAGE_NO_DATASOURCE_SET);
-            }).getConnection());
+            }
+            connection = optionalDataSource.get().getConnection();
         } catch (SQLException e) {
             LOGGER.warn(WARNING_MESSAGE_COULD_NOT_GET_SQL_CONNECTION, e);
+        } catch (Throwable t) {
+//            throw t;
         }
-        return optionalConnection;
+        return connection;
     }
 }
