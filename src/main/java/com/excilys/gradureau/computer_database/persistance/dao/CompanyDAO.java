@@ -4,6 +4,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -26,7 +27,8 @@ public class CompanyDAO extends DAO<Company> {
     @Override
     public Optional<Company> find(long id) {
         Company company = null;
-        try(PreparedStatement ps = connectionSupplier.get().get().prepareStatement(QUERY_FIND)) {
+        try(Connection connection = connectionSupplier.get().get();
+                PreparedStatement ps = connection.prepareStatement(QUERY_FIND)) {
             ps.setLong(1, id);
             try(ResultSet res = ps.executeQuery()) {
                 if (res.first()) {
@@ -57,7 +59,9 @@ public class CompanyDAO extends DAO<Company> {
     @Override
     public List<Company> findAll() {
         List<Company> companies = new ArrayList<>();
-        try(ResultSet res = connectionSupplier.get().get().createStatement().executeQuery(QUERY_FIND_ALL)) {
+        try(Connection connection = connectionSupplier.get().get();
+                Statement statement = connection.createStatement();
+                ResultSet res = statement.executeQuery(QUERY_FIND_ALL)) {
             while (res.next()) {
                 companies.add(new Company(res.getLong("id"), res.getString("name")));
             }
@@ -71,7 +75,8 @@ public class CompanyDAO extends DAO<Company> {
     @Override
     public Page<Company> pagination(int start, int resultsCount) {
         List<Company> companies = new ArrayList<>();
-        try(PreparedStatement ps = connectionSupplier.get().get().prepareStatement(QUERY_LIMIT_ALL)) {
+        try(Connection connection = connectionSupplier.get().get();
+                PreparedStatement ps = connection.prepareStatement(QUERY_LIMIT_ALL)) {
             ps.setInt(1, start);
             ps.setInt(2, resultsCount);
             try(ResultSet res = ps.executeQuery()) {
