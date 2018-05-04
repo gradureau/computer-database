@@ -164,7 +164,8 @@ public class ComputerDAO extends DAO<Computer> {
     
     public Integer countAll() {
         Integer count = null;
-        try(ResultSet rs = connectionSupplier.get().createStatement().executeQuery("SELECT Count(id) as total FROM computer")) {
+        try(Connection connection = connectionSupplier.get();
+                ResultSet rs = connection.createStatement().executeQuery("SELECT Count(id) as total FROM computer")) {
             if(rs.next()) {
                 count = rs.getInt("total");
             }
