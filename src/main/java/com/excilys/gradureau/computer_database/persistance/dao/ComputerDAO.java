@@ -117,7 +117,6 @@ public class ComputerDAO extends DAO<Computer> {
         try(Connection connection = connectionSupplier.get();
                 PreparedStatement ps = connection.prepareStatement(QUERY_DELETE)) {
             ps.setLong(1, computer.getId());
-            ps.executeUpdate();
             wasDeleted = ps.executeUpdate() == 1;
         } catch (SQLException e) {
             e.printStackTrace();

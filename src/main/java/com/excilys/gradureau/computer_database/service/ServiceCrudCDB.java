@@ -12,6 +12,7 @@ import com.excilys.gradureau.computer_database.model.Computer;
 import com.excilys.gradureau.computer_database.persistance.dao.DAO;
 import com.excilys.gradureau.computer_database.persistance.dao.DAOFactory;
 import com.excilys.gradureau.computer_database.util.Page;
+import com.excilys.gradureau.computer_database.validator.CompanyValidator;
 import com.excilys.gradureau.computer_database.validator.ComputerValidator;
 
 public class ServiceCrudCDB implements ICrudCDB {
@@ -89,6 +90,12 @@ public class ServiceCrudCDB implements ICrudCDB {
         Map<String,String> criterias = new HashMap<>();
         criterias.put(fieldName, nameFilter);
         return computerDAO.filterBy(criterias, start, resultsCount);
+    }
+    
+    @Override
+    public boolean deleteCompany(Company company) throws WrongObjectStateException {
+        CompanyValidator.checkId(company);
+        return companyDAO.delete(company);
     }
 
 }

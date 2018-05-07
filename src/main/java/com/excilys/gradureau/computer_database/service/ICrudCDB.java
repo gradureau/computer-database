@@ -84,4 +84,10 @@ public interface ICrudCDB {
     default Page<Computer> filterByName(String nameFilter) {
         return filterByName(nameFilter, 0, 20);
     }
+    
+    /**
+     * @param company Company to be deleted in database with a defined Long id
+     * @throws WrongObjectStateException if Company.id is not set.
+     */
+    boolean deleteCompany(Company company) throws WrongObjectStateException;
 }

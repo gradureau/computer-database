@@ -2,6 +2,7 @@ package com.excilys.gradureau.computer_database.service;
 
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -67,7 +68,7 @@ public class ServiceCrudCDBTest {
     @Test
     public void createComputerWithNonExistingCompanyId() throws WrongObjectStateException {
         Computer computerWithNonExistingCompanyId = new Computer(null, "computerName", null, null, null);
-        assertTrue(CDB.createComputer(computerWithNonExistingCompanyId, Long.MAX_VALUE).orElse(null).getCompany() == null);
+        assertTrue(CDB.createComputer(computerWithNonExistingCompanyId, Long.MIN_VALUE).orElse(null).getCompany() == null);
     }
 
     @Test
@@ -105,14 +106,14 @@ public class ServiceCrudCDBTest {
     public void deleteComputerWithExistingComputerId() throws WrongObjectStateException {
         Computer computerWithExistingId = new Computer();
         computerWithExistingId.setId(7L);
-        CDB.deleteComputer(computerWithExistingId);
+        assertTrue(CDB.deleteComputer(computerWithExistingId));
     }
 
     @Test
     public void deleteComputerWithNonExistingComputerId() throws WrongObjectStateException {
         Computer computerWithNonExistingId = new Computer();
-        computerWithNonExistingId.setId(Long.MAX_VALUE);
-        CDB.deleteComputer(computerWithNonExistingId);
+        computerWithNonExistingId.setId(Long.MIN_VALUE);
+        assertFalse(CDB.deleteComputer(computerWithNonExistingId));
     }
 
     @Test
@@ -142,7 +143,7 @@ public class ServiceCrudCDBTest {
 
     @Test
     public void updateComputerWithNonExistingComputerId() throws WrongObjectStateException {
-        Computer computerWithId = new Computer(Long.MAX_VALUE, "updatedName", null, null, null);
+        Computer computerWithId = new Computer(Long.MIN_VALUE, "updatedName", null, null, null);
         assertEquals(Optional.empty(), CDB.updateComputer(computerWithId));
     }
 
@@ -190,6 +191,30 @@ public class ServiceCrudCDBTest {
         Page<Computer> computersPage = CDB.listComputers(offset, pageSize);
         assertSame(pageSize, computersPage.getContent().size());
         assertSame(expectedComputerId, computersPage.getContent().get(0).getId());
+    }
+    
+    @Test
+    public void deleteCompanyWithExistingCompanyId() throws WrongObjectStateException {
+        Company companyWithExistingId = new Company();
+        companyWithExistingId.setId(7L);
+        Computer knownComputerFromDeletedCompany = new Computer(56L,null,null,null, companyWithExistingId);
+        
+        assertTrue(CDB.deleteCompany(companyWithExistingId));
+        
+        assertFalse(CDB.showComputerDetails(knownComputerFromDeletedCompany).isPresent());
+    }
+    
+    @Test
+    public void deleteCompanyWithNonExistingCompanyId() throws WrongObjectStateException {
+        Company companyWithNonExistingId = new Company();
+        companyWithNonExistingId.setId(Long.MIN_VALUE);
+        assertFalse(CDB.deleteCompany(companyWithNonExistingId));
+    }
+    
+    @Test
+    public void deleteCompanyWithNoCompanyId() {
+        Company companyWithNoId = new Company();
+        assertThrows(WrongObjectStateException.class, () -> CDB.deleteCompany(companyWithNoId));
     }
 
 }
