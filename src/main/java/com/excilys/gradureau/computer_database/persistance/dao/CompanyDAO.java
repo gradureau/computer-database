@@ -114,7 +114,7 @@ public class CompanyDAO extends DAO<Company> {
     }
 
     @Override
-    public Page<Company> filterBy(Map<String, String> criterias, int start, int resultsCount) {
+    public Page<Company> filterBy(Map<String, String> criterias, int start, int resultsCount, boolean inclusive) {
         throw new UnsupportedOperationException();
     }
 

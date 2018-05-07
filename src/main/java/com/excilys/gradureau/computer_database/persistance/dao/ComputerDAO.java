@@ -192,12 +192,23 @@ public class ComputerDAO extends DAO<Computer> {
     @Override
     public Page<Computer> filterBy(Map<String, String> criterias, int start, int resultsCount, boolean inclusive) {
         List<Computer> filteredComputers = new ArrayList<>();
-        StringBuilder stringBuilder = new StringBuilder();
-        stringBuilder.append( " WHERE " );
-        
         int criteriasSize = criterias.size();
-        int fieldIndex = 1;
         Map<Integer,String> parametersToEscape = new HashMap<>(criteriasSize);
+        final String sqlCriterias = buildSqlCriterias(criterias, inclusive, parametersToEscape, criteriasSize);
+        final String finalQuery = QUERY_FIND_ALL + sqlCriterias + " order by introduced desc, id LIMIT ?, ?";        
+        readFilteredResults(start, resultsCount, filteredComputers, criteriasSize, parametersToEscape, finalQuery);
+        Page<Computer> page = new Page<>(filteredComputers, start, resultsCount);
+        page.setPageable( (_start, _resultsCount) -> filterBy(criterias, _start, _resultsCount) );
+        page.setTotalResultsCounter( () -> {
+            return countFilteredResults(criteriasSize, parametersToEscape, sqlCriterias);
+        });
+        return  page;
+    }
+    
+
+    private String buildSqlCriterias(Map<String, String> criterias, boolean inclusive, Map<Integer, String> parametersToEscape, int criteriasSize) {
+        StringBuilder stringBuilder = new StringBuilder(" WHERE ");
+        int fieldIndex = 1;
         for( String fieldName : criterias.keySet() ) {
             stringBuilder.append( fieldName );
             stringBuilder.append( " LIKE ?");
@@ -206,7 +217,11 @@ public class ComputerDAO extends DAO<Computer> {
                 stringBuilder.append(inclusive ? "OR " : "AND ");
             }
         }
-        final String finalQuery = QUERY_FIND_ALL + stringBuilder.toString() + " order by introduced desc, id LIMIT ?, ?";
+        return stringBuilder.toString();
+    }
+
+    private void readFilteredResults(int start, int resultsCount, List<Computer> filteredComputers, int criteriasSize,
+            Map<Integer, String> parametersToEscape, final String finalQuery) {
         try(Connection connection = connectionSupplier.get();
                 PreparedStatement ps = connection.prepareStatement(finalQuery)) {
             for(int i = 1; i <= criteriasSize; ++i) {
@@ -222,26 +237,25 @@ public class ComputerDAO extends DAO<Computer> {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        Page<Computer> page = new Page<>(filteredComputers, start, resultsCount);
-        page.setPageable( (_start, _resultsCount) -> filterBy(criterias, _start, _resultsCount) );
-        page.setTotalResultsCounter( () -> {
-            Long count = null;
-            try(Connection connection = connectionSupplier.get();
-                PreparedStatement ps = connection.prepareStatement(QUERY_COUNT + " LEFT JOIN company co ON pc.company_id = co.id " + stringBuilder.toString())) {
-                for(int i = 1; i <= criteriasSize; ++i) {
-                    ps.setString(i, "%" + parametersToEscape.get(i) + "%");
-                }
-                try(ResultSet rs = ps.executeQuery()) {
-                    if(rs.next()) {
-                        count = rs.getLong("total");
-                    }
-                }
-            } catch (SQLException e) {
-                e.printStackTrace();
+    }
+    
+    private Long countFilteredResults(int criteriasSize, Map<Integer, String> parametersToEscape,
+            final String sqlCriterias) {
+        Long count = null;
+        try(Connection connection = connectionSupplier.get();
+            PreparedStatement ps = connection.prepareStatement(QUERY_COUNT + " LEFT JOIN company co ON pc.company_id = co.id " + sqlCriterias)) {
+            for(int i = 1; i <= criteriasSize; ++i) {
+                ps.setString(i, "%" + parametersToEscape.get(i) + "%");
             }
-            return count;
-        });
-        return  page;
+            try(ResultSet rs = ps.executeQuery()) {
+                if(rs.next()) {
+                    count = rs.getLong("total");
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return count;
     }
 
 }
