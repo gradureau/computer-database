@@ -19,6 +19,8 @@ public class CompanyDAO extends DAO<Company> {
     private static final String QUERY_FIND_ALL = "SELECT id, name FROM company;";
     private static final String QUERY_FIND = "SELECT id, name FROM company WHERE id = ?;";
     private static final String QUERY_LIMIT_ALL = "SELECT id, name FROM company order by name LIMIT ?, ? ;";
+    private static final String QUERY_DELETE = "DELETE FROM company WHERE id = ?;";
+    private static final String QUERY_DELETE_CHILDREN = "DELETE FROM computer WHERE company_id = ?;";
 
     public CompanyDAO(Supplier<Connection> connectionSupplier) {
         super(connectionSupplier);
@@ -52,8 +54,28 @@ public class CompanyDAO extends DAO<Company> {
     }
 
     @Override
-    public boolean delete(Company obj) {
-        throw new UnsupportedOperationException();
+    public boolean delete(Company company) {
+        boolean wasDeleted = false;
+        try(Connection connection = connectionSupplier.get();
+                PreparedStatement deleteCompanyStatement = connection.prepareStatement(QUERY_DELETE);
+                PreparedStatement deleteChildrenStatement = connection.prepareStatement(QUERY_DELETE_CHILDREN)) {
+            
+            connection.setAutoCommit(false);
+            
+            deleteChildrenStatement.setLong(1, company.getId());
+            deleteChildrenStatement.executeUpdate();
+            
+            deleteCompanyStatement.setLong(1, company.getId());
+            wasDeleted = deleteCompanyStatement.executeUpdate() == 1;
+            
+            if(wasDeleted)
+                connection.commit();
+            
+        } catch (SQLException e) {
+            e.printStackTrace();
+            //HikariCP should rollback transaction and reset autoCommit to True automatically
+        }
+        return wasDeleted;
     }
 
     @Override

@@ -10,6 +10,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.excilys.gradureau.computer_database.exception.WrongObjectStateException;
+import com.excilys.gradureau.computer_database.model.Company;
 import com.excilys.gradureau.computer_database.model.Computer;
 import com.excilys.gradureau.computer_database.service.ICrudCDB;
 import com.excilys.gradureau.computer_database.util.Page;
@@ -26,13 +27,14 @@ public class CLI {
     private static final int ACTION_CREATE_COMPUTER = 4;
     private static final int ACTION_UPDATE_COMPUTER = 5;
     private static final int ACTION_DELETE_COMPUTER = 6;
+    private static final int ACTION_DELETE_COMPANY = 7;
 
     private static void listerActions() {
         System.out.println(ACTION_QUIT + "   Quit\n" + ACTION_LIST_COMPUTERS + "   List computers\n"
                 + ACTION_LIST_COMPANIES + "   List companies\n" + ACTION_SHOW_COMPUTER_DETAILS
                 + "   Show computer details (the detailed information of only one computer)\n" + ACTION_CREATE_COMPUTER
                 + "   Create a computer\n" + ACTION_UPDATE_COMPUTER + "   Update a computer\n" + ACTION_DELETE_COMPUTER
-                + "   Delete a computer\n");
+                + "   Delete a computer\n" + ACTION_DELETE_COMPANY + "   Delete a company\n");
     }
 
     private static void readPage(int pageNumber, int pageSize, Pageable pageable) {
@@ -127,6 +129,8 @@ public class CLI {
                 case ACTION_DELETE_COMPUTER:
                     LOGGER.info("delete computer"); deleteComputer(cdb, scan);
                     break;
+                case ACTION_DELETE_COMPANY:
+                    LOGGER.info("delete company"); deleteCompany(cdb, scan);
                 }
                 System.out.println("Press [ENTER] to continue.");
                 scan.nextLine();
@@ -137,6 +141,14 @@ public class CLI {
         } finally {
             scan.close();
         }
+    }
+
+    private static void deleteCompany(ICrudCDB cdb, Scanner scan) throws WrongObjectStateException {
+        Company company = new Company();
+        System.out.println("Enter a known company id.");
+        company.setId(scan.nextLong());
+        cdb.deleteCompany(company);
+        scan.nextLine(); // move the Scanner cursor to the right position
     }
 
     private static void deleteComputer(ICrudCDB cdb, Scanner scan) throws WrongObjectStateException {
