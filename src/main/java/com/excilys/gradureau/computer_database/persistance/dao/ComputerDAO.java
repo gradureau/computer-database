@@ -29,6 +29,19 @@ public class ComputerDAO extends DAO<Computer> {
     private static final String QUERY_DELETE = "DELETE FROM computer WHERE id = ?;";
     private static final String QUERY_LIMIT_ALL = QUERY_FIND_ALL + " order by introduced desc, id LIMIT ?, ?;";
     private static final String QUERY_COUNT = "SELECT Count(pc.id) as total FROM computer pc";
+    
+    public static enum Fields {
+        COMPUTER_NAME("pc.name"),
+        COMPANY_NAME("co.name");
+        
+        private String sqlAlias;
+        Fields(String sqlAlias) {
+            this.sqlAlias = sqlAlias;
+        }
+        public String getSqlAlias() {
+            return sqlAlias;
+        }
+    }
 
     public ComputerDAO(Supplier<Connection> connectionSupplier) {
         super(connectionSupplier);
@@ -177,7 +190,7 @@ public class ComputerDAO extends DAO<Computer> {
     }
 
     @Override
-    public Page<Computer> filterBy(Map<String, String> criterias, int start, int resultsCount) {
+    public Page<Computer> filterBy(Map<String, String> criterias, int start, int resultsCount, boolean inclusive) {
         List<Computer> filteredComputers = new ArrayList<>();
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append( " WHERE " );
@@ -190,7 +203,7 @@ public class ComputerDAO extends DAO<Computer> {
             stringBuilder.append( " LIKE ?");
             parametersToEscape.put(fieldIndex, criterias.get(fieldName));
             if( fieldIndex++ < criteriasSize ) {
-                stringBuilder.append("AND ");
+                stringBuilder.append(inclusive ? "OR " : "AND ");
             }
         }
         final String finalQuery = QUERY_FIND_ALL + stringBuilder.toString() + " order by introduced desc, id LIMIT ?, ?";
@@ -214,7 +227,7 @@ public class ComputerDAO extends DAO<Computer> {
         page.setTotalResultsCounter( () -> {
             Long count = null;
             try(Connection connection = connectionSupplier.get();
-                PreparedStatement ps = connection.prepareStatement(QUERY_COUNT + stringBuilder.toString())) {
+                PreparedStatement ps = connection.prepareStatement(QUERY_COUNT + " LEFT JOIN company co ON pc.company_id = co.id " + stringBuilder.toString())) {
                 for(int i = 1; i <= criteriasSize; ++i) {
                     ps.setString(i, "%" + parametersToEscape.get(i) + "%");
                 }

@@ -9,6 +9,7 @@ import java.util.function.Supplier;
 import com.excilys.gradureau.computer_database.exception.WrongObjectStateException;
 import com.excilys.gradureau.computer_database.model.Company;
 import com.excilys.gradureau.computer_database.model.Computer;
+import com.excilys.gradureau.computer_database.persistance.dao.ComputerDAO;
 import com.excilys.gradureau.computer_database.persistance.dao.DAO;
 import com.excilys.gradureau.computer_database.persistance.dao.DAOFactory;
 import com.excilys.gradureau.computer_database.util.Page;
@@ -86,9 +87,9 @@ public class ServiceCrudCDB implements ICrudCDB {
 
     @Override
     public Page<Computer> filterByName(String nameFilter, int start, int resultsCount) {
-        String fieldName = "pc.name";
         Map<String,String> criterias = new HashMap<>();
-        criterias.put(fieldName, nameFilter);
+        criterias.put(ComputerDAO.Fields.COMPUTER_NAME.getSqlAlias(), nameFilter);
+        criterias.put(ComputerDAO.Fields.COMPANY_NAME.getSqlAlias(), nameFilter);
         return computerDAO.filterBy(criterias, start, resultsCount);
     }
     

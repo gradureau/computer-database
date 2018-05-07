@@ -50,6 +50,9 @@ public abstract class DAO<T> {
         return new Page<>(list, 0, list.size());
     }
     
-    public abstract Page<T> filterBy(Map<String,String> criterias, int start, int resultsCount);
+    public abstract Page<T> filterBy(Map<String,String> criterias, int start, int resultsCount, boolean inclusive);
+    public Page<T> filterBy(Map<String,String> criterias, int start, int resultsCount) {
+        return filterBy(criterias, start, resultsCount, true);
+    }
     
 }
