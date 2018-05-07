@@ -33,7 +33,6 @@ import com.excilys.gradureau.computer_database.util.Page;
 public class MainServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
     private static final Logger LOGGER = LoggerFactory.getLogger(MainServlet.class);
-    private static final int COMPANIES_COUNT = 42;
     private ICrudCDB cdb;
     private final List<Company> COMPANIES;
 
@@ -55,7 +54,7 @@ public class MainServlet extends HttpServlet {
         cdb = new ServiceCrudCDB(
                 HikariBasedDataSource.init(HIKARI_CONFIG_FILEPATH)
                 );
-        COMPANIES = cdb.listCompanies(0, COMPANIES_COUNT).getContent();
+        COMPANIES = cdb.listCompanies(0, cdb.countCompanies()).getContent();
     }
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {

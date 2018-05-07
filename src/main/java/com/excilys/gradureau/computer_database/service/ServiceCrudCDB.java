@@ -98,4 +98,14 @@ public class ServiceCrudCDB implements ICrudCDB {
         return companyDAO.delete(company);
     }
 
+    @Override
+    public int countCompanies() {
+        return (int) companyDAO.count();
+    }
+
+    @Override
+    public int countComputers() {
+        return (int) computerDAO.count();
+    }
+
 }

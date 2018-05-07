@@ -13,12 +13,12 @@ public class Page<T> implements Iterable<T> {
     private List<T> content;
     private boolean hasPreviousPage, hasNextPage;
     private Pageable pageable;
-    private Supplier<Integer> totalResultsCounter;
+    private Supplier<Long> totalResultsCounter;
 
     // the start offset (!= page number), and the number of results per page (!= total)
     private int start, resultsPerPageCount;
     
-    private Integer total;
+    private Long total;
 
     public Page(List<T> content, int start, int resultsCount) {
         super();
@@ -93,19 +93,19 @@ public class Page<T> implements Iterable<T> {
         this.pageable = pageable;
     }
     
-    public Supplier<Integer> getTotalResultsCounter() {
+    public Supplier<Long> getTotalResultsCounter() {
         return totalResultsCounter;
     }
     
-    public void setTotalResultsCounter(Supplier<Integer> totalResultsCounter) {
+    public void setTotalResultsCounter(Supplier<Long> totalResultsCounter) {
         this.totalResultsCounter = totalResultsCounter;
     }
     
-    public int getTotal() {
+    public long getTotal() {
         return total;
     }
     
-    public int getTotal(boolean refresh) {
+    public long getTotal(boolean refresh) {
         if(refresh) {
             if(totalResultsCounter != null) {
                 total = totalResultsCounter.get();
@@ -125,9 +125,11 @@ public class Page<T> implements Iterable<T> {
     }
     
     public int getLastPageNumber(boolean refresh) {
-        int total = getTotal(refresh);
-        return total / resultsPerPageCount
-                + (total % resultsPerPageCount == 0 ? 0 : 1);
+        long total = getTotal(refresh);
+        return (int) (
+                total / resultsPerPageCount
+                + (total % resultsPerPageCount == 0 ? 0 : 1)
+                );
     }
 
     @Override

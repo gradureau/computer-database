@@ -90,4 +90,14 @@ public interface ICrudCDB {
      * @throws WrongObjectStateException if Company.id is not set.
      */
     boolean deleteCompany(Company company) throws WrongObjectStateException;
+    
+    /**
+     * @return number of companies in database
+     */
+    int countCompanies();
+    
+    /**
+     * @return number of computers in database
+     */
+    int countComputers();
 }

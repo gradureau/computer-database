@@ -28,6 +28,7 @@ public class ComputerDAO extends DAO<Computer> {
     private static final String QUERY_UPDATE = "UPDATE computer SET name = ?, introduced = ?, discontinued = ?, company_id = ? WHERE id = ?;";
     private static final String QUERY_DELETE = "DELETE FROM computer WHERE id = ?;";
     private static final String QUERY_LIMIT_ALL = QUERY_FIND_ALL + " order by introduced desc, id LIMIT ?, ?;";
+    private static final String QUERY_COUNT = "SELECT Count(pc.id) as total FROM computer pc";
 
     public ComputerDAO(Supplier<Connection> connectionSupplier) {
         super(connectionSupplier);
@@ -157,16 +158,17 @@ public class ComputerDAO extends DAO<Computer> {
         }
         Page<Computer> page = new Page<>(computers, start, resultsCount);
         page.setPageable(this::pagination);
-        page.setTotalResultsCounter(this::countAll);
+        page.setTotalResultsCounter(this::count);
         return  page;
     }
     
-    public Integer countAll() {
-        Integer count = null;
+    @Override
+    public long count() {
+        Long count = null;
         try(Connection connection = connectionSupplier.get();
-                ResultSet rs = connection.createStatement().executeQuery("SELECT Count(id) as total FROM computer")) {
+                ResultSet rs = connection.createStatement().executeQuery(QUERY_COUNT)) {
             if(rs.next()) {
-                count = rs.getInt("total");
+                count = rs.getLong("total");
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -210,15 +212,15 @@ public class ComputerDAO extends DAO<Computer> {
         Page<Computer> page = new Page<>(filteredComputers, start, resultsCount);
         page.setPageable( (_start, _resultsCount) -> filterBy(criterias, _start, _resultsCount) );
         page.setTotalResultsCounter( () -> {
-            Integer count = null;
+            Long count = null;
             try(Connection connection = connectionSupplier.get();
-                PreparedStatement ps = connection.prepareStatement("SELECT Count(pc.id) as total FROM computer pc" + stringBuilder.toString())) {
+                PreparedStatement ps = connection.prepareStatement(QUERY_COUNT + stringBuilder.toString())) {
                 for(int i = 1; i <= criteriasSize; ++i) {
                     ps.setString(i, "%" + parametersToEscape.get(i) + "%");
                 }
                 try(ResultSet rs = ps.executeQuery()) {
                     if(rs.next()) {
-                        count = rs.getInt("total");
+                        count = rs.getLong("total");
                     }
                 }
             } catch (SQLException e) {

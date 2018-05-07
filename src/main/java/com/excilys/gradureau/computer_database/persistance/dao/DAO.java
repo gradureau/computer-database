@@ -32,6 +32,8 @@ public abstract class DAO<T> {
     public abstract Optional<T> update(T obj);
 
     public abstract boolean delete(T obj);
+    
+    public abstract long count();
 
     /**
      * This is a default implementation, it is inneficient as it is returning

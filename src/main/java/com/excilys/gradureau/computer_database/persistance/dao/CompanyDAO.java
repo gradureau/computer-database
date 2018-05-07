@@ -21,6 +21,7 @@ public class CompanyDAO extends DAO<Company> {
     private static final String QUERY_LIMIT_ALL = "SELECT id, name FROM company order by name LIMIT ?, ? ;";
     private static final String QUERY_DELETE = "DELETE FROM company WHERE id = ?;";
     private static final String QUERY_DELETE_CHILDREN = "DELETE FROM computer WHERE company_id = ?;";
+    private static final String QUERY_COUNT = "SELECT Count(id) as total FROM company";
 
     public CompanyDAO(Supplier<Connection> connectionSupplier) {
         super(connectionSupplier);
@@ -115,6 +116,20 @@ public class CompanyDAO extends DAO<Company> {
     @Override
     public Page<Company> filterBy(Map<String, String> criterias, int start, int resultsCount) {
         throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public long count() {
+        Long count = null;
+        try(Connection connection = connectionSupplier.get();
+                ResultSet rs = connection.createStatement().executeQuery(QUERY_COUNT)) {
+            if(rs.next()) {
+                count = rs.getLong("total");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return count;
     }
 
 }
