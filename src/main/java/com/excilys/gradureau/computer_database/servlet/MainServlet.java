@@ -11,6 +11,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.http.HttpStatus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -216,8 +217,12 @@ public class MainServlet extends HttpServlet {
         } catch (WrongObjectStateException e) {
             e.printStackTrace();
         }
-        request.setAttribute("computer", computerData);
-        request.getRequestDispatcher(EDIT_COMPUTER_JSP).forward(request, response);
+        if(computerData == null) {
+            response.sendError(HttpStatus.SC_NOT_FOUND);
+        } else {
+            request.setAttribute("computer", computerData);
+            request.getRequestDispatcher(EDIT_COMPUTER_JSP).forward(request, response);
+        }
     }
 
 }

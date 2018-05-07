@@ -29,10 +29,18 @@
 		<maven-surefire-plugin.version>2.19.1</maven-surefire-plugin.version>
 		<org.junit.platform.junit-platform-surefire-provider>1.0.1</org.junit.platform.junit-platform-surefire-provider>
 		<com.zaxxer.HikariCP.version>3.1.0</com.zaxxer.HikariCP.version>
+		<org.apache.httpcomponents.httpcore.version>4.4.9</org.apache.httpcomponents.httpcore.version>
 	</properties>
 
 	<dependencies>
-		
+
+		<!-- https://mvnrepository.com/artifact/org.apache.httpcomponents/httpcore -->
+		<dependency>
+			<groupId>org.apache.httpcomponents</groupId>
+			<artifactId>httpcore</artifactId>
+			<version>${org.apache.httpcomponents.httpcore.version}</version>
+		</dependency>
+
 		<!-- HikariCP -->
 		<dependency>
 			<groupId>com.zaxxer</groupId>
