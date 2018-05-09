@@ -1,5 +1,6 @@
 # Properties files with sensitive data
-*.properties
+database.properties
+hikari.properties
 
 # Compiled class file
 *.class

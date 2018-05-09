@@ -15,13 +15,13 @@ public final class PropertyFileUtility {
     }
 
     public static Properties readPropertyFile(final String filepath) {
-        final Properties databaseConnectionProperties = new Properties();
+        final Properties properties = new Properties();
         final InputStream path = ClassLoader.getSystemClassLoader().getResourceAsStream(filepath);
         try {
-            databaseConnectionProperties.load(path);
+            properties.load(path);
         } catch (IOException e) {
             LOGGER.error(e.getMessage());
         }
-        return databaseConnectionProperties;
+        return properties;
     }
 }
