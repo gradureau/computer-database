@@ -215,6 +215,7 @@ public class MainServlet extends HttpServlet {
             computerData = cdb.showComputerDetails(computerData).orElse(null);
         } catch (WrongObjectStateException e) {
             e.printStackTrace();
+            //impossible since we're sure to have an Id, given a wrong "pk" parameter gives a straitght 404 status code
         }
         if(computerData == null) {
             response.sendError(HttpStatus.SC_NOT_FOUND);
