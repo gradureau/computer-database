@@ -21,6 +21,7 @@ import com.excilys.gradureau.computer_database.persistance.HikariBasedDataSource
 import com.excilys.gradureau.computer_database.util.Page;
 
 public class ServiceCrudCDBTest {
+    private static final int INITIAL_NUMBER_OF_COMPANIES = 42;
     static final ServiceCrudCDB CDB = new ServiceCrudCDB(
             HikariBasedDataSource.init("hikari.properties")
             );
@@ -215,6 +216,26 @@ public class ServiceCrudCDBTest {
     public void deleteCompanyWithNoCompanyId() {
         Company companyWithNoId = new Company();
         assertThrows(WrongObjectStateException.class, () -> CDB.deleteCompany(companyWithNoId));
+    }
+    
+    @Test
+    public void filterByName() {
+        Page<Computer> page = CDB.filterByName("ok", 0, 5);
+        assertSame(8L, page.getTotal(true));
+        assertSame(3, page.getNextPage().getContent().size());
+    }
+    
+    @Test
+    public void countCompanies() {
+        int numberOfCompanies = CDB.countCompanies();
+        assertTrue( numberOfCompanies == INITIAL_NUMBER_OF_COMPANIES
+                || numberOfCompanies == INITIAL_NUMBER_OF_COMPANIES-1);
+    }
+    
+    @Test
+    public void countComputers() {
+        int numberOfComputers = CDB.countComputers();
+        assertTrue(60L < numberOfComputers && numberOfComputers < 65L);
     }
 
 }

@@ -102,7 +102,10 @@ public class Page<T> implements Iterable<T> {
     }
     
     public long getTotal() {
-        return total;
+        return total == null ?
+                totalResultsCounter == null ?
+                        0 : (total=totalResultsCounter.get())
+                : total;
     }
     
     public long getTotal(boolean refresh) {
@@ -113,7 +116,7 @@ public class Page<T> implements Iterable<T> {
                 LOGGER.warn("no result counter set, cannot update total");
             }
         }
-        return total;
+        return getTotal();
     }
 
     public int getCurrentPageNumber() {
