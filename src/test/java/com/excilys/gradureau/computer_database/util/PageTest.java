@@ -31,19 +31,19 @@ public class PageTest {
 
     @Test
     public void getContent() {
-        char firstLetter = (char)firstPage.getContent().get(0);
+        char firstLetter = (Character)firstPage.getContent().get(0);
         assertSame('A', firstLetter);
     }
     
     @Test
     public void getNextPage() {
-        char sixthLetter = (char)firstPage.getNextPage().getContent().get(0);
+        char sixthLetter = (Character)firstPage.getNextPage().getContent().get(0);
         assertSame('F', sixthLetter);        
     }
     
     @Test
     public void getPreviousPageFromNextPage() {
-        char secondLetter = (char)firstPage.getNextPage().getPreviousPage().getContent().get(1);
+        char secondLetter = (Character)firstPage.getNextPage().getPreviousPage().getContent().get(1);
         assertSame('B', secondLetter);
         assertSame(secondLetter, firstPage.getPreviousPage().getContent().get(1));
     }
