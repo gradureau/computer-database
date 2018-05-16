@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -14,14 +15,15 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.http.HttpStatus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.web.context.support.SpringBeanAutowiringSupport;
 
 import com.excilys.gradureau.computer_database.dto.ComputerDTO;
 import com.excilys.gradureau.computer_database.exception.WrongObjectStateException;
 import com.excilys.gradureau.computer_database.model.Company;
 import com.excilys.gradureau.computer_database.model.Computer;
-import com.excilys.gradureau.computer_database.persistance.HikariBasedDataSource;
 import com.excilys.gradureau.computer_database.service.ICrudCDB;
-import com.excilys.gradureau.computer_database.service.ServiceCrudCDB;
 import com.excilys.gradureau.computer_database.util.Page;
 
 @WebServlet(urlPatterns = {
@@ -33,10 +35,11 @@ import com.excilys.gradureau.computer_database.util.Page;
 public class MainServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
     private static final Logger LOGGER = LoggerFactory.getLogger(MainServlet.class);
+    @Autowired(required = true)
     private ICrudCDB cdb;
-    private final List<Company> COMPANIES;
-
-    private static final String HIKARI_CONFIG_FILEPATH = "hikari.properties";
+    @Autowired(required = true)
+    @Qualifier("COMPANIES")
+    private List<Company> COMPANIES;
 
     //URLS
     public static final String DASHBOARD_URL = "/dashboard";
@@ -51,10 +54,12 @@ public class MainServlet extends HttpServlet {
 
     public MainServlet() {
         super();
-        cdb = new ServiceCrudCDB(
-                HikariBasedDataSource.init(HIKARI_CONFIG_FILEPATH)
-                );
-        COMPANIES = cdb.listCompanies(0, cdb.countCompanies()).getContent();
+    }
+
+    @Override
+    public void init(ServletConfig config) throws ServletException {
+        super.init(config);
+        SpringBeanAutowiringSupport.processInjectionBasedOnCurrentContext(this);
     }
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {

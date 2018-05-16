@@ -7,12 +7,14 @@ import java.util.function.Supplier;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 
 public class HikariBasedDataSource {
-
+    
+    @Autowired(required = true)
     private static Optional<HikariDataSource> optionalDataSource = Optional.empty();
     
     private static final Logger LOGGER = LoggerFactory.getLogger(HikariBasedDataSource.class);
@@ -39,8 +41,6 @@ public class HikariBasedDataSource {
             connection = optionalDataSource.get().getConnection();
         } catch (SQLException e) {
             LOGGER.warn(WARNING_MESSAGE_COULD_NOT_GET_SQL_CONNECTION, e);
-        } catch (Throwable t) {
-//            throw t;
         }
         return connection;
     }
