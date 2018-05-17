@@ -27,7 +27,7 @@
 		<org.codehaus.mojo.sql-maven-plugin.version>1.5</org.codehaus.mojo.sql-maven-plugin.version>
 		<org.apache.maven.plugins.maven-checkstyle-plugin.version>3.0.0</org.apache.maven.plugins.maven-checkstyle-plugin.version>
 		<maven-surefire-plugin.version>2.19.1</maven-surefire-plugin.version>
-		<org.junit.platform.junit-platform-surefire-provider>1.0.1</org.junit.platform.junit-platform-surefire-provider>
+		<org.junit.platform.junit-platform-surefire-provider>1.0.3</org.junit.platform.junit-platform-surefire-provider>
 		<com.zaxxer.HikariCP.version>3.1.0</com.zaxxer.HikariCP.version>
 		<org.apache.httpcomponents.httpcore.version>4.4.9</org.apache.httpcomponents.httpcore.version>
 		<springFramework.version>5.0.6.RELEASE</springFramework.version>
@@ -48,17 +48,12 @@
 		</dependency>
 		<dependency>
 			<groupId>org.springframework</groupId>
-			<artifactId>spring-webmvc</artifactId>
+			<artifactId>spring-web</artifactId>
 			<version>${springFramework.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework</groupId>
-			<artifactId>spring-jdbc</artifactId>
-			<version>${springFramework.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring-tx</artifactId>
+			<artifactId>spring-test</artifactId>
 			<version>${springFramework.version}</version>
 		</dependency>
 

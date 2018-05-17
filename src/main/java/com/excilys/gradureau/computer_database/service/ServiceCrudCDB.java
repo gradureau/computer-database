@@ -1,31 +1,26 @@
 package com.excilys.gradureau.computer_database.service;
 
-import java.sql.Connection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
-import java.util.function.Supplier;
+
+import org.springframework.beans.factory.annotation.Autowired;
 
 import com.excilys.gradureau.computer_database.exception.WrongObjectStateException;
 import com.excilys.gradureau.computer_database.model.Company;
 import com.excilys.gradureau.computer_database.model.Computer;
 import com.excilys.gradureau.computer_database.persistance.dao.ComputerDAO;
 import com.excilys.gradureau.computer_database.persistance.dao.DAO;
-import com.excilys.gradureau.computer_database.persistance.dao.DAOFactory;
 import com.excilys.gradureau.computer_database.util.Page;
 import com.excilys.gradureau.computer_database.validator.CompanyValidator;
 import com.excilys.gradureau.computer_database.validator.ComputerValidator;
 
 public class ServiceCrudCDB implements ICrudCDB {
 
+    @Autowired
     private DAO<Company> companyDAO;
+    @Autowired
     private DAO<Computer> computerDAO;
-
-    public ServiceCrudCDB(Supplier<Connection> supplier) {
-        DAOFactory daoFactory = DAOFactory.getInstance(supplier);
-        companyDAO = daoFactory.getCompanyDAO();
-        computerDAO = daoFactory.getComputerDAO();
-    }
 
     @Override
     public Page<Computer> listComputers(int start, int resultsCount) {

@@ -12,12 +12,12 @@ import com.excilys.gradureau.computer_database.service.ICrudCDB;
 import com.excilys.gradureau.computer_database.service.ServiceCrudCDB;
 
 @Configuration
-@Import(DataSourceConfig.class)
+@Import(PersistanceConfig.class)
 public class ServiceConfig {
     
     @Bean
     ICrudCDB iCrudCDB() {
-        return new ServiceCrudCDB(new DataSourceConfig().connectionSupplier());
+        return new ServiceCrudCDB();
     }
     
     @Bean

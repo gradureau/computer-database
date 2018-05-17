@@ -1,26 +1,27 @@
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
-import com.excilys.gradureau.computer_database.persistance.HikariBasedDataSource;
 import com.excilys.gradureau.computer_database.service.ICrudCDB;
-import com.excilys.gradureau.computer_database.service.ServiceCrudCDB;
 import com.excilys.gradureau.computer_database.ui.CLI;
+
+import springConfig.ServiceConfig;
 
 public class Main {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(Main.class);
 
-    private static final String HIKARI_CONFIG_FILEPATH = "hikari.properties";
-
     public static void main(String[] args) {
 
-        LOGGER.warn("Application in Beta, no Validation implemented yet !");
+        LOGGER.warn("Application in Beta, please report any anomaly.");
 
         System.out.println("Hello World !");
-
-        ICrudCDB cdb = new ServiceCrudCDB(
-                HikariBasedDataSource.init(HIKARI_CONFIG_FILEPATH)
-                );
+        
+        AnnotationConfigApplicationContext springContext = new AnnotationConfigApplicationContext();
+        springContext.register(ServiceConfig.class);
+        springContext.refresh();
+        
+        ICrudCDB cdb = springContext.getBean(ICrudCDB.class);
 
         boolean displayMenu = true;
 
@@ -35,6 +36,8 @@ public class Main {
                 displayMenu = true;
             }
         }
+        
+        springContext.close();
 
         System.out.println("Thank you for using our service !");
     }

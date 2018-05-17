@@ -11,9 +11,13 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.function.Supplier;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
+
 import com.excilys.gradureau.computer_database.model.Company;
 import com.excilys.gradureau.computer_database.util.Page;
 
+@Repository
 public class CompanyDAO extends DAO<Company> {
 
     private static final String QUERY_FIND_ALL = "SELECT id, name FROM company;";
@@ -23,6 +27,7 @@ public class CompanyDAO extends DAO<Company> {
     private static final String QUERY_DELETE_CHILDREN = "DELETE FROM computer WHERE company_id = ?;";
     private static final String QUERY_COUNT = "SELECT Count(id) as total FROM company";
 
+    @Autowired
     public CompanyDAO(Supplier<Connection> connectionSupplier) {
         super(connectionSupplier);
     }

@@ -13,18 +13,22 @@ import java.time.format.DateTimeFormatter;
 import java.util.Optional;
 
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
 
 import com.excilys.gradureau.computer_database.exception.WrongObjectStateException;
 import com.excilys.gradureau.computer_database.model.Company;
 import com.excilys.gradureau.computer_database.model.Computer;
-import com.excilys.gradureau.computer_database.persistance.HikariBasedDataSource;
 import com.excilys.gradureau.computer_database.util.Page;
 
+import springConfig.ServiceConfig;
+
+@SpringJUnitConfig(ServiceConfig.class)
 public class ServiceCrudCDBTest {
     private static final int INITIAL_NUMBER_OF_COMPANIES = 42;
-    static final ServiceCrudCDB CDB = new ServiceCrudCDB(
-            HikariBasedDataSource.init("hikari.properties")
-            );
+    
+    @Autowired
+    ServiceCrudCDB CDB;
 
     @Test
     public void createComputerWithName() throws WrongObjectStateException {
