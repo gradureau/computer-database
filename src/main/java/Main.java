@@ -3,9 +3,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
 import com.excilys.gradureau.computer_database.service.ICrudCDB;
+import com.excilys.gradureau.computer_database.springConfig.ServiceConfig;
 import com.excilys.gradureau.computer_database.ui.CLI;
-
-import springConfig.ServiceConfig;
 
 public class Main {
 

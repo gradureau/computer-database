@@ -1,4 +1,4 @@
-package springConfig;
+package com.excilys.gradureau.computer_database.springConfig;
 
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;

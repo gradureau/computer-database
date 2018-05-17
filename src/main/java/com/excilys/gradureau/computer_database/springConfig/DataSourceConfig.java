@@ -1,4 +1,4 @@
-package springConfig;
+package com.excilys.gradureau.computer_database.springConfig;
 
 import java.sql.Connection;
 import java.sql.SQLException;
