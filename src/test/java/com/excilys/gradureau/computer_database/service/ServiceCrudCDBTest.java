@@ -14,6 +14,7 @@ import java.util.Optional;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
 
 import com.excilys.gradureau.computer_database.exception.WrongObjectStateException;
@@ -72,7 +73,8 @@ public class ServiceCrudCDBTest {
     @Test
     public void createComputerWithNonExistingCompanyId() throws WrongObjectStateException {
         Computer computerWithNonExistingCompanyId = new Computer(null, "computerName", null, null, null);
-        assertTrue(CDB.createComputer(computerWithNonExistingCompanyId, Long.MIN_VALUE).orElse(null).getCompany() == null);
+        assertThrows(EmptyResultDataAccessException.class,
+                () -> CDB.createComputer(computerWithNonExistingCompanyId, Long.MIN_VALUE));
     }
 
     @Test

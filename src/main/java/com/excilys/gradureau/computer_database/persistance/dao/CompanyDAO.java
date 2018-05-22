@@ -4,8 +4,6 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -13,6 +11,7 @@ import java.util.function.Supplier;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
 
 import com.excilys.gradureau.computer_database.model.Company;
@@ -30,6 +29,13 @@ public class CompanyDAO extends DAO<Company> {
     private static final String QUERY_DELETE = "DELETE FROM company WHERE id = ?;";
     private static final String QUERY_DELETE_CHILDREN = "DELETE FROM computer WHERE company_id = ?;";
     private static final String QUERY_COUNT = "SELECT Count(id) as total FROM company";
+    
+    private static RowMapper<Company> companyRowMapper = (ResultSet rs, int rowNum) -> {
+        Company company = new Company();
+        company.setId(rs.getLong("id"));
+        company.setName(rs.getString("name"));
+        return company;
+    };
 
     @Autowired
     public CompanyDAO(Supplier<Connection> connectionSupplier) {
@@ -37,19 +43,12 @@ public class CompanyDAO extends DAO<Company> {
     }
 
     @Override
-    public Optional<Company> find(long id) {
-        Company company = null;
-        try(Connection connection = connectionSupplier.get();
-                PreparedStatement ps = connection.prepareStatement(QUERY_FIND)) {
-            ps.setLong(1, id);
-            try(ResultSet res = ps.executeQuery()) {
-                if (res.first()) {
-                    company = new Company(id, res.getString("name"));
-                }
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+    public Optional<Company> find(long id) {       
+        Company company = jdbcTemplate.queryForObject(
+                QUERY_FIND,
+                new Object[]{ id },
+                companyRowMapper
+                );
         return Optional.ofNullable(company);
     }
 
@@ -90,35 +89,16 @@ public class CompanyDAO extends DAO<Company> {
 
     @Override
     public List<Company> findAll() {
-        List<Company> companies = new ArrayList<>();
-        try(Connection connection = connectionSupplier.get();
-                Statement statement = connection.createStatement();
-                ResultSet res = statement.executeQuery(QUERY_FIND_ALL)) {
-            while (res.next()) {
-                companies.add(new Company(res.getLong("id"), res.getString("name")));
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-
-        return companies;
+        return jdbcTemplate.query(QUERY_FIND_ALL, companyRowMapper);
     }
 
     @Override
     public Page<Company> pagination(int start, int resultsCount) {
-        List<Company> companies = new ArrayList<>();
-        try(Connection connection = connectionSupplier.get();
-                PreparedStatement ps = connection.prepareStatement(QUERY_LIMIT_ALL)) {
-            ps.setInt(1, start);
-            ps.setInt(2, resultsCount);
-            try(ResultSet res = ps.executeQuery()) {
-                while (res.next()) {
-                    companies.add(new Company(res.getLong("id"), res.getString("name")));
-                }
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+        List<Company> companies = jdbcTemplate.query(
+                QUERY_LIMIT_ALL,
+                new Object[] {start, resultsCount},
+                companyRowMapper
+                );
         return new Page<>(companies, start, resultsCount);
     }
 
