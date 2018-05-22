@@ -19,7 +19,7 @@ import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
 import com.excilys.gradureau.computer_database.exception.WrongObjectStateException;
 import com.excilys.gradureau.computer_database.model.Company;
 import com.excilys.gradureau.computer_database.model.Computer;
-import com.excilys.gradureau.computer_database.springConfig.ServiceConfig;
+import com.excilys.gradureau.computer_database.springconfig.ServiceConfig;
 import com.excilys.gradureau.computer_database.util.Page;
 
 @SpringJUnitConfig(ServiceConfig.class)

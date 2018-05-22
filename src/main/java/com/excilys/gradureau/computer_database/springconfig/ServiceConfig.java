@@ -1,4 +1,4 @@
-package com.excilys.gradureau.computer_database.springConfig;
+package com.excilys.gradureau.computer_database.springconfig;
 
 import java.util.List;
 
