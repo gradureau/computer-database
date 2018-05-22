@@ -186,16 +186,7 @@ public class ComputerDAO extends DAO<Computer> {
     
     @Override
     public long count() {
-        Long count = null;
-        try(Connection connection = connectionSupplier.get();
-                ResultSet rs = connection.createStatement().executeQuery(QUERY_COUNT)) {
-            if(rs.next()) {
-                count = rs.getLong("total");
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return count;
+        return jdbcTemplate.queryForObject(QUERY_COUNT, Long.class);
     }
 
     @Override
