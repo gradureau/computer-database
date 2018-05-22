@@ -59,4 +59,8 @@
 		<level value="INFO" />
 		<appender-ref ref="consoleAppender" />
 	</root>
+
+	<logger name="org.springframework" level="info">
+		<appender-ref ref="STDOUT" />
+	</logger>
 </configuration>

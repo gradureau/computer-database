@@ -15,19 +15,19 @@
 		<maven.compiler.source>1.8</maven.compiler.source>
 		<maven.compiler.target>1.8</maven.compiler.target>
 		<logback.version>1.2.3</logback.version>
-		<org.slf4j.slf4j-api.version>1.7.25</org.slf4j.slf4j-api.version>
-		<javax.servlet.servlet-api.version>4.0.0</javax.servlet.servlet-api.version>
-		<javax.servlet.jsp-api.version>2.0</javax.servlet.jsp-api.version>
+		<slf4j.version>1.7.25</slf4j.version>
+		<javax.servlet.version>4.0.0</javax.servlet.version>
+		<javax.jsp.version>2.0</javax.jsp.version>
 		<jstl.jstl.version>1.2</jstl.jstl.version>
 		<net.sargue.java-time-jsptags.version>1.1.4</net.sargue.java-time-jsptags.version>
 		<mysql.mysql-connector-java.version>5.1.46</mysql.mysql-connector-java.version>
-		<org.junit.jupiter.junit-jupiter-engine.version>5.2.0-M1</org.junit.jupiter.junit-jupiter-engine.version>
-		<org.junit.platform.junit-platform-launcher.version>1.2.0-M1</org.junit.platform.junit-platform-launcher.version>
-		<org.mockito.mockito-junit-jupiter.version>2.18.3</org.mockito.mockito-junit-jupiter.version>
-		<org.codehaus.mojo.sql-maven-plugin.version>1.5</org.codehaus.mojo.sql-maven-plugin.version>
-		<org.apache.maven.plugins.maven-checkstyle-plugin.version>3.0.0</org.apache.maven.plugins.maven-checkstyle-plugin.version>
+		<junit.jupiter-engine.version>5.2.0-M1</junit.jupiter-engine.version>
+		<junit-platform-launcher.version>1.2.0-M1</junit-platform-launcher.version>
+		<mockito-junit.version>2.18.3</mockito-junit.version>
+		<sql-maven-plugin.version>1.5</sql-maven-plugin.version>
+		<maven-checkstyle-plugin.version>3.0.0</maven-checkstyle-plugin.version>
 		<maven-surefire-plugin.version>2.19.1</maven-surefire-plugin.version>
-		<org.junit.platform.junit-platform-surefire-provider>1.0.3</org.junit.platform.junit-platform-surefire-provider>
+		<junit-platform-surefire-provider.version>1.0.3</junit-platform-surefire-provider.version>
 		<com.zaxxer.HikariCP.version>3.1.0</com.zaxxer.HikariCP.version>
 		<org.apache.httpcomponents.httpcore.version>4.4.9</org.apache.httpcomponents.httpcore.version>
 		<springFramework.version>5.0.6.RELEASE</springFramework.version>
@@ -75,7 +75,7 @@
 		<dependency>
 			<groupId>javax.servlet</groupId>
 			<artifactId>javax.servlet-api</artifactId>
-			<version>${javax.servlet.servlet-api.version}</version>
+			<version>${javax.servlet.version}</version>
 			<scope>provided</scope>
 		</dependency>
 
@@ -83,7 +83,7 @@
 		<dependency>
 			<groupId>javax.servlet</groupId>
 			<artifactId>jsp-api</artifactId>
-			<version>${javax.servlet.jsp-api.version}</version>
+			<version>${javax.jsp.version}</version>
 			<scope>provided</scope>
 		</dependency>
 
@@ -115,7 +115,7 @@
 		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-api</artifactId>
-			<version>${org.slf4j.slf4j-api.version}</version>
+			<version>${slf4j.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>ch.qos.logback</groupId>
@@ -130,7 +130,7 @@
 		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>jcl-over-slf4j</artifactId>
-			<version>${org.slf4j.slf4j-api.version}</version>
+			<version>${slf4j.version}</version>
 		</dependency>
 
 		<!-- TEST -->
@@ -139,20 +139,20 @@
 		<dependency>
 			<groupId>org.junit.jupiter</groupId>
 			<artifactId>junit-jupiter-engine</artifactId>
-			<version>${org.junit.jupiter.junit-jupiter-engine.version}</version>
+			<version>${junit.jupiter-engine.version}</version>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.junit.platform</groupId>
 			<artifactId>junit-platform-launcher</artifactId>
-			<version>${org.junit.platform.junit-platform-launcher.version}</version>
+			<version>${junit-platform-launcher.version}</version>
 			<scope>test</scope>
 		</dependency>
 		<!-- MOCKITO -->
 		<dependency>
 			<groupId>org.mockito</groupId>
 			<artifactId>mockito-junit-jupiter</artifactId>
-			<version>${org.mockito.mockito-junit-jupiter.version}</version>
+			<version>${mockito-junit.version}</version>
 			<scope>test</scope>
 		</dependency>
 
@@ -182,7 +182,7 @@
 					<dependency>
 						<groupId>org.junit.platform</groupId>
 						<artifactId>junit-platform-surefire-provider</artifactId>
-						<version>${org.junit.platform.junit-platform-surefire-provider}</version>
+						<version>${junit-platform-surefire-provider.version}</version>
 					</dependency>
 				</dependencies>
 			</plugin>
@@ -192,7 +192,7 @@
 				<!-- ( 1 ) plugin info -->
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>sql-maven-plugin</artifactId>
-				<version>${org.codehaus.mojo.sql-maven-plugin.version}</version>
+				<version>${sql-maven-plugin.version}</version>
 				<!-- ( 2 ) jdbc driver -->
 				<dependencies>
 					<dependency>
@@ -254,7 +254,7 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-checkstyle-plugin</artifactId>
-				<version>${org.apache.maven.plugins.maven-checkstyle-plugin.version}</version>
+				<version>${maven-checkstyle-plugin.version}</version>
 				<configuration>
 					<configLocation>config/checkstyle/checkstyle.xml</configLocation>
 					<encoding>UTF-8</encoding>

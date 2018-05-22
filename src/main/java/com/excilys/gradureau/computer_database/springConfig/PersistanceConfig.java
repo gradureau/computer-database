@@ -8,8 +8,4 @@ import org.springframework.context.annotation.Import;
 @ComponentScan("com.excilys.gradureau.computer_database.persistance.dao")
 @Import(DataSourceConfig.class)
 public class PersistanceConfig {
-//    @Bean
-//    DAO<Computer> computerDAO() {
-//        return new ComputerDAO();
-//    }
 }
