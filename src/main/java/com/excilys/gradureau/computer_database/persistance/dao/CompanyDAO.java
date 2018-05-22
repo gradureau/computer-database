@@ -12,6 +12,7 @@ import java.util.Optional;
 import java.util.function.Supplier;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
 import com.excilys.gradureau.computer_database.model.Company;
@@ -19,6 +20,9 @@ import com.excilys.gradureau.computer_database.util.Page;
 
 @Repository
 public class CompanyDAO extends DAO<Company> {
+    
+    @Autowired
+    private JdbcTemplate jdbcTemplate;
 
     private static final String QUERY_FIND_ALL = "SELECT id, name FROM company;";
     private static final String QUERY_FIND = "SELECT id, name FROM company WHERE id = ?;";

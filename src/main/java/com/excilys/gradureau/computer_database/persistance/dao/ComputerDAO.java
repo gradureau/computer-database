@@ -15,6 +15,7 @@ import java.util.Optional;
 import java.util.function.Supplier;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
 import com.excilys.gradureau.computer_database.model.Computer;
@@ -23,6 +24,9 @@ import com.excilys.gradureau.computer_database.util.Page;
 
 @Repository
 public class ComputerDAO extends DAO<Computer> {
+    
+    @Autowired
+    private JdbcTemplate jdbcTemplate;
 
     private static final String QUERY_FIND_ALL = "SELECT pc.id as id, pc.name as name, introduced, discontinued, company_id, co.name as company_name "
             + "FROM computer AS pc LEFT JOIN company AS co on pc.company_id = co.id";
