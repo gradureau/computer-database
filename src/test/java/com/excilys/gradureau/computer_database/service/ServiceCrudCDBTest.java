@@ -207,7 +207,8 @@ public class ServiceCrudCDBTest {
         
         assertTrue(CDB.deleteCompany(companyWithExistingId));
         
-        assertFalse(CDB.showComputerDetails(knownComputerFromDeletedCompany).isPresent());
+        assertThrows(EmptyResultDataAccessException.class,
+                () -> CDB.showComputerDetails(knownComputerFromDeletedCompany));
     }
     
     @Test
