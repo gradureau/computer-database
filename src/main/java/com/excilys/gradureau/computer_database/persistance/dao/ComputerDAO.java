@@ -1,6 +1,5 @@
 package com.excilys.gradureau.computer_database.persistance.dao;
 
-import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.Timestamp;
 import java.util.ArrayList;
@@ -8,15 +7,16 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.function.Supplier;
 import java.util.stream.Stream;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.excilys.gradureau.computer_database.model.Company;
 import com.excilys.gradureau.computer_database.model.Computer;
@@ -24,6 +24,7 @@ import com.excilys.gradureau.computer_database.persistance.dao.mapper.TimeMapper
 import com.excilys.gradureau.computer_database.util.Page;
 
 @Repository
+@Transactional(readOnly=true)
 public class ComputerDAO extends DAO<Computer> {
     
     @Autowired
@@ -59,23 +60,23 @@ public class ComputerDAO extends DAO<Computer> {
             return sqlAlias;
         }
     }
-    
-    @Autowired
-    public ComputerDAO(Supplier<Connection> connectionSupplier) {
-        super(connectionSupplier);
-    }
 
     @Override
     public Optional<Computer> find(long id) {
-        Computer computer = jdbcTemplate.queryForObject(
-                QUERY_FIND,
-                new Object[]{ id },
-                computerRowMapper
-                );
-        return Optional.ofNullable(computer);
+        try {
+            Computer computer = jdbcTemplate.queryForObject(
+                    QUERY_FIND,
+                    new Object[]{ id },
+                    computerRowMapper
+                    );
+            return Optional.of(computer);
+        } catch(EmptyResultDataAccessException e) {
+            return Optional.empty();
+        }
     }
 
     @Override
+    @Transactional(readOnly=false)
     public Optional<Computer> create(Computer computer) {
         /*
          * Might as well return a boolean to inform about the outcome and set the Long
@@ -97,6 +98,7 @@ public class ComputerDAO extends DAO<Computer> {
     }
 
     @Override
+    @Transactional(readOnly=false)
     public Optional<Computer> update(Computer computer) {
         boolean wasUpdated = jdbcTemplate.update(QUERY_UPDATE,
                 computer.getName(),
@@ -109,6 +111,7 @@ public class ComputerDAO extends DAO<Computer> {
     }
 
     @Override
+    @Transactional(readOnly=false)
     public boolean delete(Computer computer) {
         return jdbcTemplate.update(QUERY_DELETE, computer.getId())  == 1;
     }

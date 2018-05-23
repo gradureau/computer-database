@@ -1,23 +1,22 @@
 package com.excilys.gradureau.computer_database.persistance.dao;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.function.Supplier;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.excilys.gradureau.computer_database.model.Company;
 import com.excilys.gradureau.computer_database.util.Page;
 
 @Repository
+@Transactional(readOnly=true)
 public class CompanyDAO extends DAO<Company> {
     
     @Autowired
@@ -37,54 +36,37 @@ public class CompanyDAO extends DAO<Company> {
         return company;
     };
 
-    @Autowired
-    public CompanyDAO(Supplier<Connection> connectionSupplier) {
-        super(connectionSupplier);
+    @Override
+    public Optional<Company> find(long id) {
+        try {
+            Company company = jdbcTemplate.queryForObject(
+                    QUERY_FIND,
+                    new Object[]{ id },
+                    companyRowMapper
+                    );
+            return Optional.of(company);
+        } catch(EmptyResultDataAccessException e) {
+            return Optional.empty();
+        }
     }
 
     @Override
-    public Optional<Company> find(long id) {       
-        Company company = jdbcTemplate.queryForObject(
-                QUERY_FIND,
-                new Object[]{ id },
-                companyRowMapper
-                );
-        return Optional.ofNullable(company);
-    }
-
-    @Override
+    @Transactional(readOnly=false)
     public Optional<Company> create(Company obj) {
         throw new UnsupportedOperationException();
     }
 
     @Override
+    @Transactional(readOnly=false)
     public Optional<Company> update(Company obj) {
         throw new UnsupportedOperationException();
     }
 
     @Override
+    @Transactional(readOnly=false)
     public boolean delete(Company company) {
-        boolean wasDeleted = false;
-        try(Connection connection = connectionSupplier.get();
-                PreparedStatement deleteCompanyStatement = connection.prepareStatement(QUERY_DELETE);
-                PreparedStatement deleteChildrenStatement = connection.prepareStatement(QUERY_DELETE_CHILDREN)) {
-            
-            connection.setAutoCommit(false);
-            
-            deleteChildrenStatement.setLong(1, company.getId());
-            deleteChildrenStatement.executeUpdate();
-            
-            deleteCompanyStatement.setLong(1, company.getId());
-            wasDeleted = deleteCompanyStatement.executeUpdate() == 1;
-            
-            if(wasDeleted)
-                connection.commit();
-            
-        } catch (SQLException e) {
-            e.printStackTrace();
-            //HikariCP should rollback transaction and reset autoCommit to True automatically
-        }
-        return wasDeleted;
+        jdbcTemplate.update(QUERY_DELETE_CHILDREN, new Object[] { company.getId() });
+        return jdbcTemplate.update(QUERY_DELETE, new Object[] { company.getId() }) == 1;
     }
 
     @Override

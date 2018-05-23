@@ -1,20 +1,12 @@
 package com.excilys.gradureau.computer_database.persistance.dao;
 
-import java.sql.Connection;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.function.Supplier;
 
 import com.excilys.gradureau.computer_database.util.Page;
 
 public abstract class DAO<T> {
-
-    protected Supplier<Connection> connectionSupplier;
-
-    public DAO(Supplier<Connection> connectionSupplier) {
-        this.connectionSupplier = connectionSupplier;
-    }
 
     /**
      * find entity in database.
