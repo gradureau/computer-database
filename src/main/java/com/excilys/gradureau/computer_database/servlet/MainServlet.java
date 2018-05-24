@@ -7,7 +7,6 @@ import java.util.stream.Collectors;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
-import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -26,12 +25,12 @@ import com.excilys.gradureau.computer_database.model.Computer;
 import com.excilys.gradureau.computer_database.service.ICrudCDB;
 import com.excilys.gradureau.computer_database.util.Page;
 
-@WebServlet(urlPatterns = {
-        MainServlet.DASHBOARD_URL,
-        MainServlet.ADD_COMPUTER_URL,
-        MainServlet.EDIT_COMPUTER_URL,
-        MainServlet.DELETE_COMPUTER_URL
-}, loadOnStartup = 0)
+//@WebServlet(urlPatterns = {
+//        MainServlet.DASHBOARD_URL,
+//        MainServlet.ADD_COMPUTER_URL,
+//        MainServlet.EDIT_COMPUTER_URL,
+//        MainServlet.DELETE_COMPUTER_URL
+//}, loadOnStartup = 0)
 public class MainServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
     private static final Logger LOGGER = LoggerFactory.getLogger(MainServlet.class);
