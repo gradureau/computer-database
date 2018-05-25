@@ -1,19 +1,20 @@
 <!DOCTYPE html>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
-<%@ taglib uri="http://sargue.net/jsptags/time" prefix="javatime" %>
+<%@ taglib uri="http://sargue.net/jsptags/time" prefix="javatime"%>
+<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form"%>
 <html>
 <head>
 <title>Computer Database</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <!-- Bootstrap -->
-<link href="css/bootstrap.min.css" rel="stylesheet" media="screen">
-<link href="css/font-awesome.css" rel="stylesheet" media="screen">
-<link href="css/main.css" rel="stylesheet" media="screen">
+<link href="${pageContext.request.contextPath}/css/bootstrap.min.css" rel="stylesheet" media="screen">
+<link href="${pageContext.request.contextPath}/css/font-awesome.css" rel="stylesheet" media="screen">
+<link href="${pageContext.request.contextPath}/css/main.css" rel="stylesheet" media="screen">
 </head>
 <body>
     <header class="navbar navbar-inverse navbar-fixed-top">
         <div class="container">
-            <a class="navbar-brand" href="dashboard"> Application - Computer Database </a>
+            <a class="navbar-brand" href="${pageContext.request.contextPath}/dashboard"> Application - Computer Database </a>
         </div>
     </header>
     <section id="main">
@@ -25,7 +26,7 @@
                     </div>
                     <h1>Edit Computer</h1>
 
-                    <form action="edit-computer" method="POST">
+                    <form:form action="${pageContext.request.contextPath}/edit-computer/" method="POST" modelAttribute="computerData">
                         <input type="hidden" value="${computer.id}" id="id" name="id" />
                         <fieldset>
                             <div class="form-group">
@@ -58,9 +59,9 @@
                         <div class="actions pull-right">
                             <input type="submit" value="Edit" class="btn btn-primary">
                             or
-                            <a href="dashboard" class="btn btn-default">Cancel</a>
+                            <a href="${pageContext.request.contextPath}/dashboard" class="btn btn-default">Cancel</a>
                         </div>
-                    </form>
+                    </form:form>
                 </div>
 				<c:if test="${not empty warning}">
     			<div class="col-xs-8 col-xs-offset-2 box">
@@ -79,7 +80,7 @@
             </div>
         </div>
     </section>
-<script type="text/javascript" src="js/jquery.min.js"></script>
-<script type="text/javascript" src="js/datePrecedenceValidator.js"></script>
+<script type="text/javascript" src="${pageContext.request.contextPath}/js/jquery.min.js"></script>
+<script type="text/javascript" src="${pageContext.request.contextPath}/js/datePrecedenceValidator.js"></script>
 </body>
 </html>

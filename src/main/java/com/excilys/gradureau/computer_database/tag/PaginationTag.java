@@ -121,10 +121,10 @@ public class PaginationTag extends SimpleTagSupport {
     
     private void addUri(StringBuilder writer, int page, int resultsPerPageCount) {
         writer.append(uri);
-        writer.append(hasParameter ? "&" : "?");
+        writer.append(hasParameter ? "&amp;" : "?");
         writer.append("resultsPerPage=");
         writer.append(resultsPerPageCount);
-        writer.append("&pageNo=");
+        writer.append("&amp;pageNo=");
         writer.append(page);
     }
     private void addUri(StringBuilder writer, int page) {

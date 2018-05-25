@@ -8,15 +8,15 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta charset="utf-8">
 <!-- Bootstrap -->
-<link href="css/bootstrap.min.css" rel="stylesheet"
+<link href="${pageContext.request.contextPath}/css/bootstrap.min.css" rel="stylesheet"
 	media="screen">
-<link href="css/font-awesome.css" rel="stylesheet" media="screen">
-<link href="css/main.css" rel="stylesheet" media="screen">
+<link href="${pageContext.request.contextPath}/css/font-awesome.css" rel="stylesheet" media="screen">
+<link href="${pageContext.request.contextPath}/css/main.css" rel="stylesheet" media="screen">
 </head>
 <body>
 	<header class="navbar navbar-inverse navbar-fixed-top">
 		<div class="container">
-			<a class="navbar-brand" href="dashboard"> Application -
+			<a class="navbar-brand" href="${pageContext.request.contextPath}/dashboard"> Application -
 				Computer Database </a>
 		</div>
 	</header>
@@ -35,7 +35,7 @@
 					</form>
 				</div>
 				<div class="pull-right">
-					<a class="btn btn-success" id="addComputer" href="add-computer">Add
+					<a class="btn btn-success" id="addComputer" href="${pageContext.request.contextPath}/add-computer">Add
 						Computer</a> <a class="btn btn-default" id="editComputer" href="#"
 						onclick="$.fn.toggleEditMode();">Edit</a>
 				</div>
@@ -55,7 +55,7 @@
 
 						<th class="editMode" style="width: 60px; height: 22px;"><input
 							type="checkbox" id="selectall" /> <span
-							style="vertical-align: top;"> - <a href="#"
+							style="vertical-align: top;"> - <a href="${pageContext.request.contextPath}/#"
 								id="deleteSelected" onclick="$.fn.deleteSelected();"> <i
 									class="fa fa-trash-o fa-lg"></i>
 							</a>
@@ -75,7 +75,7 @@
 						<tr>
 							<td class="editMode"><input type="checkbox"
 								name="deleteItem" class="cb" value="${computer.id}"></td>
-							<td><a href="edit-computer?pk=${computer.id}" onclick="">${computer.name}</a>
+							<td><a href="${pageContext.request.contextPath}/edit-computer/${computer.id}" onclick="">${computer.name}</a>
 							</td>
 							<td><javatime:format value="${computer.introduced}"
 									style="M-" /></td>
@@ -95,9 +95,9 @@
 		</div>
 
 	</footer>
-	<script src="js/jquery.min.js"></script>
-	<script src="js/bootstrap.min.js"></script>
-	<script src="js/dashboard.js"></script>
+	<script src="${pageContext.request.contextPath}/js/jquery.min.js"></script>
+	<script src="${pageContext.request.contextPath}/js/bootstrap.min.js"></script>
+	<script src="${pageContext.request.contextPath}/js/dashboard.js"></script>
 
 </body>
 </html>
