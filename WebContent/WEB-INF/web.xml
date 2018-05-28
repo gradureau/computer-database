@@ -23,15 +23,11 @@
 	</error-page>
 	<error-page>
 		<exception-type>java.lang.NumberFormatException</exception-type>
-		<location>/views/404.html</location>
-	</error-page>
-	<error-page>
-		<exception-type>com.excilys.gradureau.computer_database.controller.NotFound404Exception</exception-type>
-		<location>/views/404.html</location>
+		<location>/WEB-INF/static/views/404.jsp</location>
 	</error-page>
 	<error-page>
 		<exception-type>org.springframework.web.method.annotation.MethodArgumentTypeMismatchException</exception-type>
-		<location>/views/404.html</location>
+		<location>/WEB-INF/static/views/404.jsp</location>
 	</error-page>
 	<error-page>
 		<exception-type>java.lang.UnsupportedOperationException</exception-type>
@@ -39,11 +35,11 @@
 	</error-page>
 	<error-page>
 		<error-code>405</error-code>
-		<location>/views/404.html</location>
+		<location>/WEB-INF/static/views/404.jsp</location>
 	</error-page>
 	<error-page>
 		<error-code>404</error-code>
-		<location>/views/404.html</location>
+		<location>/WEB-INF/static/views/404.jsp</location>
 	</error-page>
 	<error-page>
 		<error-code>403</error-code>

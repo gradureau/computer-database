@@ -10,6 +10,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -17,6 +18,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.ModelAndView;
 
 import com.excilys.gradureau.computer_database.dto.ComputerDTO;
 import com.excilys.gradureau.computer_database.exception.WrongObjectStateException;
@@ -123,18 +125,18 @@ public class ComputerController {
      */
     
     @RequestMapping(path = EDIT_COMPUTER_URL + "/{pk:\\d+}", method = RequestMethod.GET)
-    public String editComputer(ModelMap model,
+    public ModelAndView editComputer(ModelMap model,
             @PathVariable(name = "pk") Long computerId) {
         Computer computerData = new Computer();
         computerData.setId(computerId);
         try {
             computerData = cdb.showComputerDetails(computerData).orElse(null);
-        } catch (WrongObjectStateException e) {throw new NotFound404Exception();} // impossible since we're sure to have an Id
+        } catch (WrongObjectStateException e) {return new ModelAndView(EDIT_COMPUTER_JSP, HttpStatus.NOT_FOUND);} // impossible since we're sure to have an Id
         if(computerData == null)
-            throw new NotFound404Exception();
+            return new ModelAndView(EDIT_COMPUTER_JSP, HttpStatus.NOT_FOUND);
         model.addAttribute("companies", COMPANIES);
         model.addAttribute("computer", computerData);
-        return EDIT_COMPUTER_JSP;
+        return new ModelAndView(EDIT_COMPUTER_JSP) ;
     }
     
     @RequestMapping(path = EDIT_COMPUTER_URL, method = RequestMethod.POST, params = {
@@ -160,6 +162,7 @@ public class ComputerController {
                 model.addAttribute("updatedWithSuccess", true);
             }
         }
+        model.addAttribute("companies", COMPANIES);
         return EDIT_COMPUTER_JSP;
     }
     

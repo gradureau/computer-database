@@ -30,7 +30,6 @@
 		<maven-surefire-plugin.version>2.19.1</maven-surefire-plugin.version>
 		<junit-platform-surefire-provider.version>1.0.3</junit-platform-surefire-provider.version>
 		<com.zaxxer.HikariCP.version>3.1.0</com.zaxxer.HikariCP.version>
-		<org.apache.httpcomponents.httpcore.version>4.4.9</org.apache.httpcomponents.httpcore.version>
 		<springFramework.version>5.0.6.RELEASE</springFramework.version>
 	</properties>
 
@@ -61,13 +60,6 @@
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-jdbc</artifactId>
 			<version>${springFramework.version}</version>
-		</dependency>
-
-		<!-- https://mvnrepository.com/artifact/org.apache.httpcomponents/httpcore -->
-		<dependency>
-			<groupId>org.apache.httpcomponents</groupId>
-			<artifactId>httpcore</artifactId>
-			<version>${org.apache.httpcomponents.httpcore.version}</version>
 		</dependency>
 
 		<!-- HikariCP -->
