@@ -12,7 +12,6 @@ import org.springframework.web.servlet.view.InternalResourceViewResolver;
 import org.springframework.web.servlet.view.JstlView;
 
 @Configuration
-@Import(ServiceConfig.class)
 @EnableWebMvc
 @ComponentScan(basePackages = "com.excilys.gradureau.computer_database.controller")
 public class MVC_Config implements WebMvcConfigurer {
