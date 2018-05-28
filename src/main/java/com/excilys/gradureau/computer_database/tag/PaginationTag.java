@@ -105,9 +105,9 @@ public class PaginationTag extends SimpleTagSupport {
         for(int resultsPerPages : Arrays.asList(10, 50, 100)) {
             stringBuilder.append("\t\t\t\t<a href=\"");
             addUri(stringBuilder, page.getStart() / resultsPerPages + 1, resultsPerPages);
-            stringBuilder.append("\"><button type=\"button\" class=\"btn btn-default\">");
+            stringBuilder.append("\" class=\"btn btn-default\">");
             stringBuilder.append(resultsPerPages);
-            stringBuilder.append("</button></a>\n");
+            stringBuilder.append("</a>\n");
         }
         
         stringBuilder.append("\t\t\t</div>");
