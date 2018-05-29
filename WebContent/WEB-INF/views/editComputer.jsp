@@ -2,6 +2,7 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@ taglib uri="http://sargue.net/jsptags/time" prefix="javatime"%>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form"%>
+<%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <html>
 <head>
 <title>Computer Database</title>
@@ -14,7 +15,8 @@
 <body>
     <header class="navbar navbar-inverse navbar-fixed-top">
         <div class="container">
-            <a class="navbar-brand" href="${pageContext.request.contextPath}/dashboard"> Application - Computer Database </a>
+            <a class="navbar-brand" href="${pageContext.request.contextPath}/dashboard"> Application - 
+            <spring:message code="header.applicationName"/> </a>
         </div>
     </header>
     <section id="main">
@@ -24,27 +26,27 @@
                     <div class="label label-default pull-right">
                         id: ${computer.id}
                     </div>
-                    <h1>Edit Computer</h1>
+                    <h1><spring:message code="edit_computer.edit_computer"/></h1>
 
                     <form:form action="${pageContext.request.contextPath}/edit-computer/" method="POST" modelAttribute="computerData">
                         <input type="hidden" value="${computer.id}" id="id" name="id" />
                         <fieldset>
                             <div class="form-group">
-                                <label for="computerName">Computer name</label>
+                                <label for="computerName"><spring:message code="computer.computer_name"/></label>
                                 <input type="text" class="form-control" id="computerName" name="computerName" placeholder="Computer name" value="${computer.name}" required>
                             </div>
                             <div class="form-group">
-                                <label for="introduced">Introduced date</label>
+                                <label for="introduced"><spring:message code="computer.introduced_date"/></label>
                                 <input type="date" class="form-control" id="introduced" name="introduced" placeholder="Introduced date"
                                 value="<javatime:format value="${computer.introduced}" pattern="yyyy-MM-dd" />">
                             </div>
                             <div class="form-group">
-                                <label for="discontinued">Discontinued date</label>
+                                <label for="discontinued"><spring:message code="computer.discontinued_date"/></label>
                                 <input type="date" class="form-control" id="discontinued" name="discontinued" placeholder="Discontinued date"
                                 value="<javatime:format value='${computer.discontinued}' pattern='yyyy-MM-dd' />">
                             </div>
                             <div class="form-group">
-                                <label for="companyId">Company</label>
+                                <label for="companyId"><spring:message code="computer.company"/></label>
                                 <select class="form-control" id="companyId" name="companyId">
                                     <option value="0">--</option>
                                     <c:if test="${not empty computer.company}">
@@ -57,9 +59,9 @@
                             </div>
                         </fieldset>
                         <div class="actions pull-right">
-                            <input type="submit" value="Edit" class="btn btn-primary">
+                            <input type="submit" value="<spring:message code="edit_computer.edit"/>" class="btn btn-primary">
                             or
-                            <a href="${pageContext.request.contextPath}/dashboard" class="btn btn-default">Cancel</a>
+                            <a href="${pageContext.request.contextPath}/dashboard" class="btn btn-default"><spring:message code="edit_computer.cancel"/></a>
                         </div>
                     </form:form>
                 </div>

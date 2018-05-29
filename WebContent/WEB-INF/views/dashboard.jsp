@@ -2,6 +2,7 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@ taglib uri="http://sargue.net/jsptags/time" prefix="javatime"%>
 <%@ taglib uri="cdb-tags" prefix="mylib" %>  
+<%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <html>
 <head>
 <title>Computer Database</title>
@@ -17,27 +18,27 @@
 	<header class="navbar navbar-inverse navbar-fixed-top">
 		<div class="container">
 			<a class="navbar-brand" href="${pageContext.request.contextPath}/dashboard"> Application -
-				Computer Database </a>
+				<spring:message code="header.applicationName"/> </a>
 		</div>
 	</header>
 
 	<section id="main">
 		<div class="container">
-			<h1 id="homeTitle">${requestScope.resultsFound} Computers found</h1>
+			<h1 id="homeTitle">${requestScope.resultsFound} <spring:message code="dashboard.computers_found"/></h1>
 			<div id="actions" class="form-horizontal">
 				<div class="pull-left">
 					<form id="searchForm" action="dashboard" method="GET" class="form-inline">
 
 						<input type="search" id="searchbox" name="search"
-							class="form-control" placeholder="Search name" value="${requestScope.searchedKeyWords}" /> <input
-							type="submit" id="searchsubmit" value="Filter by name"
+							class="form-control" placeholder="<spring:message code="dashboard.search_name"/>" value="${requestScope.searchedKeyWords}" /> <input
+							type="submit" id="searchsubmit" value="<spring:message code="dashboard.filter_name"/>"
 							class="btn btn-primary" />
 					</form>
 				</div>
 				<div class="pull-right">
-					<a class="btn btn-success" id="addComputer" href="${pageContext.request.contextPath}/add-computer">Add
-						Computer</a> <a class="btn btn-default" id="editComputer" href="#"
-						onclick="$.fn.toggleEditMode();">Edit</a>
+					<a class="btn btn-success" id="addComputer" href="${pageContext.request.contextPath}/add-computer">
+					<spring:message code="dashboard.add_computer"/></a> <a class="btn btn-default" id="editComputer" href="#"
+						onclick="$.fn.toggleEditMode();"><spring:message code="dashboard.edit"/></a>
 				</div>
 			</div>
 		</div>
@@ -60,12 +61,10 @@
 									class="fa fa-trash-o fa-lg"></i>
 							</a>
 						</span></th>
-						<th>Computer name</th>
-						<th>Introduced date</th>
-						<!-- Table header for Discontinued Date -->
-						<th>Discontinued date</th>
-						<!-- Table header for Company -->
-						<th>Company</th>
+						<th><spring:message code="computer.computer_name"/></th>
+						<th><spring:message code="computer.introduced_date"/></th>
+						<th><spring:message code="computer.discontinued_date"/></th>
+						<th><spring:message code="computer.company"/></th>
 
 					</tr>
 				</thead>
