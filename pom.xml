@@ -31,6 +31,7 @@
 		<junit-platform-surefire-provider.version>1.0.3</junit-platform-surefire-provider.version>
 		<com.zaxxer.HikariCP.version>3.1.0</com.zaxxer.HikariCP.version>
 		<springFramework.version>5.0.6.RELEASE</springFramework.version>
+		<hibernate.version>5.3.1.Final</hibernate.version>
 	</properties>
 
 	<dependencies>
@@ -45,6 +46,12 @@
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-context</artifactId>
 			<version>${springFramework.version}</version>
+			<exclusions>
+				<exclusion>
+					<artifactId>commons-logging</artifactId>
+					<groupId>commons-logging</groupId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework</groupId>
@@ -59,6 +66,11 @@
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-jdbc</artifactId>
+			<version>${springFramework.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-orm</artifactId>
 			<version>${springFramework.version}</version>
 		</dependency>
 
@@ -97,6 +109,19 @@
 			<groupId>net.sargue</groupId>
 			<artifactId>java-time-jsptags</artifactId>
 			<version>${net.sargue.java-time-jsptags.version}</version>
+		</dependency>
+
+		<!-- HIBERNATE -->
+		<dependency>
+			<groupId>org.hibernate</groupId>
+			<artifactId>hibernate-entitymanager</artifactId>
+			<version>${hibernate.version}</version>
+			<scope>runtime</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.hibernate.javax.persistence</groupId>
+			<artifactId>hibernate-jpa-2.1-api</artifactId>
+			<version>1.0.0.Final</version>
 		</dependency>
 
 
