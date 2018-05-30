@@ -2,12 +2,22 @@ package com.excilys.gradureau.computer_database.model;
 
 import java.time.LocalDateTime;
 
-public class Computer {
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.ManyToOne;
 
+@Entity
+public class Computer {
+    
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
     private String name;
     private LocalDateTime introduced;
     private LocalDateTime discontinued;
+    @ManyToOne
     private Company company;
 
     public Computer() {
