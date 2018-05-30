@@ -5,6 +5,7 @@ import java.util.Map;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import com.excilys.gradureau.computer_database.exception.WrongObjectStateException;
 import com.excilys.gradureau.computer_database.model.Company;
@@ -15,6 +16,7 @@ import com.excilys.gradureau.computer_database.util.Page;
 import com.excilys.gradureau.computer_database.validator.CompanyValidator;
 import com.excilys.gradureau.computer_database.validator.ComputerValidator;
 
+@Service
 public class ServiceCrudCDB implements ICrudCDB {
 
     @Autowired
