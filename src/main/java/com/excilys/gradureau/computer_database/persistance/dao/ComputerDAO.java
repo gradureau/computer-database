@@ -10,10 +10,15 @@ import java.util.Optional;
 import java.util.stream.Stream;
 
 import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaDelete;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.ParameterExpression;
+import javax.persistence.criteria.Root;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
@@ -22,6 +27,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.excilys.gradureau.computer_database.model.Company;
 import com.excilys.gradureau.computer_database.model.Computer;
+import com.excilys.gradureau.computer_database.model.Computer_;
 import com.excilys.gradureau.computer_database.persistance.dao.mapper.TimeMapper;
 import com.excilys.gradureau.computer_database.util.Page;
 
@@ -37,11 +43,7 @@ public class ComputerDAO extends DAO<Computer> {
 
     private static final String QUERY_FIND_ALL = "SELECT pc.id as id, pc.name as name, introduced, discontinued, company_id, co.name as company_name "
             + "FROM computer AS pc LEFT JOIN company AS co on pc.company_id = co.id";
-    private static final String QUERY_FIND = "SELECT pc.id as id, pc.name as name, introduced, discontinued, company_id, co.name as company_name "
-            + "FROM computer AS pc LEFT JOIN company AS co on pc.company_id = co.id WHERE pc.id = ?;";
     private static final String QUERY_UPDATE = "UPDATE computer SET name = ?, introduced = ?, discontinued = ?, company_id = ? WHERE id = ?;";
-    private static final String QUERY_DELETE = "DELETE FROM computer WHERE id = ?;";
-    private static final String QUERY_LIMIT_ALL = QUERY_FIND_ALL + " order by introduced desc, id LIMIT ?, ?;";
     private static final String QUERY_COUNT = "SELECT Count(pc.id) as total FROM computer pc";
     
     private static RowMapper<Computer> computerRowMapper = (ResultSet rs, int rowNum) -> {
@@ -69,13 +71,18 @@ public class ComputerDAO extends DAO<Computer> {
     @Override
     public Optional<Computer> find(long id) {
         try {
-            Computer computer = jdbcTemplate.queryForObject(
-                    QUERY_FIND,
-                    new Object[]{ id },
-                    computerRowMapper
+            CriteriaBuilder cb = entityManager.getCriteriaBuilder();
+            CriteriaQuery<Computer> cquery = cb.createQuery(Computer.class);
+            Root<Computer> computerNode = cquery.from(Computer.class);
+            ParameterExpression<Long> idParameter = cb.parameter(Long.class, "id");
+            cquery.select(computerNode).where(cb.equal(computerNode.get(Computer_.ID), idParameter));
+            return Optional.of(
+                    entityManager
+                    .createQuery(cquery)
+                    .setParameter("id", id)
+                    .getSingleResult()
                     );
-            return Optional.of(computer);
-        } catch(EmptyResultDataAccessException e) {
+        } catch(NoResultException e) {
             return Optional.empty();
         }
     }
@@ -118,29 +125,39 @@ public class ComputerDAO extends DAO<Computer> {
     @Override
     @Transactional(readOnly=false)
     public boolean delete(Computer computer) {
-        return jdbcTemplate.update(QUERY_DELETE, computer.getId())  == 1;
+        entityManager.joinTransaction();
+        CriteriaBuilder cb = entityManager.getCriteriaBuilder();
+        CriteriaDelete<Computer> cdelete =  cb.createCriteriaDelete(Computer.class);
+        ParameterExpression<Long> computerIdParameter = cb.parameter(Long.class, "computerId");
+        Root<Computer> computerNode = cdelete.from(Computer.class);
+        cdelete.where(cb.equal(computerNode.get(Computer_.ID), computerIdParameter));
+        return entityManager.createQuery(cdelete).setParameter("computerId", computer.getId())
+                .executeUpdate() == 1;
     }
 
     @Override
     public List<Computer> findAll() {
-        return jdbcTemplate.query(QUERY_FIND_ALL, computerRowMapper);
-//        CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
-//        
-//        CriteriaQuery<Computer> criteriaQuery = criteriaBuilder.createQuery(Computer.class);
-//        Root<Computer> from = criteriaQuery.from(Computer.class);
-//        Join<Computer,Company> joinNode = criteriaQuery.from(Computer.class).join(Computer_.company);
-//        
-//        criteriaQuery.select(from);
-//        TypedQuery<Computer> query = entityManager.createQuery(criteriaQuery);
-//        return query.getResultList();
+        CriteriaBuilder cb = entityManager.getCriteriaBuilder();
+        CriteriaQuery<Computer> cquery = cb.createQuery(Computer.class);
+        return entityManager.createQuery(
+                cquery.select(cquery.from(Computer.class))
+                ).getResultList();
     }
 
     @Override
     public Page<Computer> pagination(int start, int resultsCount) {
-        List<Computer> computers = jdbcTemplate.query(
-                QUERY_LIMIT_ALL,
-                new Object[] {start, resultsCount},
-                computerRowMapper);
+        CriteriaBuilder cb = entityManager.getCriteriaBuilder();
+        CriteriaQuery<Computer> cquery = cb.createQuery(Computer.class);
+        Root<Computer> computerNode = cquery.from(Computer.class);
+        cquery.select(computerNode);
+        cquery.orderBy(
+                cb.desc(computerNode.get(Computer_.INTRODUCED)),
+                cb.asc(computerNode.get(Computer_.ID)));
+        List<Computer> computers = entityManager
+                .createQuery(cquery)
+                .setFirstResult(start)
+                .setMaxResults(resultsCount)
+                .getResultList();
         Page<Computer> page = new Page<>(computers, start, resultsCount);
         page.setPageable(this::pagination);
         page.setTotalResultsCounter(this::count);
@@ -149,7 +166,10 @@ public class ComputerDAO extends DAO<Computer> {
     
     @Override
     public long count() {
-        return jdbcTemplate.queryForObject(QUERY_COUNT, Long.class);
+        CriteriaBuilder cb = entityManager.getCriteriaBuilder();
+        CriteriaQuery<Long> cquery = cb.createQuery(Long.class);
+        cquery.select(cb.count(cquery.from(Computer.class)));
+        return entityManager.createQuery(cquery).getSingleResult();
     }
 
     @Override
