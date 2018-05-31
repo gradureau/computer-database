@@ -11,9 +11,11 @@ import java.util.stream.Stream;
 
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
+import javax.persistence.Query;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaDelete;
 import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.CriteriaUpdate;
 import javax.persistence.criteria.ParameterExpression;
 import javax.persistence.criteria.Root;
 
@@ -43,7 +45,6 @@ public class ComputerDAO extends DAO<Computer> {
 
     private static final String QUERY_FIND_ALL = "SELECT pc.id as id, pc.name as name, introduced, discontinued, company_id, co.name as company_name "
             + "FROM computer AS pc LEFT JOIN company AS co on pc.company_id = co.id";
-    private static final String QUERY_UPDATE = "UPDATE computer SET name = ?, introduced = ?, discontinued = ?, company_id = ? WHERE id = ?;";
     private static final String QUERY_COUNT = "SELECT Count(pc.id) as total FROM computer pc";
     
     private static RowMapper<Computer> computerRowMapper = (ResultSet rs, int rowNum) -> {
@@ -112,13 +113,20 @@ public class ComputerDAO extends DAO<Computer> {
     @Override
     @Transactional(readOnly=false)
     public Optional<Computer> update(Computer computer) {
-        boolean wasUpdated = jdbcTemplate.update(QUERY_UPDATE,
-                computer.getName(),
-                (computer.getIntroduced() == null ? null : Timestamp.valueOf(computer.getIntroduced())),                   
-                (computer.getDiscontinued() == null ? null : Timestamp.valueOf(computer.getDiscontinued())),
-                (computer.getCompany() == null ? null : computer.getCompany().getId()),
-                computer.getId()
-                ) == 1;
+        entityManager.joinTransaction();
+        CriteriaBuilder cb = entityManager.getCriteriaBuilder();
+        CriteriaUpdate<Computer> cupdate =  cb.createCriteriaUpdate(Computer.class);
+        Root<Computer> computerNode = cupdate.from(Computer.class);
+        ParameterExpression<Long> computerIdParameter = cb.parameter(Long.class, "computerId");
+        cupdate
+        .set(computerNode.get(Computer_.NAME), computer.getName())
+        .set(computerNode.get(Computer_.INTRODUCED), computer.getIntroduced())
+        .set(computerNode.get(Computer_.DISCONTINUED), computer.getDiscontinued())
+        .set(computerNode.get(Computer_.COMPANY), computer.getCompany())
+        .where(cb.equal(computerNode.get(Computer_.ID), computerIdParameter));
+        
+        Query query = entityManager.createQuery(cupdate).setParameter("computerId", computer.getId());
+        boolean wasUpdated = query.executeUpdate() == 1;
         return wasUpdated ? Optional.of(computer) : Optional.empty();
     }
 
