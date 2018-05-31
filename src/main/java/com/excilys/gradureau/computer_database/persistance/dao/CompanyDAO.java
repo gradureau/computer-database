@@ -5,25 +5,37 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
+import javax.persistence.TypedQuery;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.ParameterExpression;
+import javax.persistence.criteria.Root;
+
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.excilys.gradureau.computer_database.model.Company;
+import com.excilys.gradureau.computer_database.model.Company_;
 import com.excilys.gradureau.computer_database.util.Page;
 
 @Repository
 @Transactional(readOnly=true)
 public class CompanyDAO extends DAO<Company> {
+    /*
+     * https://docs.oracle.com/javaee/6/tutorial/doc/gjivm.html
+     */
     
     @Autowired
     private JdbcTemplate jdbcTemplate;
+    
+    @Autowired
+    EntityManager entityManager;
 
-    private static final String QUERY_FIND_ALL = "SELECT id, name FROM company;";
-    private static final String QUERY_FIND = "SELECT id, name FROM company WHERE id = ?;";
     private static final String QUERY_LIMIT_ALL = "SELECT id, name FROM company order by name LIMIT ?, ? ;";
     private static final String QUERY_DELETE = "DELETE FROM company WHERE id = ?;";
     private static final String QUERY_DELETE_CHILDREN = "DELETE FROM computer WHERE company_id = ?;";
@@ -39,13 +51,18 @@ public class CompanyDAO extends DAO<Company> {
     @Override
     public Optional<Company> find(long id) {
         try {
-            Company company = jdbcTemplate.queryForObject(
-                    QUERY_FIND,
-                    new Object[]{ id },
-                    companyRowMapper
+            CriteriaBuilder cb = entityManager.getCriteriaBuilder();
+            CriteriaQuery<Company> cquery = cb.createQuery(Company.class);
+            Root<Company> companyNode = cquery.from(Company.class);
+            ParameterExpression<Long> idParameter = cb.parameter(Long.class, "id");
+            cquery.select(companyNode).where(cb.equal(companyNode.get(Company_.ID), idParameter));
+            return Optional.of(
+                    entityManager
+                    .createQuery(cquery)
+                    .setParameter("id", id)
+                    .getSingleResult()
                     );
-            return Optional.of(company);
-        } catch(EmptyResultDataAccessException e) {
+        } catch(NoResultException e) {
             return Optional.empty();
         }
     }
@@ -71,7 +88,13 @@ public class CompanyDAO extends DAO<Company> {
 
     @Override
     public List<Company> findAll() {
-        return jdbcTemplate.query(QUERY_FIND_ALL, companyRowMapper);
+        CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+        CriteriaQuery<Company> criteriaQuery = criteriaBuilder.createQuery(Company.class);
+        Root<Company> from = criteriaQuery.from(Company.class);
+        criteriaQuery.select(from);
+        TypedQuery<Company> query = entityManager.createQuery(criteriaQuery);
+        List<Company> allitems = query.getResultList();
+        return allitems;
     }
 
     @Override

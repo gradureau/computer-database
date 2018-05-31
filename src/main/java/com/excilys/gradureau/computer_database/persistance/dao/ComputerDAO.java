@@ -9,6 +9,8 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Stream;
 
+import javax.persistence.EntityManager;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
@@ -29,6 +31,9 @@ public class ComputerDAO extends DAO<Computer> {
     
     @Autowired
     private JdbcTemplate jdbcTemplate;
+    
+    @Autowired
+    EntityManager entityManager;
 
     private static final String QUERY_FIND_ALL = "SELECT pc.id as id, pc.name as name, introduced, discontinued, company_id, co.name as company_name "
             + "FROM computer AS pc LEFT JOIN company AS co on pc.company_id = co.id";
@@ -119,6 +124,15 @@ public class ComputerDAO extends DAO<Computer> {
     @Override
     public List<Computer> findAll() {
         return jdbcTemplate.query(QUERY_FIND_ALL, computerRowMapper);
+//        CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+//        
+//        CriteriaQuery<Computer> criteriaQuery = criteriaBuilder.createQuery(Computer.class);
+//        Root<Computer> from = criteriaQuery.from(Computer.class);
+//        Join<Computer,Company> joinNode = criteriaQuery.from(Computer.class).join(Computer_.company);
+//        
+//        criteriaQuery.select(from);
+//        TypedQuery<Computer> query = entityManager.createQuery(criteriaQuery);
+//        return query.getResultList();
     }
 
     @Override

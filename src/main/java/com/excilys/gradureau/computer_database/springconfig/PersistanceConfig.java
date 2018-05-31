@@ -2,6 +2,8 @@ package com.excilys.gradureau.computer_database.springconfig;
 
 import java.util.Properties;
 
+import javax.persistence.EntityManager;
+
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
@@ -52,10 +54,17 @@ public class PersistanceConfig {
        return em;
     }
     
+    @Bean
+    public EntityManager entityManager() {
+        return entityManagerFactory().getObject().createEntityManager();
+    }
+    
     Properties additionalProperties() {
         Properties properties = new Properties();
         properties.setProperty(
-          "hibernate.dialect", "org.hibernate.dialect.MySQL5Dialect");
+                "hibernate.dialect", "org.hibernate.dialect.MySQL5Dialect");
+        properties.setProperty(
+                "hibernate.hbm2ddl.auto", "validate");
         return properties;
     }
     
