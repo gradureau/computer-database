@@ -6,19 +6,22 @@ import java.util.Optional;
 
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
+import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaDelete;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.ParameterExpression;
 import javax.persistence.criteria.Root;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.excilys.gradureau.computer_database.model.Company;
 import com.excilys.gradureau.computer_database.model.Company_;
+import com.excilys.gradureau.computer_database.model.Computer;
+import com.excilys.gradureau.computer_database.model.Computer_;
 import com.excilys.gradureau.computer_database.util.Page;
 
 @Repository
@@ -29,13 +32,7 @@ public class CompanyDAO extends DAO<Company> {
      */
     
     @Autowired
-    private JdbcTemplate jdbcTemplate;
-    
-    @Autowired
     EntityManager entityManager;
-
-    private static final String QUERY_DELETE = "DELETE FROM company WHERE id = ?;";
-    private static final String QUERY_DELETE_CHILDREN = "DELETE FROM computer WHERE company_id = ?;";
 
     @Override
     public Optional<Company> find(long id) {
@@ -71,8 +68,22 @@ public class CompanyDAO extends DAO<Company> {
     @Override
     @Transactional(readOnly=false)
     public boolean delete(Company company) {
-        jdbcTemplate.update(QUERY_DELETE_CHILDREN, new Object[] { company.getId() });
-        return jdbcTemplate.update(QUERY_DELETE, new Object[] { company.getId() }) == 1;
+        entityManager.joinTransaction();
+        CriteriaBuilder cb = entityManager.getCriteriaBuilder();
+        
+        CriteriaDelete<Computer> cdeleteChildren =  cb.createCriteriaDelete(Computer.class);
+        ParameterExpression<Company> companyParameter = cb.parameter(Company.class, "company");
+        Root<Computer> computerNode = cdeleteChildren.from(Computer.class);
+        cdeleteChildren.where(cb.equal(computerNode.get(Computer_.COMPANY), companyParameter));
+        Query query = entityManager.createQuery(cdeleteChildren).setParameter("company", company);
+        query.executeUpdate();
+        
+        CriteriaDelete<Company> cdelete =  cb.createCriteriaDelete(Company.class);
+        ParameterExpression<Long> companyIdParameter = cb.parameter(Long.class, "companyId");
+        Root<Company> companyNode = cdelete.from(Company.class);
+        cdelete.where(cb.equal(companyNode.get(Company_.ID), companyIdParameter));
+        return entityManager.createQuery(cdelete).setParameter("companyId", company.getId())
+                .executeUpdate() == 1;
     }
 
     @Override
