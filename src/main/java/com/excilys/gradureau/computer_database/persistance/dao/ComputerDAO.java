@@ -1,9 +1,7 @@
 package com.excilys.gradureau.computer_database.persistance.dao;
 
 import java.sql.ResultSet;
-import java.sql.Timestamp;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -20,10 +18,8 @@ import javax.persistence.criteria.ParameterExpression;
 import javax.persistence.criteria.Root;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
-import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -91,28 +87,20 @@ public class ComputerDAO extends DAO<Computer> {
     @Override
     @Transactional(readOnly=false)
     public Optional<Computer> create(Computer computer) {
-        /*
-         * Might as well return a boolean to inform about the outcome and set the Long
-         * id of the Computer parameter object.
-         */
-        SimpleJdbcInsert simpleJdbcInsert = new SimpleJdbcInsert(jdbcTemplate);
-        simpleJdbcInsert.withTableName("computer").usingGeneratedKeyColumns("id");
-        Map<String,Object> parameterSource = new HashMap<>();
-        parameterSource.put("name", computer.getName());
-        parameterSource.put("introduced", computer.getIntroduced() == null ? null : Timestamp.valueOf(computer.getIntroduced()));
-        parameterSource.put("discontinued", computer.getDiscontinued() == null ? null : Timestamp.valueOf(computer.getDiscontinued()));
-        parameterSource.put("company_id", computer.getCompany() == null ? null : computer.getCompany().getId());
-        try {
-            Long generatedId = simpleJdbcInsert.executeAndReturnKey(parameterSource).longValue();
-            // add the eventual empty company name
-            return find(generatedId);
-        } catch(DataIntegrityViolationException e) {  }
-        return Optional.empty();
+        entityManager.joinTransaction();
+        entityManager.persist(computer);
+        entityManager.flush();
+        entityManager.refresh(computer);
+        entityManager.clear();
+        return Optional.of(computer);
     }
 
     @Override
     @Transactional(readOnly=false)
     public Optional<Computer> update(Computer computer) {
+        /*
+         * Might as well call entityManager::merge
+         */
         entityManager.joinTransaction();
         CriteriaBuilder cb = entityManager.getCriteriaBuilder();
         CriteriaUpdate<Computer> cupdate =  cb.createCriteriaUpdate(Computer.class);
@@ -126,8 +114,11 @@ public class ComputerDAO extends DAO<Computer> {
         .where(cb.equal(computerNode.get(Computer_.ID), computerIdParameter));
         
         Query query = entityManager.createQuery(cupdate).setParameter("computerId", computer.getId());
+        Computer managedComputer = entityManager.merge(computer);
+        entityManager.refresh(managedComputer);
+        entityManager.clear();
         boolean wasUpdated = query.executeUpdate() == 1;
-        return wasUpdated ? Optional.of(computer) : Optional.empty();
+        return wasUpdated ? Optional.of(managedComputer) : Optional.empty();
     }
 
     @Override
