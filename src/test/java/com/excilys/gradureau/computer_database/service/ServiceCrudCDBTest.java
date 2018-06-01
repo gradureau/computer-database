@@ -140,7 +140,7 @@ public class ServiceCrudCDBTest {
     
     @Test
     public void updateComputerIntroducedDate() throws WrongObjectStateException {
-        LocalDateTime date = LocalDateTime.now().minusYears(30L);
+        LocalDateTime date = LocalDateTime.now().minusYears(30L).withNano(0);
         Computer computerWithNewIntroducedDate = new Computer(3L, "updatedName", date, null, null);
         assertEquals(date, CDB.updateComputer(computerWithNewIntroducedDate).orElse(null).getIntroduced());
     }

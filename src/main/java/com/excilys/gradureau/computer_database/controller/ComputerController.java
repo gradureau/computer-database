@@ -176,6 +176,7 @@ public class ComputerController {
     @RequestMapping(path = DELETE_COMPUTER_URL, method = RequestMethod.POST, params = { "selection" })
     public String deleteComputer(ModelMap model,
             @RequestParam(name = "selection") String computerIdsToDelete) {
+        LOGGER.error(DELETE_COMPUTER_URL + " " + computerIdsToDelete);
         for(String computerId : computerIdsToDelete.split(",")) {
             Computer computerToDelete = new Computer();
             try {
@@ -185,6 +186,7 @@ public class ComputerController {
                 LOGGER.debug(DELETE_COMPUTER_URL, e);
             }
         }
+        LOGGER.error(DELETE_COMPUTER_URL, "REDIRECT");
         return "redirect:" + DASHBOARD_URL;
     }
     

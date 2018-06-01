@@ -1,11 +1,8 @@
 package com.excilys.gradureau.computer_database.persistance.dao;
 
-import java.sql.ResultSet;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.stream.Stream;
 
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
@@ -15,18 +12,16 @@ import javax.persistence.criteria.CriteriaDelete;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.CriteriaUpdate;
 import javax.persistence.criteria.ParameterExpression;
+import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.excilys.gradureau.computer_database.model.Company;
+import com.excilys.gradureau.computer_database.model.Company_;
 import com.excilys.gradureau.computer_database.model.Computer;
 import com.excilys.gradureau.computer_database.model.Computer_;
-import com.excilys.gradureau.computer_database.persistance.dao.mapper.TimeMapper;
 import com.excilys.gradureau.computer_database.util.Page;
 
 @Repository
@@ -34,27 +29,11 @@ import com.excilys.gradureau.computer_database.util.Page;
 public class ComputerDAO extends DAO<Computer> {
     
     @Autowired
-    private JdbcTemplate jdbcTemplate;
-    
-    @Autowired
     EntityManager entityManager;
-
-    private static final String QUERY_FIND_ALL = "SELECT pc.id as id, pc.name as name, introduced, discontinued, company_id, co.name as company_name "
-            + "FROM computer AS pc LEFT JOIN company AS co on pc.company_id = co.id";
-    private static final String QUERY_COUNT = "SELECT Count(pc.id) as total FROM computer pc";
     
-    private static RowMapper<Computer> computerRowMapper = (ResultSet rs, int rowNum) -> {
-        Company company = null;
-        if (rs.getLong("company_id") != 0) {
-            company = new Company(rs.getLong("company_id"), rs.getString("company_name"));
-        }
-        return new Computer(rs.getLong("id"), rs.getString("name"),
-                TimeMapper.timestamp2LocalDateTime(rs.getTimestamp("introduced")),
-                TimeMapper.timestamp2LocalDateTime(rs.getTimestamp("discontinued")), company);
-    };
     public static enum Fields {
-        COMPUTER_NAME("pc.name"),
-        COMPANY_NAME("co.name");
+        COMPUTER_NAME(Computer_.NAME),
+        COMPANY_NAME(Company_.NAME);
         
         private String sqlAlias;
         Fields(String sqlAlias) {
@@ -115,6 +94,7 @@ public class ComputerDAO extends DAO<Computer> {
         
         Query query = entityManager.createQuery(cupdate).setParameter("computerId", computer.getId());
         Computer managedComputer = entityManager.merge(computer);
+        entityManager.flush();
         entityManager.refresh(managedComputer);
         entityManager.clear();
         boolean wasUpdated = query.executeUpdate() == 1;
@@ -173,53 +153,49 @@ public class ComputerDAO extends DAO<Computer> {
 
     @Override
     public Page<Computer> filterBy(Map<String, String> criterias, int start, int resultsCount, boolean inclusive) {
-        int criteriasSize = criterias.size();
-        List<String> parametersToEscape = new ArrayList<>(criteriasSize);
         
-        final String sqlCriterias = buildSqlCriterias(criterias, inclusive, parametersToEscape, criteriasSize);
-        final String finalQuery = QUERY_FIND_ALL + sqlCriterias + " order by introduced desc, id LIMIT ?, ?";       
+        CriteriaBuilder cb = entityManager.getCriteriaBuilder();
+        CriteriaQuery<Computer> cquery = cb.createQuery(Computer.class);
+        Root<Computer> computerNode = cquery.from(Computer.class);
         
-        List<Computer> filteredComputers = readFilteredResults(start, resultsCount, parametersToEscape, finalQuery);
+        Optional<Predicate> optionalRestrictions = criterias.entrySet().stream().map(
+                (entry) -> {
+                    String field = entry.getKey();
+                    String searchedKeyWords = entry.getValue();
+                    return cb.like(computerNode.get(field), "%"+searchedKeyWords+"%");
+                }).reduce(
+                        (e1, e2) -> inclusive ? cb.or(e1, e2) : cb.and(e1, e2)
+                        );
         
+        cquery.select(computerNode);
+        if(optionalRestrictions.isPresent())
+            cquery.where(optionalRestrictions.get());
+        cquery.orderBy(
+                cb.desc(computerNode.get(Computer_.INTRODUCED)),
+                cb.asc(computerNode.get(Computer_.ID)));
+        
+        List<Computer> filteredComputers = entityManager
+                .createQuery(cquery)
+                .setFirstResult(start)
+                .setMaxResults(resultsCount)
+                .getResultList();
+                
         Page<Computer> page = new Page<>(filteredComputers, start, resultsCount);
         page.setPageable( (_start, _resultsCount) -> filterBy(criterias, _start, _resultsCount) );
         page.setTotalResultsCounter( () -> {
-            return countFilteredResults(parametersToEscape, sqlCriterias);
+            return countFilteredResults(optionalRestrictions);
         });
         return  page;
     }
     
-
-    private String buildSqlCriterias(Map<String, String> criterias, boolean inclusive, List<String> parametersToEscape, int criteriasSize) {
-        StringBuilder stringBuilder = new StringBuilder(" WHERE ");
-        int fieldIndex = 1;
-        for( String fieldName : criterias.keySet() ) {
-            stringBuilder.append( fieldName );
-            stringBuilder.append( " LIKE ?");
-            parametersToEscape.add(criterias.get(fieldName));
-            if( fieldIndex++ < criteriasSize ) {
-                stringBuilder.append(inclusive ? "OR " : "AND ");
-            }
-        }
-        return stringBuilder.toString();
-    }
-
-    private List<Computer> readFilteredResults(int start, int resultsCount,
-            List<String> parametersToEscape, final String finalQuery) {
-        return jdbcTemplate.query(finalQuery, 
-                Stream.concat(
-                        parametersToEscape.stream().map(keywords -> "%"+keywords+"%"),
-                        Stream.of(start, resultsCount)
-                ).toArray(),
-                computerRowMapper);
-    }
-    
-    private Long countFilteredResults(List<String> parametersToEscape, final String sqlCriterias) {
-        return jdbcTemplate.queryForObject(
-                QUERY_COUNT + " LEFT JOIN company co ON pc.company_id = co.id " + sqlCriterias,
-                parametersToEscape.stream().map(keywords -> "%"+keywords+"%").toArray(),
-                Long.class
-                );
+    private Long countFilteredResults(Optional<Predicate> optionalRestrictions) {
+        CriteriaBuilder cb = entityManager.getCriteriaBuilder();
+        CriteriaQuery<Long> cquery = cb.createQuery(Long.class);
+        Root<Computer> computerNode = cquery.from(Computer.class);
+        cquery.select(cb.count(computerNode));
+        if(optionalRestrictions.isPresent())
+            cquery.where(optionalRestrictions.get());
+        return entityManager.createQuery(cquery).getSingleResult();
     }
 
 }
