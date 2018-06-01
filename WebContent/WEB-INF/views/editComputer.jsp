@@ -32,7 +32,7 @@
                     </div>
                     <h1><spring:message code="edit_computer.edit_computer"/></h1>
 
-                    <form:form action="${pageContext.request.contextPath}/edit-computer/" method="POST" modelAttribute="computerData">
+                    <form:form action="${pageContext.request.contextPath}/edit-computer/${computer.id}" method="POST" modelAttribute="computerData">
                         <input type="hidden" value="${computer.id}" id="id" name="id" />
                         <fieldset>
                             <div class="form-group">

@@ -139,15 +139,18 @@ public class ComputerController {
         return new ModelAndView(EDIT_COMPUTER_JSP) ;
     }
     
-    @RequestMapping(path = EDIT_COMPUTER_URL, method = RequestMethod.POST, params = {
+    @RequestMapping(path = EDIT_COMPUTER_URL + "/{pk:\\d+}", method = RequestMethod.POST, params = {
             "id",
             "computerName",
             "introduced",
             "discontinued",
             "companyId"
             })
-    public String editComputer(ModelMap model,
+    public ModelAndView editComputer(ModelMap model,
+            @PathVariable(name = "pk") Long computerId,
             @ModelAttribute("computerData") ComputerForm computerData) {
+        if(!computerId.equals(computerData.getId()))
+            return new ModelAndView(EDIT_COMPUTER_JSP, HttpStatus.BAD_REQUEST);
         Optional<Computer> optionalUpdatedComputer = Optional.empty();
         try {
             optionalUpdatedComputer = cdb.updateComputer(computerData.toComputer());
@@ -163,7 +166,7 @@ public class ComputerController {
             }
         }
         model.addAttribute("companies", COMPANIES);
-        return EDIT_COMPUTER_JSP;
+        return new ModelAndView(EDIT_COMPUTER_JSP, model);
     }
     
     /*
