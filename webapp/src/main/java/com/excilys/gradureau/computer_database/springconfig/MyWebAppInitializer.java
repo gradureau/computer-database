@@ -3,9 +3,10 @@ package com.excilys.gradureau.computer_database.springconfig;
 import org.springframework.web.servlet.support.AbstractAnnotationConfigDispatcherServletInitializer;
 
 public class MyWebAppInitializer extends AbstractAnnotationConfigDispatcherServletInitializer {
+    
     @Override
     protected Class<?>[] getRootConfigClasses() {
-        return new Class[] { ServiceConfig.class };
+        return new Class[] { ServiceConfig.class, WebSecurityConfig.class };
     }
   
     @Override
