@@ -49,6 +49,7 @@
 		<junit-platform-surefire-provider.version>1.0.3</junit-platform-surefire-provider.version>
 		<com.zaxxer.HikariCP.version>3.1.0</com.zaxxer.HikariCP.version>
 		<springFramework.version>5.0.6.RELEASE</springFramework.version>
+		<springSecurity.version>5.0.5.RELEASE</springSecurity.version>
 		<hibernate.version>5.3.1.Final</hibernate.version>
   </properties>
 

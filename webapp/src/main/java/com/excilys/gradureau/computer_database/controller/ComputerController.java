@@ -1,15 +1,9 @@
 package com.excilys.gradureau.computer_database.controller;
 
-import java.io.IOException;
-import java.io.Writer;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
-
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -56,19 +50,6 @@ public class ComputerController {
     @Autowired(required = true)
     @Qualifier("COMPANIES")
     private List<Company> COMPANIES;
-    
-    @GetMapping(path = { "debug" })
-    public void debug(HttpServletRequest request, HttpServletResponse response,Writer writer) throws ServletException, IOException {
-        System.out.println("Hello World!");
-        writer.write("Hello World!");
-        try {
-            request.getRequestDispatcher("/views/dashboard.jsp").forward(request, response);
-        } catch(Exception e) {
-            System.out.println(e);
-            throw e;
-        }
-        System.out.println("no exception");
-    }
     
     /*
      * DASHBOARD
