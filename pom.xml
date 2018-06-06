@@ -1,38 +1,40 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-  <modelVersion>4.0.0</modelVersion>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
 
-  <groupId>com.excilys.gradureau.computer_database</groupId>
-  <artifactId>computer_database</artifactId>
-  <version>1.0-SNAPSHOT</version>
-  <packaging>pom</packaging>
+	<groupId>com.excilys.gradureau.computer_database</groupId>
+	<artifactId>computer_database</artifactId>
+	<version>1.0-SNAPSHOT</version>
+	<packaging>pom</packaging>
 
-  <organization>
+	<organization>
 		<name>excilys</name>
 		<url>http://excilys.com/</url>
 	</organization>
 
-  <name>computer-database</name>
+	<name>computer-database</name>
 
-  <url>https://github.com/gradureau/computer-database/</url>
+	<url>https://github.com/gradureau/computer-database/</url>
 
-  <modules>
-    <module>core</module>
-    <module>persistence</module>
-    <module>service</module>
-    <module>binding</module>
-    <module>webapp</module>
-    <module>console</module>
-  </modules>
+	<modules>
+		<module>core</module>
+		<module>persistence</module>
+		<module>service</module>
+		<module>binding</module>
+		<module>webapp</module>
+		<module>console</module>
+	</modules>
 
-  <properties>
-    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <maven.compiler.source>1.8</maven.compiler.source>
-    <maven.compiler.target>1.8</maven.compiler.target>
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<maven.compiler.source>1.8</maven.compiler.source>
+		<maven.compiler.target>1.8</maven.compiler.target>
 
-	<project.version>1.0-SNAPSHOT</project.version>
+		<project.version>1.0-SNAPSHOT</project.version>
 
-    <maven-war-plugin.version>2.6</maven-war-plugin.version>
+		<maven-war-plugin.version>2.6</maven-war-plugin.version>
 		<logback.version>1.2.3</logback.version>
 		<slf4j.version>1.7.25</slf4j.version>
 		<javax.servlet.version>4.0.0</javax.servlet.version>
@@ -51,14 +53,130 @@
 		<springFramework.version>5.0.6.RELEASE</springFramework.version>
 		<springSecurity.version>5.0.5.RELEASE</springSecurity.version>
 		<hibernate.version>5.3.1.Final</hibernate.version>
-  </properties>
+	</properties>
 
-  <dependencies>
-        <dependency>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-compiler-plugin</artifactId>
-            <version>3.6.0</version>
-        </dependency>
+	<dependencyManagement>
+		<dependencies>
+			<!-- SPRING FRAMEWORK -->
+			<dependency>
+				<groupId>org.springframework</groupId>
+				<artifactId>spring-core</artifactId>
+				<version>${springFramework.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.springframework</groupId>
+				<artifactId>spring-context</artifactId>
+				<version>${springFramework.version}</version>
+				<exclusions>
+					<exclusion>
+						<artifactId>commons-logging</artifactId>
+						<groupId>commons-logging</groupId>
+					</exclusion>
+				</exclusions>
+			</dependency>
+			<dependency>
+				<groupId>org.springframework</groupId>
+				<artifactId>spring-webmvc</artifactId>
+				<version>${springFramework.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.springframework</groupId>
+				<artifactId>spring-test</artifactId>
+				<version>${springFramework.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.springframework</groupId>
+				<artifactId>spring-jdbc</artifactId>
+				<version>${springFramework.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.springframework</groupId>
+				<artifactId>spring-orm</artifactId>
+				<version>${springFramework.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.springframework.security</groupId>
+				<artifactId>spring-security-web</artifactId>
+				<version>${springSecurity.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.springframework.security</groupId>
+				<artifactId>spring-security-config</artifactId>
+				<version>${springSecurity.version}</version>
+			</dependency>
+
+			<!-- HikariCP -->
+			<dependency>
+				<groupId>com.zaxxer</groupId>
+				<artifactId>HikariCP</artifactId>
+				<version>${com.zaxxer.HikariCP.version}</version>
+			</dependency>
+
+			<!-- https://mvnrepository.com/artifact/javax.servlet/servlet-api -->
+			<dependency>
+				<groupId>javax.servlet</groupId>
+				<artifactId>javax.servlet-api</artifactId>
+				<version>${javax.servlet.version}</version>
+				<scope>provided</scope>
+			</dependency>
+
+			<!-- https://mvnrepository.com/artifact/javax.servlet/jsp-api -->
+			<dependency>
+				<groupId>javax.servlet</groupId>
+				<artifactId>jsp-api</artifactId>
+				<version>${javax.jsp.version}</version>
+				<scope>provided</scope>
+			</dependency>
+
+			<!-- https://mvnrepository.com/artifact/jstl/jstl -->
+			<dependency>
+				<groupId>jstl</groupId>
+				<artifactId>jstl</artifactId>
+				<version>${jstl.jstl.version}</version>
+			</dependency>
+
+			<!-- https://github.com/sargue/java-time-jsptags -->
+			<dependency>
+				<groupId>net.sargue</groupId>
+				<artifactId>java-time-jsptags</artifactId>
+				<version>${net.sargue.java-time-jsptags.version}</version>
+			</dependency>
+
+			<!-- HIBERNATE -->
+			<dependency>
+				<groupId>org.hibernate</groupId>
+				<artifactId>hibernate-entitymanager</artifactId>
+				<version>${hibernate.version}</version>
+				<scope>runtime</scope>
+			</dependency>
+			<dependency>
+				<groupId>org.hibernate.javax.persistence</groupId>
+				<artifactId>hibernate-jpa-2.1-api</artifactId>
+				<version>1.0.0.Final</version>
+			</dependency>
+			<dependency>
+				<groupId>org.hibernate</groupId>
+				<artifactId>hibernate-jpamodelgen</artifactId>
+				<version>${hibernate.version}</version>
+			</dependency>
+
+
+			<!-- JDBC -->
+
+			<dependency>
+				<groupId>mysql</groupId>
+				<artifactId>mysql-connector-java</artifactId>
+				<version>${mysql.mysql-connector-java.version}</version>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
+
+	<dependencies>
+		<dependency>
+			<groupId>org.apache.maven.plugins</groupId>
+			<artifactId>maven-compiler-plugin</artifactId>
+			<version>3.6.0</version>
+		</dependency>
 
 		<!-- LOG -->
 
@@ -108,7 +226,7 @@
 
 	</dependencies>
 
-  <build>
+	<build>
 		<plugins>
 			<!-- Test -->
 			<plugin>
@@ -130,7 +248,7 @@
 		</plugins>
 	</build>
 
-  <reporting>
+	<reporting>
 		<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>

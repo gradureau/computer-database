@@ -16,6 +16,7 @@ import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -174,7 +175,7 @@ public class ComputerController {
      * DELETE COMPUTER
      */
     
-    @RequestMapping(path = DELETE_COMPUTER_URL, method = RequestMethod.POST, params = { "selection" })
+    @PostMapping(path = DELETE_COMPUTER_URL, params = { "selection" })
     public String deleteComputer(ModelMap model,
             @RequestParam(name = "selection") String computerIdsToDelete) {
         for(String computerId : computerIdsToDelete.split(",")) {
