@@ -59,6 +59,7 @@ public class ComputerRestController {
             @PathVariable(name = "page", required = false) Optional<Integer> page,
             @PathVariable(name = "resultsPerPage", required = false) Optional<Integer> resultsPerPage,
             @PathVariable(name = "search", required = false) Optional<String> search) {
+        
         int nResults = DEFAULT_RESULTS_PER_PAGE;
         if(resultsPerPage.isPresent()) {
             int r = resultsPerPage.get();
@@ -84,6 +85,7 @@ public class ComputerRestController {
     public ResponseEntity<String> updateComputer(
             @PathVariable("pk") Long pk,
             @RequestBody Computer computer) {
+        
         if(!pk.equals(computer.getId()))
             return new ResponseEntity<>(IDS_DO_NOT_MATCH, HttpStatus.BAD_REQUEST);
         try {
