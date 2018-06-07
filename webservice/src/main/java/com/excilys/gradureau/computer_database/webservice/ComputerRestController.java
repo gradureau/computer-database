@@ -49,17 +49,8 @@ public class ComputerRestController {
         }
     }
     
-    @GetMapping(path = {
-            "",
-            "/{page:\\d+}/{resultsPerPage:\\d+}",
-            "/search/{search}",
-            "/search/{search}/{page:\\d+}/{resultsPerPage:\\d+}"
-            })
-    public List<Computer> listComputers(
-            @PathVariable(name = "page", required = false) Optional<Integer> page,
-            @PathVariable(name = "resultsPerPage", required = false) Optional<Integer> resultsPerPage,
-            @PathVariable(name = "search", required = false) Optional<String> search) {
-        
+    @GetMapping
+    public List<Computer> listComputers(Optional<Integer> page, Optional<Integer> resultsPerPage, Optional<String> search) {
         int nResults = DEFAULT_RESULTS_PER_PAGE;
         if(resultsPerPage.isPresent()) {
             int r = resultsPerPage.get();
