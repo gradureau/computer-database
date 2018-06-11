@@ -17,9 +17,8 @@ import com.excilys.gradureau.computer_database.service.ICrudCDB;
 @ComponentScan("com.excilys.gradureau.computer_database.service")
 public class ServiceConfig {
     
-    @Bean
-    @Qualifier("COMPANIES")
-    List<Company> companies(@Autowired ICrudCDB cdb) {
+    @Bean("COMPANIES")
+    List<Company> companies(@Autowired@Qualifier("dao_cdb") ICrudCDB cdb) {
         return cdb.listCompanies(0, cdb.countCompanies()).getContent();
     }
 

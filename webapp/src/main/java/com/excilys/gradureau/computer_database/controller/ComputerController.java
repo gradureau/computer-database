@@ -47,6 +47,7 @@ public class ComputerController {
     public static final String EDIT_COMPUTER_JSP = "editComputer";
     
     @Autowired(required = true)
+    @Qualifier("dao_cdb")
     private ICrudCDB cdb;
     @Autowired(required = true)
     @Qualifier("COMPANIES")

@@ -3,8 +3,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
 import com.excilys.gradureau.computer_database.service.ICrudCDB;
-import com.excilys.gradureau.computer_database.springconfig.ServiceConfig;
+import com.excilys.gradureau.computer_database.springconfig.JacksonConfig;
 import com.excilys.gradureau.computer_database.ui.CLI;
+import com.excilys.gradureau.computer_database.webservice.springconfig.WebServiceBasedConfig;
 
 public class Main {
 
@@ -17,23 +18,21 @@ public class Main {
         System.out.println("Hello World !");
         
         AnnotationConfigApplicationContext springContext = new AnnotationConfigApplicationContext();
-        springContext.register(ServiceConfig.class);
+        //springContext.register(ServiceConfig.class);
+        springContext.register(WebServiceBasedConfig.class, JacksonConfig.class);
         springContext.refresh();
         
-        ICrudCDB cdb = springContext.getBean(ICrudCDB.class);
+        ICrudCDB cdb = springContext.getBean(
+                "ws_cdb"
+                //"dao_cdb"
+                ,ICrudCDB.class);
 
-        boolean displayMenu = true;
-
-        while (displayMenu) {
-            try {
-                displayMenu = false;
-                CLI.interactive(cdb);
-            } catch (Exception e) {
-                e.printStackTrace();
-                LOGGER.warn(e.getMessage());
-                LOGGER.warn("An error occured, you are redirected to main menu.");
-                displayMenu = true;
-            }
+        try {
+            CLI.interactive(cdb);
+        } catch (Exception e) {
+            e.printStackTrace();
+            LOGGER.warn(e.getMessage());
+            LOGGER.warn("An error occured.");
         }
         
         springContext.close();

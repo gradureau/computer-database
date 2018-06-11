@@ -16,7 +16,7 @@ import com.excilys.gradureau.computer_database.util.Page;
 import com.excilys.gradureau.computer_database.validator.CompanyValidator;
 import com.excilys.gradureau.computer_database.validator.ComputerValidator;
 
-@Service
+@Service("dao_cdb")
 public class ServiceCrudCDB implements ICrudCDB {
 
     @Autowired

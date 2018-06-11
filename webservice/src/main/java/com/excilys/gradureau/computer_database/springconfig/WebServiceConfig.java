@@ -9,6 +9,5 @@ import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 @EnableWebMvc
 @ComponentScan(basePackages = "com.excilys.gradureau.computer_database.webservice")
 @Import(JacksonConfig.class)
-public class WebServiceConfig {
-    
+public class WebServiceConfig {    
 }
