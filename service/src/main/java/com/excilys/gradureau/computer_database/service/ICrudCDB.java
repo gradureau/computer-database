@@ -33,6 +33,14 @@ public interface ICrudCDB {
      * @throws WrongObjectStateException if Computer.id not set
      */
     Optional<Computer> showComputerDetails(Computer computer) throws WrongObjectStateException;
+    
+    /** 
+     * @param company
+     *            with a defined Long id
+     * @return the company object with updated values from database
+     * @throws WrongObjectStateException if Company.id not set
+     */
+    Optional<Company> showCompanyDetails(Company computer);
 
     /**
      * @param computer

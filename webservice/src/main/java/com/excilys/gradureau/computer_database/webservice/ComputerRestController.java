@@ -63,14 +63,22 @@ public class ComputerRestController {
                 .getContent();
     }
     
+    @GetMapping(params = "count")
+    public int countComputers(Boolean count) {
+        return CDB.countComputers();
+    }
+    
     @PostMapping(consumes = "application/json")
-    public ResponseEntity<String> createComputer(@RequestBody Computer computer) {
+    public ResponseEntity<Object> createComputer(@RequestBody Computer computer) {
+        Long generatedId = null;
         try {
-            CDB.createComputer(computer);
+            Optional<Computer> createdComputer = CDB.createComputer(computer);
+            if(createdComputer.isPresent())
+                generatedId = createdComputer.get().getId();
         } catch (WrongObjectStateException e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
-        return new ResponseEntity<>(HttpStatus.CREATED);
+        return new ResponseEntity<>(generatedId,HttpStatus.CREATED);
     }
     
     @PutMapping(path = "/{pk:\\d+}", consumes = "application/json")

@@ -39,6 +39,11 @@ public class ServiceCrudCDB implements ICrudCDB {
         ComputerValidator.checkId(computer);
         return computerDAO.find(computer.getId());
     }
+    
+    @Override
+    public Optional<Company> showCompanyDetails(Company company) {
+        return companyDAO.find(company.getId());
+    }
 
     @Override
     public Optional<Computer> createComputer(Computer computer) throws WrongObjectStateException {
